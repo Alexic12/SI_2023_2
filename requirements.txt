@@ -1,1 +1,4 @@
-hola
+numpy
+pandas
+scikit-learn
+openpyxl
