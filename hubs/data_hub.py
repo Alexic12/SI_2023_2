@@ -7,6 +7,7 @@ import numpy as np
 import sklearn.preprocessing 
 import sklearn.model_selection
 from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split as tts
 
 
@@ -34,8 +35,30 @@ class Data:
         ##Lets confert the raw data to an array
         data_arr = np.array(data_raw)
 
+        ##Lets label encode any text in the data
+
+        ##Lets create a boolean array with the size of the columns
+        str_cols = np.emty(data_arr.shape[1], dtype = bool)
+
+        ##Lets read columns data type
+        for i in range (0, data_arr.shape[1]):
+            str_cols[i] = np.issubdtype(type(data_arr[0,i]), np.str_)
+        
+        for i in range (0 , data_arr.shape[1]):
+            if str_cols[i]:
+                le = LabelEncoder()
+                data_arr[: , i] = le.fit_transform(data_arr[:, i]) + 1
+
         ##Lets split the data into features and labels 
         data_features = data_arr[: , 0:-1]
         data_labels = data_arr[: , -1]
 
-        ##
+
+
+
+        ##Lets normalize the data
+        scaler = StandardScaler()##Create an object of this library in particular
+        data_features_norm = scaler.fit_transform(data_features)
+        data_labels_norm = scaler.fit_transform(data_labels)
+
+        print(data_labels_norm)
