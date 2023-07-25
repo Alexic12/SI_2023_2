@@ -1,2 +1,4 @@
 .DS_Store
 hubs/__pycache__/
+venv
+.idea

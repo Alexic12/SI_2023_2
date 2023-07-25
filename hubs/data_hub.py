@@ -49,10 +49,20 @@ class Data:
         data_features = data_arr[:, 0:-1] #Todas las filas, todas las columnas menos la última
         data_labels = data_arr[:, -1]     #Todas las filas, solo la última columna
 
+        data_labels = data_labels.reshape(-1, 1) #Cambia la forma de la matriz de (n,) a (n, 1)
+
+        #Revisar dimensiones de los datos
+        #print(f'Dimensiones: {data_labels.shape}')
+
         #Normaliza los datos
         scaler = StandardScaler() #Crea el objeto scaler
 
         data_features_norm = scaler.fit_transform(data_features) #Normaliza los datos de entrada
-        data_labels_norm = scaler.fit_transform(data_labels.reshape(-1, 1)) #Normaliza los datos de salida
+        data_labels_norm = scaler.fit_transform(data_labels) #Normaliza los datos de salida
 
-        print(data_features_norm)
+        # print(data_features_norm)
+
+        #Divide los datos en datos de entrenamiento y datos de prueba
+        train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm, test_size=0.1)
+
+        return train_features, test_features, train_labels, test_labels
