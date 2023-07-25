@@ -39,14 +39,15 @@ class Data:
         #lets split the data into features and labels
         data_features = data_array[:,0:-1]
         data_labels = data_array[:,-1]
-        
+        data_labels = data_labels.reshape(-1,1)
         #lets normalize
         scaler = StandardScaler()#object of the library
-        data_features_norm = scaler.fit.transform(data_features)
-        data_labels_norm = scaler.fit.transform(data_labels)
+        data_features_norm = scaler.fit_transform(data_features)
+        data_labels_norm = scaler.fit_transform(data_labels)
         
-"""         
-        train_features = 
-        train_labels = 
-        test_features = 
-        test_labels =  """
+        print(data_labels_norm)
+        
+        #LETS SPLIT THE DATA INTO TESTING AND TRAINING
+        train_features, test_features, train_labels, test_labels = tts(data_features_norm,data_labels_norm, test_size=0.1)
+        
+        return train_features, test_features, train_labels, test_labels
