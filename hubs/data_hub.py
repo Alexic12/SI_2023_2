@@ -52,6 +52,10 @@ class Data:
         data_features = data_arr[:,0:-1]
         data_labels = data_arr[:, -1]
 
+        data_labels = data_labels.reshape(-1,1)
+
+        #lets check the dimensions of the arrays
+        # print(f'Dimensions: {data_labels.shape}')
         
         ##Lets normalize the data
         scaler = StandardScaler()##Create an object of this library in particular
@@ -59,6 +63,11 @@ class Data:
         data_features_norm = scaler.fit_transform(data_features)
         data_labels_norm = scaler.fit_transform(data_labels)
 
-        print(data_labels_norm)
+        # print(data_labels_norm)
 
+        #lets split the data into training and testing
+        ##input (train, test) output (train, test)
+        train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm, test_size = 0.1, )
+
+        return train_features, test_features, train_labels, test_labels
 
