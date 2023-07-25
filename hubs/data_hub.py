@@ -52,12 +52,21 @@ class Data:
         data_features = data_arr[:,0:-1] #todas las filas y desde la primera colm hasta la penultima
         data_labels = data_arr[:,-1]#todas las filas y la ultima colum
 
+        data_labels = data_labels.reshape(-1, 1)
+        
+        #make sure the dimentions
+        #print(f"Dimentions: {data_labels.shape}")
+       
+        
         #Lets normalize the data
         scaler = StandardScaler() #Create an object of this library in particular
 
         data_features_norm = scaler.fit_transform(data_features)
         data_labels_norm = scaler.fit_transform(data_labels)
 
-        print(data_labels_norm)
+        #Lets split the data into training an testing
+        #-----------------Siempre en este orden ------------------10% en test en y 90% en trainig
+        train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm, test_size=0.1)
 
+        return train_features, test_features, train_labels, test_labels
 
