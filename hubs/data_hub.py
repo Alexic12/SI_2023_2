@@ -52,9 +52,22 @@ class Data:
         data_features = data_arr[:,0:-1]
         data_labels = data_arr[:,-1]
 
+        data_labels= data_labels.reshape(-1,1)
+
+        
+        #print(f'Dimensions:{data_labels.shape}')
+
         #Normalizar los datos 
         scaler = StandardScaler() #Crear un objeto de esta libreria en particular
 
         data_features_norm = scaler.fit_transform(data_features)#Normalizando las featurs (input)
         data_labels_nomr = scaler.fit_transform(data_labels) #Nomalizar los labels (output)
+
+        #dividir los datos de entrenamiento con los de testeo
+        #mantener el mismo orden entrada->(entreno, testeo) salida(entreno, testeo)
+        train_features, test_features, train_leables, test_leables = tts(data_features_norm, data_labels_nomr, test_size=0.1)
+        
+        return train_features, test_features, train_leables, test_leables
+    
+
 
