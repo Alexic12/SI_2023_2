@@ -1,6 +1,7 @@
-#Cualquier cosa main
-from hubs.data_hub import Data
+from hubs.neural_hub import Neural
 
-data = Data()
+N = Neural()
 
-data.data_process('ETHEREUM_PRICE.XLSX')
+N.run_model(model = 'perceptron', file_name = 'ETHEREUM_PRICE.xlsx')
+
+
