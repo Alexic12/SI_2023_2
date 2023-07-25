@@ -25,7 +25,7 @@ class Data:
         ##lets define the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..','data'))
 
-        ##Finde the complete file route
+        ##Find the complete file route
         excel_path = os.path.join(data_dir, file)
 
         ##Lets load the raw excel file
