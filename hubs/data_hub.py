@@ -62,10 +62,10 @@ class Data:
         data_features_norm = scaler.fit_transform(data_features)
         data_labels_norm = scaler.fit_transform(data_labels)
 
-        print(data_labels_norm)
+        #print(data_labels_norm)
         #print(data_labels_norm)
 
         ## lets split the data into training and testing
-        #train_features, test_features, train_labels, test_labels = tts(data_features_norm,data_labels_norm, test_size = 0.1)
+        train_features, test_features, train_labels, test_labels = tts(data_features_norm,data_labels_norm, test_size = 0.1)
 
-        #return train_features, test_features, train_labels, test_labels
+        return train_features, test_features, train_labels, test_labels
