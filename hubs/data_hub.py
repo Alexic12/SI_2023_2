@@ -20,7 +20,7 @@ class Data:
     def _init_(self):
         pass
 
-    def fata_process(self, file):
+    def data_process(self, file):
         ##Lets define the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data'))
 
@@ -40,7 +40,7 @@ class Data:
         str_cols = np.empty(data_arr.shape[1], dtype=bool)
 
         ##Lets read columns data type
-        for i in range(0, data_arr.type[1]):
+        for i in range(0, data_arr.shape[1]):
             str_cols[i] = np.issubdtype(type(data_arr[0,i]), np.str_)
 
         for i in range(0, data_arr.shape[1]):
@@ -52,6 +52,11 @@ class Data:
         data_features = data_arr[:,0:-1] #[filas, columnas] y en este caso todas las columnas-1
         data_labels = data_arr[:,-1]
 
+        data_labels = data_labels.reshape(-1,1)
+
+        ##Lets check the dimensions of the arrays
+        print (f'Dimensions:{data_labels.shape}')
+
         ##Lets normalize the data
         scaler = StandardScaler() ##Create an object of this library in particular
 
@@ -59,7 +64,12 @@ class Data:
         data_labels_norm = scaler.fit_transform(data_labels)
 
         print(data_labels_norm)
+
+        ##Lets split the data into training and testing
+        ##Input (train, test) output(train, test)
+        train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm, test_size=0.1)
         
+        return train_features, test_features, train_labels, test_labels
 
 
 
