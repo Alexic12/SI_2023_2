@@ -1,9 +1,6 @@
-from hubs.data_hub import Data # esto se hace en la industria 
+from hubs.neural_hub import Neural
 
+N= Neural()
 
-data = Data() # crear un objeto pra los atributos  tenemos datos numericos, tambien puede ser string entonces toca transformar a datos , toca codificar los string en datos 
-
-Data.data_process('ETHEREUM_PRICE.xlsx')
-
-
+N.run_model(model ='perceptron',file_name='ETHEREUM_PRICE.xlsx')
 

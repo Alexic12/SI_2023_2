@@ -21,8 +21,8 @@ class Data: # docstring cuales son los input output y que hace la clase
 
     def data_process(sef,file):
         #lets difine the absolute path for this folder
-        data_dir = os.path.abspath(os.path.join(os.path.join(__file__),'..','data')) # entra al folder y tomas el datos dentro del folder 
-        excel_path = os.path = os.path.join(data_dir,file) # donde esta el archivo de excel # Find the complete excel file route
+        data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data')) # entra al folder y tomas el datos dentro del folder 
+        excel_path = os.path.join(data_dir,file) # donde esta el archivo de excel # Find the complete excel file route
         # ahora vamos a abrir y procesar 
         #lets load the raw excel file 
         data_raw = pd.read_excel(excel_path,sheet_name=0)
@@ -32,9 +32,9 @@ class Data: # docstring cuales son los input output y que hace la clase
 
         #aqui vamos a revisar si es un texto o un dato 
         #lets create a boolean array with the size of the colum
-        str_cols = np.empty(data_arr.shape[1],dytpe=bool) # creamos un array vacio con el tamana el la info y en tipo booleano
+        str_cols = np.empty(data_arr.shape[1],dtype=bool) # creamos un array vacio con el tamana el la info y en tipo booleano
         ## lets read columns data type 
-        for i in range(0,data_arr.shape[1],dtype=bool):
+        for i in range(0,data_arr.shape[1]):
             str_cols[i] = np.issubdtype(type(data_arr[0,i]),np.str_) # 0 y i # aqui revisamos. 
         for i in range (0,data_arr.shape[1]):
             if str_cols[i]:
@@ -44,17 +44,24 @@ class Data: # docstring cuales son los input output y que hace la clase
         data_features= data_arr[:,0:-1] #todas las columnas menos la ultima. [filas,columnas]
         data_labels= data_arr[:,-1]    # sola la ultima columna
 
+        data_labels = data_labels.reshape(-1,1)
+
         #Lets label encode any text in the data( debe ser matematico operation) vamos a revisar los datos y vamos a revisar que es un string y int  cuales tiene text , revirara y poner true or false
 
-
+        # lets check the dimensions of the arrays 
+        print(f'Dimensions:{data_labels.shape}')
 
         # vamos a noramalizar los datos con esta libreria 
         #lets normalize the data 
         scaler = StandardScaler()##Create an object solo es para esta liberia # create an object if this library in particular 
 
-        data_features_norm = scaler.fit_transfrom(data_features)
-        data_labels_norm = scaler.fit_transfrom(data_labels)
-
+        data_features_norm = scaler.fit_transform(data_features)
+        data_labels_norm = scaler.fit_transform(data_labels)
         # Ahora tenemos el data normalizado el cacula solo y busca el mejor intervalo 
 
         print(data_labels_norm)
+
+        Train_features, test_features, train_label, test_labels = tts(data_features_norm,data_labels_norm, test_size=0.1)
+        
+        return train_label,test_features,train_label,test_labels
+    
