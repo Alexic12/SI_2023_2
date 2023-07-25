@@ -12,8 +12,8 @@ class Neural:
         if model =='perceptron':
             print('Running Perceptron Model')
             ##Code for the perceptron model
-            P = Perceptron(train_features, test_features, train_labels, test_labels)
-            P.run()
+            P = Perceptron()
+            P.run(train_features, test_features, train_labels, test_labels)
 
         elif model == 'ffm':
             print('Running FFM Model')
