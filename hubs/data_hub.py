@@ -45,26 +45,41 @@ class Data:
 
         ##lets read columns data type
         for i in range(0, data_arr.shape[1]):
+        #Vamos detectar si una columna tiene un string o un numero por medio de un booleano
+
             str_cols[i] = np.issubdtype(type(data_arr[0,i]), np.str_)
 
         for i in range(0, data_arr.shape[1]):
+              #Mira si la columna booleana que creamos en int o String
             if str_cols[i]:
-                le = LabelEncoder
+                le = LabelEncoder()
                 data_arr[:, i] = le.fit_transform(data_arr[:,i]) + 1
 
         ##Lets split the data into features and labels
         ##features are inputs, labels are output
+          #Diferenciar los features de los labels
         data_features = data_arr[:,0:-1]
         data_labels = data_arr[:, -1]
 
-        
+        data_labels = data_labels.reshape(-1,1)
+
+        ##lets check the dimensions of the arrays
+        print(f'Dimensions: {data_labels.shape}')
 
         #Los labels son la salida, son el calculo que nos debe dar con las features
         ##Lets normalize the data
-        scaler = StandardScaler()##Create an object of this library in particular
+        scaler = StandardScaler()##Create an object of this library in 
+        #Crear un objeto de esta libreria en particular
 
-        data_features_norm = scaler.fit_transform(data_features)
-        data_labels_norm = scaler.fit_transform(data_labels)
+        data_features_norm = scaler.fit_transform(data_features) #Normalizando las featurs (input)
+        data_labels_norm = scaler.fit_transform(data_labels)  #Nomalizar los labels (output)
 
         print(data_labels_norm)
         
+        #lets split the data into training and testing
+        ##NO CAMBIAR EL ORDEN DEL TTS, SINO NO FUNCIONA
+        ##input (train, test) output(train, test)
+        #destinamos el tamaño de la data para entrenamiento como el 10 por ciento
+        train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm, test_size= 0.1)
+
+        return train_features, test_features, train_labels, test_labels
