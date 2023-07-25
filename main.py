@@ -1,6 +1,8 @@
 #Comment to upload
-from hubs.data_hub import Data
 
-data = Data()
+from hubs.neural_hub import Neural
 
-data.data_process("ETHEREUM_PRICE.xlsx")
+N = Neural()
+
+N.run_model(model = "perceptron" , file_name ="ETHEREUM_PRICE.xlsx")
+

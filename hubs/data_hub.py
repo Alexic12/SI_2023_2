@@ -32,6 +32,8 @@ class Data:
         #Split in features(inputs) and labels(outputs)
         data_features = data_arr[:,0:-1]
         data_labels = data_arr[:,-1]
+        data_labels= data_labels.reshape(-1,1)
+        ##print(f"Dimensions: {data_labels.shape}")
         
         ##Check for strings
         str_cols = np.empty(data_arr.shape[1], dtype = bool)
@@ -51,7 +53,12 @@ class Data:
         data_features_norm = scaler.fit_transform(data_features)
         data_labels_norm = scaler.fit_transform(data_labels)
         
-        print()
+        ##splitting the data into training and testing
+        
+        train_features,test_features,train_labels,test_labels = tts(data_features_norm, data_labels_norm, test_size = 0.1)
+        
+        
+        return train_features,test_features,train_labels,test_labels
 
         
         
