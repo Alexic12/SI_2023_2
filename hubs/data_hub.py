@@ -34,6 +34,8 @@ class Data:
         data_features = data_arr[:, 0:-1] #todas las columnas excepto la ultima
         data_labels = data_arr[:, -1]
 
+        data_labels = data_labels.reshape(-1, 1) #necesitabamos que fuera de dos dimensiones por lo menos
+
         ##lets label encode any text in the data
         ##first create a boolean array with the size of the col
         str_cols = np.empty(data_arr.shape[1], dtype=bool)
@@ -53,4 +55,11 @@ class Data:
         data_features_norm = scaler.fit_transform(data_features)
         data_labels_norm = scaler.fit_transform(data_labels)
 
-        print(data_labels_norm)
+        #print(data_labels_norm)
+
+        # lets split the data into training and testing
+
+        train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm, test_size=0.1) #nos da los elementos en el orden que los escirbimmos al hacer las variables
+        # test_size=0.1 es tomar el 10% de la data al azar para el test y entonces va a usar el 90% para entrenar
+
+        return train_features, test_features, train_labels, test_labels
