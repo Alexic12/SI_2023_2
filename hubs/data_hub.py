@@ -55,7 +55,7 @@ class Data:
         data_labels = data_labels.reshape(-1,1)
 
         ##Lets check the dimensions of the arrays
-        print (f'Dimensions:{data_labels.shape}')
+        #print (f'Dimensions:{data_labels.shape}')
 
         ##Lets normalize the data
         scaler = StandardScaler() ##Create an object of this library in particular
@@ -63,7 +63,7 @@ class Data:
         data_features_norm = scaler.fit_transform(data_features)
         data_labels_norm = scaler.fit_transform(data_labels)
 
-        print(data_labels_norm)
+        #print(data_labels_norm)
 
         ##Lets split the data into training and testing
         ##Input (train, test) output(train, test)
