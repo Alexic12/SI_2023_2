@@ -48,8 +48,6 @@ class Data:
                 le = LabelEncoder()
                 data_arr[:, i] = le.fit_transform(data_arr[:,i]) + 1
 
-
-
         ##Lets split the data into features and labels
         data_features = data_arr[:,0:-1]
         data_labels = data_arr[:, -1]
