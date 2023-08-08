@@ -49,7 +49,7 @@ class Data: # docstring cuales son los input output y que hace la clase
         #Lets label encode any text in the data( debe ser matematico operation) vamos a revisar los datos y vamos a revisar que es un string y int  cuales tiene text , revirara y poner true or false
 
         # lets check the dimensions of the arrays 
-        print(f'Dimensions:{data_labels.shape}')
+        #print(f'Dimensions:{data_labels.shape}')
 
         # vamos a noramalizar los datos con esta libreria 
         #lets normalize the data 
@@ -59,7 +59,7 @@ class Data: # docstring cuales son los input output y que hace la clase
         data_labels_norm = scaler.fit_transform(data_labels)
         # Ahora tenemos el data normalizado el cacula solo y busca el mejor intervalo 
 
-        print(data_labels_norm)
+        #print(data_labels_norm)
 
         Train_features, test_features, train_label, test_labels = tts(data_features_norm,data_labels_norm, test_size=0.1)
         
