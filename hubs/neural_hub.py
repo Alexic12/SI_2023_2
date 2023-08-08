@@ -1,6 +1,6 @@
 
 from hubs.data_hub import Data
-from models.perceptron import Perceptron
+from hubs.models.perceptron import Perceptron
 
 
 
