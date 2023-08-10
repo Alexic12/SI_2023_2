@@ -1,11 +1,12 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class Perceptron:
     def __init__(self):
         pass
     
-    def run(self, train_features,test_features, train_labels, test_labels,iter):
+    def run(self, train_features,test_features, train_labels, test_labels,iter,alfa):
         print("Training perceptron network.......")
         ##here is where all the nerual network code is gonna be
         
@@ -24,7 +25,7 @@ class Perceptron:
         
         for i in range(0,Wij.shape[0]):
             for j in range(0,Wij.shape[1]):
-                Wij[i][j] = np. random(-1,1)
+                Wij[i][j] = np. random.uniform(-1,1)
                 
                 
         for it in range(0,iter) :
@@ -48,9 +49,21 @@ class Perceptron:
                      
                 for n in range(0,Ek.shape[0]):
                     Ek[n][0] = Yd[n][0]-Yk[n][0]
-                    ecm[n][0] = ecm[n][0] + ((Ek[n][0]^2)/2)
-                    
-                    
+                    ecm[n][0] = ecm[n][0] + ((Ek[n][0]**2)/2)
+                
+                #Weight training 
+                for n in range(0,Yk.shape[0]):
+                    for w in range(0,Wij.shape[1]):
+                        Wij[n][w] = Wij[n][w] + alfa * Ek[n][0] * Xi[w][0]
+                
+            for n in range(0, Yk.shape[0]):
+                ecmT[n][it] = ecm[n][0]
+                ecm[n][0] = 0
+                
+        for n in range(0, Yk.shape[0]):
+            plt.figure()
+            plt.plot(ecmT[n][:],"r",label = f"ECM Neurona {n}")
+            plt.show()    
                     
                 
         
