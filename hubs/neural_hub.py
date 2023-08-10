@@ -6,7 +6,7 @@ class Neural:
         pass
 
 
-    def run_model (self, model, file_name,iter ):
+    def run_model (self, model, file_name,iter , alfa):
 
         data = Data()
 
@@ -18,7 +18,7 @@ class Neural:
             ##Code for the perceptron model
 
             P = Perceptron()
-            P.run(train_features, test_features, train_labels, test_labels,iter)
+            P.run(train_features, test_features, train_labels, test_labels,iter, alfa)
 
         elif model == 'ffm' : 
             print ('Running FFM Model')
