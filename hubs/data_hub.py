@@ -19,7 +19,7 @@ class Data:
     def __init__(self):
         pass
 
-    def data_process (self, file):
+    def data_process (self, file,test_split):
         #Definir la ruta principal de esta carpeta
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data'))
 
@@ -65,7 +65,14 @@ class Data:
 
         #dividir los datos de entrenamiento con los de testeo
         #mantener el mismo orden entrada->(entreno, testeo) salida(entreno, testeo)
-        train_features, test_features, train_leables, test_leables = tts(data_features_norm, data_labels_nomr, test_size=0.1)
+        if test_split!=0:
+            train_features, test_features, train_leables, test_leables = tts(data_features_norm, data_labels_nomr, test_size=test_split)
+        else:
+            test_features = 0
+            test_leables = 0
+            train_features = data_features_norm
+            train_leables = data_labels_nomr
+
         
         return train_features, test_features, train_leables, test_leables
     
