@@ -8,4 +8,4 @@ from hubs.neural_hub import Neural
 
 N = Neural()
 
-N.run_model(model = 'perceptron', file_name = 'ETHEREUM_PRICE.xlsx', iter = 100)
+N.run_model(model = 'perceptron', file_name = 'OR.xlsx', iter = 1000, alpha = 0.000001, split = 0)

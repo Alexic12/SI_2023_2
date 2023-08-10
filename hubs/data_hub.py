@@ -21,7 +21,7 @@ class data:
         
         pass
     
-    def data_process(self,file):
+    def data_process(self,file,split):
         ##lets define the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data'))
         
@@ -69,6 +69,15 @@ class data:
         
         ##lets split the data into training and testing 
         ##input (train,test) output(train, test)
-        train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm, test_size=0.1)
+        
+        if split != 0:
+        
+            train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm, test_size=split)
+            
+        else:
+            test_features = 0
+            test_labels = 0
+            train_features = data_features_norm
+            train_labels = data_labels_norm
         
         return train_features, test_features, train_labels, test_labels

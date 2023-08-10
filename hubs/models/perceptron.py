@@ -1,10 +1,11 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 class Perceptron:
     def __init__(self):
         pass
     
-    def run(self,train_features, test_features, train_labels, test_labels, iter):
+    def run(self,train_features, test_features, train_labels, test_labels, iter,alpha):
         print('Train perceptron network....')
         ##here is where all neural network code is gonna be 
         
@@ -23,12 +24,13 @@ class Perceptron:
         #Fill the weight matrix before training 
         for i in range(0,wij.shape[0]):
             for j in range(0,wij.shape[1]):
-                wij[i][j] = np.random(-1,1)
+                wij[i][j] = np.random.uniform(-1,1)
+                
         
         for it in range(0, iter):
             for d in range(0, train_features.shape[0]):
                 ##pass the data inputs to the input vector xi
-                xi[0][1] = 1 #Bias 
+                xi[0][0] = 1 #Bias 
                 for i in range(0, train_features.shape[1]):
                     xi[i+1][0] = train_features[d][i]
                 
@@ -55,9 +57,30 @@ class Perceptron:
                 
                 for n in range(0,ek.shape[0]):
                     ek[n][0] = yd[n][0]-yk[n][0]
-                    ecm[n][0] = ecm[n][0] + ((ek[n][0]^2)/2)
+                    ecm[n][0] = ecm[n][0] + ((ek[n][0]**2)/2)
                     
                 ##lets add the ECM for this data point
+                
+                #weight training 
+                
+                for n in range(0,yk.shape[0]):
+                    for w in range(0,wij.shape[1]):
+                        wij[n][w] = wij[n][w] + alpha*ek[n][0]*xi[w][0]
+                        
+            print(f'Iter: {it}')
+            for n in range(0,yk.shape[0]):
+                print(f'ECM {n} : {ecm[n][0]}')
+                    
+                        
+            for n in range(0,yk.shape[0]):
+                ecmT[n][it] = ecm[n][0]
+                ecm[n][0] = 0
+                
+        for n in range(0,yk.shape[0]): 
+            plt.figure()
+            plt.plot(ecmT[n][:], 'r', label = f'ECM neuron {n}')
+            plt.show()
+                        
                 
                     
                     
