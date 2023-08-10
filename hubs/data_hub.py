@@ -22,7 +22,7 @@ class Data:
     def __init__(self) -> None:
         pass
 
-    def data_process(self, file):
+    def data_process(self, file, test_split):
         ##defining the absolute path for data folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data'))
 
@@ -66,6 +66,15 @@ class Data:
         print(data_labels_normalize)
 
         #lets split the data into train and test
+        #input (train, test) output
+        if test_split != 0:
+            train_feateures, train_labels, test_labels = tts(data_features_normalize,data_labels_normalize, test_size = 0.1)
+        else:
+             test_feateures = 0
+             test_labels = 0
+             train_feateures = data_features_normalize
+             train_labels = data_labels_normalize
+             
 
         train_feateures, test_feateures, train_labels, test_labels = tts(data_features_normalize, data_labels_normalize, test_size=0.1)
 
