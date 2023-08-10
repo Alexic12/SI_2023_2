@@ -21,7 +21,7 @@ class Data:
     def __init__(self):
         pass
 
-    def data_process(self,file):
+    def data_process(self,file,test_split):
         ##Let's define the absolute path for this folder 
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data'))
 
@@ -29,7 +29,7 @@ class Data:
         excel_path = os.path.join(data_dir, file)
 
         ##Loads the raw excel file 
-        data_raw =  pd.read_excel(excel_path, sheet_name = 0)
+        data_raw =  pd.read_excel(excel_path, sheet_name = 1)
 
         ##Let's convert the raw data to an array
         data_arr = np.array(data_raw)
@@ -67,7 +67,13 @@ class Data:
 
         ##Let's split the data into training and testing
         ##input(train,test) output(train,test)
-        train_features, test_features, train_labels,test_labels = tts(data_features_norm,data_labels_norm,test_size=0.1)
+        if test_split != 0:
+            train_features, test_features, train_labels,test_labels = tts(data_features_norm,data_labels_norm, test_size = test_split)
+        else:
+            test_features = 0
+            test_labels = 0
+            train_features = data_features_norm
+            train_labels = data_labels_norm
 
         return train_features, test_features, train_labels,test_labels
 
