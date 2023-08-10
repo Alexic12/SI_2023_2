@@ -1,10 +1,11 @@
 import numpy as np
+import matplotlib.pyplot as plt#este es pa graficar.
 
 class Perceptron:
     def __init__(self):
         pass
 
-    def run (self, train_features,test_features,train_labels,tests_labels,iter):
+    def run (self, train_features,test_features,train_labels,tests_labels,iter,alfa):
         print('Training perceptron network....')
         ##here is where all the natural network code is gonna be
 
@@ -35,7 +36,7 @@ class Perceptron:
         #Fill the wight matrix before training
         for i in range(0, Wij.shape[0]):
             for j in range(0,Wij.shape[1]):
-                Wij[i][j]= np.random(-1,1)
+                Wij[i][j]= np.random.uniform(-1,1)#pesos aleatorios de la primera fila y ya
 
 
         print(train_features[0].transpose())
@@ -46,12 +47,13 @@ class Perceptron:
                 #pass the data inputs to the input vector Xi
                 Xi[0][0]= 1 #Bias
                 for i in range(0,train_features.shape[1]):
-                    Xi[i+1][1]=train_features[d][i]
+                    Xi[i+1][0]=train_features[d][i]
 
                 #Lets calculate the agregation for each neuron
-                for n in range(0,Aj.shape[0]):
+                for n in range(0,Aj.shape[0]):#itera cada neurona
                     for n_input in range(0,Xi.shape[0]):#aqui hacemos el producto punto pa sacar las agregaciones
                         Aj[n][0] = Aj[n][0] + Xi[n_input]*Wij[n][n_input]
+                        #peso por entrada da una agregacion de la primera neurona y pasa a la segunda neurona
 
                 #lets calculate the output for each neuron
                 for n in range(0, Yk.shape[0]):
@@ -64,12 +66,35 @@ class Perceptron:
 
                 #pas train_labels to Yd vector
                 for i in range(0, train_labels.shape[1]):
-                    Yd[i][0]= train_labels[d][i]
+                    Yd[i][0]= train_labels[d][i]#separa los Y deseados para cada neurona
 
                 for n in range(0, Ek.shape[0]):
-                    Ek[n][0] = Yd[n][0]-Yk[n][0]
+                    Ek[n][0] = Yd[n][0]-Yk[n][0]#calcula error normal
                 #lets add the ECM for this data point
-                    ecm[n][0]=ecm[n][0] + ((Ek[n][0]^2)/2)
+                    ecm[n][0]=ecm[n][0] + ((Ek[n][0]**2)/2)#suma de todos los errores de cada una de las iteraciones
+
+                #Weight Training
+                #cada neurona entrena independiente a la otra
+                for n in range(0, Yk.shape[0]):#el shape en 1 es para columnas
+                    for w in range(0,Wij.shape[1]):#entrenamiento para cada uno de los pesos
+                        Wij[n][w]=Wij[n][w]+alfa*Ek[n][0]*Xi[w][0]
+                    
+
+            print(f'Iter: {it}')
+            for n in range (0,Yk.shape[0]):
+                print(f'ECM {n} : {ecm[n][0]}')
+            #fin del entrenamiento
+
+            for n in range(0, Yk.shape[0]):
+                ecmT[n][it] = ecm[n][0]
+                ecm[n][0]=0
+
+        for n in range (0,Yk.shape[0]):
+            plt.figure()
+            plt.plot(ecmT[n][:], 'r', label=f'ECM Neurona {n}')
+            plt.show()
+
+
 
         
 

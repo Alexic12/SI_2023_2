@@ -25,7 +25,7 @@ class Data:
 
         pass
 
-    def data_process (self,file):
+    def data_process (self,file, test_split):
 
         ##Lets define the absolute pat for this folder
         data_dir= os.path.abspath(os.path.join(os.path.dirname(__file__),"..","data"))
@@ -76,8 +76,16 @@ class Data:
 
         ##Lets split the data into training and testing
         #input(train, test) output (train,test)
-        train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm,test_size = 0.1)
+        
         #tts =
         #test size coge el 10% de la dataS
+
+        if test_split !=0:
+            train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm,test_size = 0.1)
+        else: 
+            test_features=0
+            test_labels=0
+            train_features=data_features_norm
+            train_labels=data_labels_norm
 
         return train_features, test_features, train_labels, test_labels
