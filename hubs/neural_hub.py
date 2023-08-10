@@ -9,14 +9,14 @@ class Neural:
     def __init__(self):
         pass
 
-    def run_model(self, model, file_name, iter):
+    def run_model(self, model, file_name, iter, alfa, test_split):
         data = Data()
-        train_features, test_features, train_labels, test_labels = data.data_process(file_name)
+        train_features, test_features, train_labels, test_labels = data.data_process(file_name, test_split)
         if model == 'perceptron':
             print('Running Perceptron Model')
             ##Code for the perceptron model
             P = Perceptron()
-            P.run(train_features, test_features, train_labels, test_labels, iter)
+            P.run(train_features, test_features, train_labels, test_labels, iter, alfa)
 
 
         elif model == 'ffm':

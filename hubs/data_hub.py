@@ -19,7 +19,7 @@ class Data: # docstring cuales son los input output y que hace la clase
     def _init_(self):
         pass
 
-    def data_process(sef,file):
+    def data_process(sef,file, test_split):
         #lets difine the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.join(__file__),'..','..','data')) # entra al folder y tomas el datos dentro del folder 
         #print(data_dir)
@@ -63,6 +63,11 @@ class Data: # docstring cuales son los input output y que hace la clase
         print(data_labels_norm)
 
         #split data into train and test
-        train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm, test_size=0.1)
-
+        if test_split > 0:
+            train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm, test_size=0.1)
+        else:
+            test_features = 0
+            test_labels = 0
+            train_features = data_features_norm
+            train_labels = data_labels_norm 
         return train_features, test_features, train_labels, test_labels

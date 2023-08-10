@@ -1,9 +1,10 @@
 import numpy as np
+import matplotlib.pyplot as plt
 class Perceptron:
     def __init__(self):
         pass
     
-    def run(self, train_features, test_features, train_labels, test_labels, iter):
+    def run(self, train_features, test_features, train_labels, test_labels, iter, alfa):
         print("Entrenar Perceptron")
         #Organizar Datos
         Xi = np.zeros((train_features.shape[1]+1, 1)) #Vector Entradas
@@ -24,14 +25,14 @@ class Perceptron:
 
         for i in range(Wij.shape[0]):#Llenar con pesos aleatorios entre -1 y 1
             for j in range(Wij.shape[1]):
-                Wij[i][j] = np.random(-1, 1)
+                Wij[i][j] = np.random.uniform(-1, 1)
 
         for it in range(iter):
             for d in range(train_features.shape[0]):
                 #meter datos a Xi
                 Xi[0][0] = 1 #Bias
                 for i in range(train_features.shape[1]):
-                    Xi[i+1][1] = train_features[d][i]
+                    Xi[i+1][0] = train_features[d][i]
                 #Calcular agregacion para cada neurona
                 for n in range(Aj.shape[0]):
                     for n_input in range(Xi.shape[0]):
@@ -50,6 +51,23 @@ class Perceptron:
                     Ek[n][0] = Yd[n][0] - Yk[n][0]
                     #ECM para este dato
                     ecm[n][0] = ecm[n][0] + (Ek[n][0]**2)/2
+                #Entrenar pesos
+                for n in range(Yk.shape[0]):
+                    for w in range(Wij.shape[1]):
+                        Wij[n][w] = Wij[n][w] + alfa*Ek[n][0]*Xi[w][0]
                 
+            print(f'Iter: {it}')
+            for n in range(Yk.shape[0]):
+                print(f'ECM {n} : {ecm[n][0]}')
+
+
+            for n in range(Yk.shape[0]):
+                ecmT[n][it] = ecm[n][0]
+                ecm[n][0] = 0
+            
+        for n in range(Yk.shape[0]):
+            plt.figure()
+            plt.plot(ecmT[n][:], 'r', label = f'ECM Neurona {n}')
+            plt.show()
                 
                 
