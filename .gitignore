@@ -1,4 +1,6 @@
 .DS_Store
 hubs/__pycache__/
+hubs/models/__pycache__/
 venv
 .idea
+notas
