@@ -19,7 +19,7 @@ class Data: # docstring cuales son los input output y que hace la clase
     def _init_(self):
         pass
 
-    def data_process(sef,file):
+    def data_process(sef,file,test_split):
         #lets difine the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data')) # entra al folder y tomas el datos dentro del folder 
         excel_path = os.path.join(data_dir,file) # donde esta el archivo de excel # Find the complete excel file route
@@ -61,7 +61,14 @@ class Data: # docstring cuales son los input output y que hace la clase
 
         #print(data_labels_norm)
 
-        Train_features, test_features, train_label, test_labels = tts(data_features_norm,data_labels_norm, test_size=0.1)
-        
+        # vamos a crear un condicional
+        if test_split !=0:
+          Train_features, test_features, train_label, test_labels = tts(data_features_norm,data_labels_norm, test_size=test_split)
+        else:
+            test_features=0
+            test_labels = 0
+            Train_features=data_features_norm
+            train_label=data_labels_norm
+
         return train_label,test_features,train_label,test_labels
     
