@@ -1,10 +1,11 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 class Perceptron:
     def __init__(self):
         pass
 
-    def run(self,train_features, test_features, train_labels,test_labels,iter):
+    def run(self,train_features, test_features, train_labels,test_labels,iter,alfa):
         print('Training Percptron network......')
         ##Here is where all the neural network code is going to be
 
@@ -28,7 +29,7 @@ class Perceptron:
         ##Fill the Weight Matrix before training 
         for  i in range (0,Wij.shape[0]):
             for j in range (0,Wij.shape[1]):
-                Wij[i][j] = np.random(-1,1)
+                Wij[i][j] = np.random.uniform(-1,1)
 
         for it in range(0,iter):
             for d in range(0,train_features.shape[0]):
@@ -58,10 +59,24 @@ class Perceptron:
                     Ek[n][0] = Yd[n][0] - Yk[n][0]
 
                     ##Let's add the ECM for this data point
-                    ecm[n][0] = ecm[n][0] + ((Ek[n][0]^2)/2)
-
-
+                    ecm[n][0] = ecm[n][0] + ((Ek[n][0]**2)/2)
                 
+                #Weight Training 
+                for n in range (0,Yk.shape[0]):
+                    for w in range(0,Wij.shape[1]):
+                        Wij[n][w] = Wij[n][w] + alfa*Ek[n][0]*Xi[w][0]
+                
+            print(f'Iter: {it}')
+            for n in range (0,Yk.shape[0]):
+                print(f'ECM {n}: {ecm[n][0]}')
+             
+            for n in range (0,Yk.shape[0]):
+                ecmT[n][it] = ecm[n][0]
+                ecm[n][0] = 0                
 
+        for n in range (0,Yk.shape[0]):
+            plt.figure()
+            plt.plot(ecmT[n][:],'r', label = f'ECM Neurona {n}')
+            plt.show()
 
         ##Training and testing is done here
