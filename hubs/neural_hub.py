@@ -1,22 +1,20 @@
-from data_hub import Data
-from models.perceptron import Perceptron
+from hubs.data_hub import Data
+from hubs.models.perceptron import Perceptron  
 
 class Neural:
-    def __init__(self):
+    def _init_(self):
         pass
 
-    def run_model(self, model, file_name):
-        data = Data()
-        train_features, test_features, train_leables, test_leables = data.data_process(file_name)
-        if model == 'perceptron':
-            print('Corriendo el modelo Perceptron')
-            #Código para correr el modelo Perceptron
-            P = Perceptron
-            P.run(train_features, test_features, train_leables, test_leables)
+    def run_model(self,model,file_name, iter, alfa):
+        data=Data()
+        train_features,test_features,train_labels,test_labels=data.data_process(file_name)
 
-        elif model == 'ffm':
-            print('Corriendo el modelo FFM')
+        if model=='perceptron':
+            print('Runinning Perceptron Model')
+            #code for the perceptron model
+            P=Perceptron()
+            P.run(train_features, test_features,train_labels,test_labels, iter, alfa)
 
-        
-            
-
+        elif model=='ffm':
+            print('Running FFM Model')
+            #Code for the perceptron model
