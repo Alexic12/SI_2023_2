@@ -20,7 +20,7 @@ class Data:
     def __init__(self):
         pass
     
-    def data_process(self, file, test_split):
+    def data_process(self, file, test_split, norm, neurons):
         #Lets define the absolute path for this folder
         dara_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),"..","data"))
         
@@ -49,20 +49,27 @@ class Data:
                  
 
         #Lets split the data into features=inputs and labels=outputs
-        data_features = data_arr[:,0:-1] #todas las filas y desde la primera colm hasta la penultima
-        data_labels = data_arr[:,-1]#todas las filas y la ultima colum
+        data_features = data_arr[:,0:-neurons] #todas las filas y desde la primera colm hasta la penultima
+        data_labels = data_arr[:,-neurons:]#todas las filas y la ultima colum
 
-        data_labels = data_labels.reshape(-1, 1)
+        print(f"data_features: {data_features}")
+        print(f"data_labels: {data_labels}")
+        if neurons == 1:
+            data_labels = data_labels.reshape(-1, 1)
         
         #make sure the dimentions
-        #print(f"Dimentions: {data_labels.shape}")
+        print(f"Dimentions : {data_labels.shape}")
        
-        
-        #Lets normalize the data
-        scaler = StandardScaler() #Create an object of this library in particular
+        if norm == True:
 
-        data_features_norm = scaler.fit_transform(data_features)
-        data_labels_norm = scaler.fit_transform(data_labels)
+            #Lets normalize the data
+            scaler = StandardScaler() #Create an object of this library in particular
+
+            data_features_norm = scaler.fit_transform(data_features)
+            data_labels_norm = scaler.fit_transform(data_labels)
+        else:
+            data_features_norm = data_features
+            data_labels_norm = data_labels
 
         #Lets split the data into training an testing
         #-----------------Siempre en este orden ------------------10% en test en y 90% en trainig
@@ -74,6 +81,7 @@ class Data:
             test_labels = 0
             train_features = data_features_norm
             train_labels = data_labels_norm
-
+        print(f'Features: {train_features}')
+        print(f'Labels: {train_labels}')
         return train_features, test_features, train_labels, test_labels
 
