@@ -22,7 +22,7 @@ class Data:
     def __init__(self):
         pass
 
-    def data_process(self, file, test_split):
+    def data_process(self, file, test_split, norm, neurons):
         # Obtiene la ruta del directorio data
         data_dir = os.path.abspath(
             os.path.join(os.path.dirname(__file__), "..", "data")
@@ -53,32 +53,37 @@ class Data:
                 data_arr[:, i] = le.fit_transform(data_arr[:, i]) + 1
 
         # Separa los datos en Features (Input) y Labels (Output)
-        data_features = data_arr[
-            :, 0:-1
-        ]  # Todas las filas, todas las columnas menos la última
-        data_labels = data_arr[:, -1]  # Todas las filas, solo la última columna
+        data_features = data_arr[:, 0:-neurons]  # Todas las filas, todas las columnas menos las últimas columnas
+        data_labels = data_arr[:, -neurons:]  # Todas las filas, solo las últimas columnas (neuronas)
 
-        data_labels = data_labels.reshape(
-            -1, 1
-        )  # Cambia la forma de la matriz de (n,) a (n, 1)
+        print(f'data labels: {data_labels} \n data features: {data_features}')
+
+        if neurons == 1:
+            data_labels = data_labels.reshape(-1, 1)  # Cambia la forma de la matriz de (n,) a (n, 1)
 
         # Revisar dimensiones de los datos
         # print(f'Dimensiones: {data_labels.shape}')
 
-        # Normaliza los datos
-        scaler = StandardScaler()  # Crea el objeto scaler
+        if norm:
+            # Normaliza los datos
+            scaler = StandardScaler()  # Crea el objeto scaler
 
-        data_features_norm = scaler.fit_transform(
-            data_features
-        )  # Normaliza los datos de entrada
-        data_labels_norm = scaler.fit_transform(
-            data_labels
-        )  # Normaliza los datos de salida
+            data_features_norm = scaler.fit_transform(
+                data_features
+            )  # Normaliza los datos de entrada
+            data_labels_norm = scaler.fit_transform(
+                data_labels
+            )  # Normaliza los datos de salida
+        else:
+            data_features_norm = data_features
+            data_labels_norm = data_labels
 
         # print(data_features_norm)
 
         if test_split != 0:
-            train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm, test_size=test_split)
+            train_features, test_features, train_labels, test_labels = tts(
+                data_features_norm, data_labels_norm, test_size=test_split
+            )
         else:
             test_labels = 0
             test_features = 0

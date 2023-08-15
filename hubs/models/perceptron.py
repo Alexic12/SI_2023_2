@@ -7,7 +7,14 @@ class Perceptron:
         pass
 
     def run(
-        self, train_features, test_features, train_labels, test_labels, iter, alpha
+        self,
+        train_features,
+        test_features,
+        train_labels,
+        test_labels,
+        iter,
+        alpha,
+        stop_condition,
     ):
         print("Entrenando el modelo perceptron...")
         # Código para el modelo perceptron
@@ -39,6 +46,8 @@ class Perceptron:
         for i in range(0, Wij.shape[0]):
             for j in range(0, Wij.shape[1]):
                 Wij[i, j] = np.random.uniform(-1, 1)
+
+        print(f"Pesos iniciales: {Wij}")
 
         for it in range(0, iter):
             for d in range(0, train_features.shape[0]):
@@ -74,15 +83,27 @@ class Perceptron:
                     for w in range(0, Wij.shape[1]):
                         Wij[n, w] = Wij[n, w] + alpha * Ek[n] * Xi[w]
 
-            print(f'Iter: {it}')
+            print(f"Iter: {it}")
             for i in range(0, Yk.shape[0]):
-                print(f'ECM {i}: {ecm[i]}')
+                print(f"ECM {i}: {ecm[i]}")
 
             # Calcular el error cuadrático medio total
             for n in range(0, Yk.shape[0]):
                 ecmT[n, it] = ecm[n]
                 ecm[n] = 0
 
+            # Condición de parada
+
+            flag_training = False
+            for n in range(0, Yk.shape[0]):
+                if ecmT[n, it] != stop_condition:
+                    flag_training = True
+
+            if not flag_training:
+                it = iter - 1
+                break
+
+        print(f"Pesos finales: {Wij}")
         # Graficar el error cuadrático medio total
         for n in range(0, Yk.shape[0]):
             plt.figure()
