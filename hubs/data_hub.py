@@ -17,7 +17,7 @@ class Data:
     def __init__(self):
         pass
 
-    def data_process(self, file):
+    def data_process(self, file, test_split, norm):
         ##lets define the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data')) # __file__ es un atributo
                                                                                     #que me permite obtener el
@@ -102,21 +102,33 @@ class Data:
 # a data_arr esto tambien modifico a data_features y porque no queremos que empiece desde cero con el labelencoder
 ###################################################################################################
         ##lets normalize the data
-        scaler = StandardScaler()#crea un objeto de esta libreria en particular
+        if norm == True:
+            scaler = StandardScaler()#crea un objeto de esta libreria en particular
 
-        data_features_norm = scaler.fit_transform(data_features)
-        data_labels_norm = scaler.fit_transform(data_labels)
+            data_features_norm = scaler.fit_transform(data_features)
+            data_labels_norm = scaler.fit_transform(data_labels)
 
+        else:
+            data_features_norm = data_features
+            data_labels_norm = data_labels
 ###############################################################################################
 # por que al hacer el scaler.fit_transform algunos datos no quedaron entre -1 y 1
 ###################################################################################################
 
         # lets split the data into training and testing
 
-        train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm, test_size=0.1) 
+        if test_split != 0:
+            train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm, test_size=test_split) 
         #nos da los elementos en el orden que los escribimos al hacer las variables
         # test_size=0.1 es tomar el 10% de la data al azar para el test y entonces va a usar el 90% para entrenar
         # literalmente tts nos toma al azar en el dataset para el entrenamiento y para el testeo
         # los datos se ponen como train_x, test_x, train_y, test_y
 
+        else: 
+            test_features = 0
+            test_labels = 0
+            train_features = data_features_norm
+            train_labels = data_labels_norm
+            print(f'Features: {train_features}')
+            print(f'Labels: {train_labels}')
         return train_features, test_features, train_labels, test_labels
