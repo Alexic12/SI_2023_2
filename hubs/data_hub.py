@@ -21,7 +21,7 @@ class Data:
     def __init__(self):
         pass
 
-    def data_process(self, file, test_split):
+    def data_process(self, file, test_split, norm):
         ##Lets define the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data'))
 
@@ -58,13 +58,15 @@ class Data:
         ##lets check the dimensions of the arrays
         #print(f'Dimensions: {data_labels.shape}')
 
-        
-        ##Lets normalize the data
-        scaler = StandardScaler()##Create an object of this library in particular
+        if norm==True:
+            ##Lets normalize the data
+            scaler = StandardScaler()##Create an object of this library in particular
 
-        data_features_norm = scaler.fit_transform(data_features)
-        data_labels_norm = scaler.fit_transform(data_labels)
-
+            data_features_norm = scaler.fit_transform(data_features)
+            data_labels_norm = scaler.fit_transform(data_labels)
+        else: 
+            data_features_norm=data_features
+            data_labels_norm= data_labels
         ##lets split the data into training and testing
         ##input (train, test) output (train, test)
 
@@ -75,6 +77,7 @@ class Data:
             test_labels = 0
             train_features = data_features_norm
             train_labels = data_labels_norm
-
+            print(f'Features: {train_features}')
+            print(f'labels: {train_labels}')
         return train_features, test_features, train_labels, test_labels
         

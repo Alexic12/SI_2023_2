@@ -31,7 +31,7 @@ class Perceptron:
         for i in range(0,Wij.shape[0]):
             for j in range(0, Wij.shape[1]):
                 Wij[i][j] = np.random.uniform(-1,1)
-        
+        print(f'W:{i,j}')
 
         for it in range(0, iter):
             for d in range(0, train_features.shape[0]):
