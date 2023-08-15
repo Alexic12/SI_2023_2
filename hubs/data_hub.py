@@ -21,7 +21,7 @@ class Data:
     def __init__(self) : 
         pass
     
-    def data_process(self, file, test_split, norm):
+    def data_process(self, file, test_split, norm, neurons):
         ## Lets define the absolute path for this folder 
         data_dir=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data')) 
         #va a mirar la carpeta data que esta afuera
@@ -30,7 +30,7 @@ class Data:
         excel_path = os.path.join(data_dir, file)
 
         ##LEts load the raw excel file 
-        data_raw = pd.read_excel(excel_path, sheet_name=1)
+        data_raw = pd.read_excel(excel_path, sheet_name=2)
 
         ##Lets confert the raw data to an array
         data_arr = np.array(data_raw)
@@ -50,8 +50,8 @@ class Data:
                 data_arr[: , i] = le.fit_transform(data_arr[:, i]) + 1
 
         ##Lets split the data into features and labels 
-        data_features = data_arr[: , 0:-1]
-        data_labels = data_arr[: , -1]
+        data_features = data_arr[: , 0:-neurons]
+        data_labels = data_arr[: , -neurons]
 
 
         data_labels = data_labels.reshape(-1,1)
