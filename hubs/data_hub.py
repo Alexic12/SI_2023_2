@@ -19,7 +19,7 @@ class Data: # docstring cuales son los input output y que hace la clase
     def _init_(self):
         pass
 
-    def data_process(sef,file,test_split):
+    def data_process(sef,file,test_split,norm,neurons):
         #lets difine the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data')) # entra al folder y tomas el datos dentro del folder 
         excel_path = os.path.join(data_dir,file) # donde esta el archivo de excel # Find the complete excel file route
@@ -41,10 +41,14 @@ class Data: # docstring cuales son los input output y que hace la clase
                 le= LabelEncoder()
                 data_arr[:,i]= le.fit_transform(data_arr[:,i])+1 # ahora tenemos todos los datos en en tipo texto 
         #lets split the data into features ans labels 
-        data_features= data_arr[:,0:-1] #todas las columnas menos la ultima. [filas,columnas]
-        data_labels= data_arr[:,-1]    # sola la ultima columna
+        data_features= data_arr[:,0:-neurons] #todas las columnas menos la ultima. [filas,columnas]
+        data_labels= data_arr[:,-neurons:]    # sola la ultima columna
 
-        data_labels = data_labels.reshape(-1,1)
+        print(f'Data_Features:{data_features}')
+        print(f'Data_Labels:{data_labels}')
+
+        if neurons == 1:
+            data_labels = data_labels.reshape(-1,1)
 
         #Lets label encode any text in the data( debe ser matematico operation) vamos a revisar los datos y vamos a revisar que es un string y int  cuales tiene text , revirara y poner true or false
 
@@ -52,13 +56,16 @@ class Data: # docstring cuales son los input output y que hace la clase
         #print(f'Dimensions:{data_labels.shape}')
 
         # vamos a noramalizar los datos con esta libreria 
+        if norm == True:
+        
         #lets normalize the data 
-        scaler = StandardScaler()##Create an object solo es para esta liberia # create an object if this library in particular 
-
-        data_features_norm = scaler.fit_transform(data_features)
-        data_labels_norm = scaler.fit_transform(data_labels)
+            scaler = StandardScaler()##Create an object solo es para esta liberia # create an object if this library in particular 
+            data_features_norm = scaler.fit_transform(data_features)
+            data_labels_norm = scaler.fit_transform(data_labels)
         # Ahora tenemos el data normalizado el cacula solo y busca el mejor intervalo 
-
+        else:
+            data_features_norm=data_features
+            data_labels_norm=data_labels
         #print(data_labels_norm)
 
         # vamos a crear un condicional
@@ -69,6 +76,7 @@ class Data: # docstring cuales son los input output y que hace la clase
             test_labels = 0
             Train_features=data_features_norm
             train_label=data_labels_norm
-
-        return train_label,test_features,train_label,test_labels
+            #print(f'Features:{Train_features}')
+            #print(f'Labels:{train_label}')
+        return Train_features,test_features,train_label,test_labels
     
