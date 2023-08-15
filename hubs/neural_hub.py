@@ -6,11 +6,11 @@ class Neural:
         pass
 
 
-    def run_model (self, model, file_name,iter , alfa, test_split):
+    def run_model (self, model, file_name,iter , alfa, test_split, norm):
 
         data = Data()
 
-        train_features, test_features, train_labels, test_labels  = data.data_process(file_name,test_split)
+        train_features, test_features, train_labels, test_labels  = data.data_process(file_name,test_split, norm)
 
         if model == 'perceptron' :
             print ('Running Perceptron Model')

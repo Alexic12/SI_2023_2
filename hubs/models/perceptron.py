@@ -42,7 +42,7 @@ class Perceptron :
                 Wij[i][j] = np.random.uniform(-1,1)
 
 
-
+        print(f'W: {Wij}')
 
 
         for it in range (0,iter):

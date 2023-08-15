@@ -21,7 +21,7 @@ class Data:
     def __init__(self) : 
         pass
     
-    def data_process(self, file, test_split):
+    def data_process(self, file, test_split, norm):
         ## Lets define the absolute path for this folder 
         data_dir=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data')) 
         #va a mirar la carpeta data que esta afuera
@@ -30,7 +30,7 @@ class Data:
         excel_path = os.path.join(data_dir, file)
 
         ##LEts load the raw excel file 
-        data_raw = pd.read_excel(excel_path, sheet_name=0)
+        data_raw = pd.read_excel(excel_path, sheet_name=1)
 
         ##Lets confert the raw data to an array
         data_arr = np.array(data_raw)
@@ -58,12 +58,19 @@ class Data:
         #lets check the dimensions of the array 
         # print(f'Dimensions:{data_labels.shape}')
 
-        ##Lets normalize the data
-        scaler = StandardScaler()##Create an object of this library in particular
-        data_features_norm = scaler.fit_transform(data_features)
-        data_labels_norm = scaler.fit_transform(data_labels)
+        if norm == True:
+                
 
-        print(data_labels_norm)
+            ##Lets normalize the data
+            scaler = StandardScaler()##Create an object of this library in particular
+            data_features_norm = scaler.fit_transform(data_features)
+            data_labels_norm = scaler.fit_transform(data_labels)
+
+            # print(data_labels_norm)
+
+        else:
+            data_features_norm = data_features
+            data_labels_norm = data_labels
         #Lets split the data into training and testing
         ##input (train, test) output (train, test)
 
@@ -75,6 +82,8 @@ class Data:
             test_labels = 0
             train_features = data_features_norm
             train_labels = data_labels_norm
+            print(f'Features: {train_features}')
+            print(f'Features: {train_labels}')
 
 
         
