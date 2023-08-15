@@ -24,7 +24,7 @@ class Data:
     def __init__(self):
         pass
 
-    def data_process(self, file):
+    def data_process(self, file, test_split, norm, neurons):
         #file = database rute file
         ##Lets define the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data'))
@@ -58,8 +58,8 @@ class Data:
         ##Lets split the data into features and labels
         ##features are inputs, labels are output
           #Diferenciar los features de los labels
-        data_features = data_arr[:,0:-1]
-        data_labels = data_arr[:, -1]
+        data_features = data_arr[:,0:-neurons]
+        data_labels = data_arr[:, -neurons]
 
         data_labels = data_labels.reshape(-1,1)
 
@@ -67,19 +67,36 @@ class Data:
         print(f'Dimensions: {data_labels.shape}')
 
         #Los labels son la salida, son el calculo que nos debe dar con las features
-        ##Lets normalize the data
-        scaler = StandardScaler()##Create an object of this library in 
-        #Crear un objeto de esta libreria en particular
+        if norm == True:
 
-        data_features_norm = scaler.fit_transform(data_features) #Normalizando las featurs (input)
-        data_labels_norm = scaler.fit_transform(data_labels)  #Nomalizar los labels (output)
+            ##Lets normalize the data
+            scaler = StandardScaler()##Create an object of this library in 
+            #Crear un objeto de esta libreria en particular
+
+            data_features_norm = scaler.fit_transform(data_features) #Normalizando las featurs (input)
+            data_labels_norm = scaler.fit_transform(data_labels)  #Nomalizar los labels (output)
+
+        else:
+            data_features_norm = data_features
+            data_labels_norm = data_labels
 
         print(data_labels_norm)
         
         #lets split the data into training and testing
         ##NO CAMBIAR EL ORDEN DEL TTS, SINO NO FUNCIONA
         ##input (train, test) output(train, test)
+        if test_split != 0:
+            train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm, test_size= test_split)
+
+        else:
+            test_features = 0
+            test_labels = 0
+            train_features = data_features_norm
+            train_labels = data_labels_norm
+            print(f'Features: {train_features}')
+            print(f'labels: {train_labels}')
+
         #destinamos el tamaño de la data para entrenamiento como el 10 por ciento
-        train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm, test_size= 0.1)
+
 
         return train_features, test_features, train_labels, test_labels

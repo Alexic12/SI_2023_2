@@ -5,7 +5,7 @@ class Perceptron:
     def __init__(self):
         pass
 
-    def run(self,train_features, test_features, train_labels, test_labels, iter, alfa):
+    def run(self,train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition):
         print('Training perceptron network.....')
         #here is where all the neural network code is gonna be
 
@@ -30,6 +30,8 @@ class Perceptron:
         for i in range(0,Wij.shape[0]):
             for j in range(0, Wij.shape[1]):
                 Wij[i][j] = np.random.uniform(-1,1)
+
+        print(f'W: {Wij}')
 
 
         for it in range(0, iter):
@@ -76,6 +78,18 @@ class Perceptron:
             for n in range(0, Yk.shape[0]):
                 ecmT[n][it] = ecm[n][0]
                 ecm[n][0] = 0
+
+            ##lets check the stop_condition
+            flag_training = False
+            for n in range(0, Yk.shape[0]):
+                if ecmT[n][it] != stop_condition:
+                    flag_training = True
+
+            if flag_training == False:
+                it = iter-1
+                break
+
+        print(f'W: {Wij}')
 
         for n in range(0, Yk.shape[0]):
             plt.figure()
