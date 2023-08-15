@@ -50,9 +50,13 @@ class Data:
 
         ##Lets split the data into features and labels
         data_features = data_arr[:,0:-neurons] #[filas, columnas] y en este caso todas las columnas-1
-        data_labels = data_arr[:,-neurons]
+        data_labels = data_arr[:,-neurons:]
 
-        data_labels = data_labels.reshape(-1,1)
+        if neurons == 1:
+            data_labels = data_labels.reshape(-1,1)
+
+        print(f'Data Features: {data_features}')
+        print(f'Data Labels: {data_labels}')
 
         ##Lets check the dimensions of the arrays
         #print (f'Dimensions:{data_labels.shape}')
