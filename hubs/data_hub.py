@@ -21,7 +21,7 @@ class Data:
     def __init__(self):
         pass
 
-    def data_process(self,file,test_split):
+    def data_process(self,file,test_split,norm,neurons):
         ##Let's define the absolute path for this folder 
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data'))
 
@@ -29,10 +29,11 @@ class Data:
         excel_path = os.path.join(data_dir, file)
 
         ##Loads the raw excel file 
-        data_raw =  pd.read_excel(excel_path, sheet_name = 1)
+        data_raw =  pd.read_excel(excel_path, sheet_name = 2)
 
         ##Let's convert the raw data to an array
         data_arr = np.array(data_raw)
+        print(f'Data: {data_arr}')
 
         ##Let's label encode any text in the data
 
@@ -49,21 +50,24 @@ class Data:
                 data_arr[:,i] = le.fit_transform(data_arr[:,i]) + 1
 
         ##Let's split the data into features (inputs) and labels(outputs)
-        data_features = data_arr[:,0:-1] ## all columns but the last
-        data_labels = data_arr[:,-1] ## The last column  
+        data_features = data_arr[:,0:-neurons] ## all columns but the last
+        data_labels = data_arr[:,-neurons:] ## The last column  
 
-        data_labels = data_labels.reshape(-1,1)      
+        if neurons == 1:
+            data_labels = data_labels.reshape(-1,1)      
 
         ##Let's check the dimensions of the arrays
         #print(f'Dimensions: {data_labels.shape}')
 
         ##Let's normalize the data
-        scaler = StandardScaler() ##Create an object of this library in particular
+        if norm == True:
+            scaler = StandardScaler() ##Create an object of this library in particular
 
-        data_features_norm = scaler.fit_transform(data_features)
-        data_labels_norm = scaler.fit_transform(data_labels)
-
-        #print(data_labels_norm)
+            data_features_norm = scaler.fit_transform(data_features)
+            data_labels_norm = scaler.fit_transform(data_labels)
+        else:
+            data_features_norm = data_features
+            data_labels_norm = data_labels
 
         ##Let's split the data into training and testing
         ##input(train,test) output(train,test)
@@ -74,6 +78,8 @@ class Data:
             test_labels = 0
             train_features = data_features_norm
             train_labels = data_labels_norm
+            print(f'Features: {train_features}')
+            print(f'Labels: {train_labels}')
 
         return train_features, test_features, train_labels,test_labels
 
