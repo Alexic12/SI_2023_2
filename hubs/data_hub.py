@@ -25,7 +25,7 @@ class Data:
 
         pass
 
-    def data_process (self,file, test_split):
+    def data_process (self,file, test_split, norm, neurons):
 
         ##Lets define the absolute pat for this folder
         data_dir= os.path.abspath(os.path.join(os.path.dirname(__file__),"..","data"))
@@ -36,7 +36,7 @@ class Data:
 
     
         ##lets load the raw excel file
-        data_raw= pd.read_excel(excel_path, sheet_name = 0)
+        data_raw= pd.read_excel(excel_path, sheet_name = 2)
 
     
         ##Lets convert the raw data to an array
@@ -58,21 +58,26 @@ class Data:
 
 
         ##Lets split the data into features and labels
-        data_features = data_arr[:,0:-1]##la ultima columna es lo que queremos que aprenda ent se toman todas lascolumnas menos la ultima
-        data_labels = data_arr[:,-1]
+        data_features = data_arr[:,0:-neurons]##la ultima columna es lo que queremos que aprenda ent se toman todas lascolumnas menos la ultima
+        data_labels = data_arr[:,-neurons:]
 
-        data_labels= data_labels.reshape(-1,1)
+        if neurons ==1:
+            data_labels= data_labels.reshape(-1,1)
 
         ##lets  check the dimensions of the arrays
         #print(f'Dimensions : {data_features.shape}')
-       
+
         ##Lets normalize the data
-        scaler =StandardScaler()#create an object of this library in particular 
+        if norm==True:
 
-        data_features_norm= scaler.fit_transform(data_features)
-        data_labels_norm= scaler.fit_transform(data_labels)
-
-        print(data_labels_norm)
+            scaler =StandardScaler()#create an object of this library in particular 
+            data_features_norm= scaler.fit_transform(data_features)
+            data_labels_norm= scaler.fit_transform(data_labels)
+        else:
+            data_features_norm= data_features
+            data_labels_norm= data_labels
+        
+        #print(data_labels_norm)
 
         ##Lets split the data into training and testing
         #input(train, test) output (train,test)
@@ -87,5 +92,6 @@ class Data:
             test_labels=0
             train_features=data_features_norm
             train_labels=data_labels_norm
-
+            print(f'Features: {train_features}')
+            print(f'Labels: {train_labels}')
         return train_features, test_features, train_labels, test_labels

@@ -5,7 +5,7 @@ class Perceptron:
     def __init__(self):
         pass
 
-    def run (self, train_features,test_features,train_labels,tests_labels,iter,alfa):
+    def run (self, train_features,test_features,train_labels,tests_labels,iter,alfa, stop_condition):
         print('Training perceptron network....')
         ##here is where all the natural network code is gonna be
 
@@ -39,7 +39,8 @@ class Perceptron:
                 Wij[i][j]= np.random.uniform(-1,1)#pesos aleatorios de la primera fila y ya
 
 
-        print(train_features[0].transpose())
+        print(f'W: {Wij}')
+        #print(train_features[0].transpose())
 
 
         for it in range (0,iter):#la cantidad de veces que recorre a train_features
@@ -88,7 +89,17 @@ class Perceptron:
             for n in range(0, Yk.shape[0]):
                 ecmT[n][it] = ecm[n][0]
                 ecm[n][0]=0
+                
+            #Lets checkk the stop_condition
+            flag_training= False
+            for n in range (0, Yk.shape[0]):
+                if  ecmT[n][it] != stop_condition:
+                    flag_training= True
+            if flag_training == False:
+                it = iter - 1#aqui se mando a la ultima iteracion porque ya llego al valor que queria
+                break
 
+        print(f'W:{Wij}')
         for n in range (0,Yk.shape[0]):
             plt.figure()
             plt.plot(ecmT[n][:], 'r', label=f'ECM Neurona {n}')
