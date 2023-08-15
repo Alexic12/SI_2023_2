@@ -17,7 +17,7 @@ class Data:
     def __init__(self):
         pass
     
-    def data_process(self,file, test_split):
+    def data_process(self,file, test_split,norm,neurons):
         ##Absolute path:
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),"..","data"))
         
@@ -30,8 +30,8 @@ class Data:
         data_arr = np.array(data_raw)
         
         #Split in features(inputs) and labels(outputs)
-        data_features = data_arr[:,0:-1]
-        data_labels = data_arr[:,-1]
+        data_features = data_arr[:,0:-neurons]
+        data_labels = data_arr[:,-neurons]
         data_labels= data_labels.reshape(-1,1)
         ##print(f"Dimensions: {data_labels.shape}")
         
@@ -49,9 +49,13 @@ class Data:
             
             
         #Normalize data
-        scaler = StandardScaler()
-        data_features_norm = scaler.fit_transform(data_features)
-        data_labels_norm = scaler.fit_transform(data_labels)
+        if norm ==True:
+            scaler = StandardScaler()
+            data_features_norm = scaler.fit_transform(data_features)
+            data_labels_norm = scaler.fit_transform(data_labels)
+        else:
+            data_features_norm = data_features
+            data_labels_norm = data_labels
         
         ##splitting the data into training and testing
         if test_split != 0:
@@ -61,6 +65,8 @@ class Data:
             test_labels = 0
             train_features = data_features_norm
             train_labels = data_labels_norm
+            print(f"Features: {train_features}")
+            print(f"Labels: {train_labels}")
         
         return train_features,test_features,train_labels,test_labels
 

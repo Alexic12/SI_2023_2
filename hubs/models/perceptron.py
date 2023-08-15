@@ -6,7 +6,7 @@ class Perceptron:
     def __init__(self):
         pass
     
-    def run(self, train_features,test_features, train_labels, test_labels,iter,alfa):
+    def run(self, train_features,test_features, train_labels, test_labels,iter,alfa,stop_condition):
         print("Training perceptron network.......")
         ##here is where all the nerual network code is gonna be
         
@@ -60,6 +60,16 @@ class Perceptron:
                 ecmT[n][it] = ecm[n][0]
                 ecm[n][0] = 0
                 
+            flag = False
+            for n in range(0, Yk.shape[0]):
+                if ecmT[n][it] != stop_condition:
+                    flag = True
+            
+            if flag == False:
+                it = it-1
+                break
+            
+        print("Yk:",Yk)
         for n in range(0, Yk.shape[0]):
             plt.figure()
             plt.plot(ecmT[n][:],"r",label = f"ECM Neurona {n}")
