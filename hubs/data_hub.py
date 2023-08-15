@@ -31,8 +31,10 @@ class Data:
         
         #Split in features(inputs) and labels(outputs)
         data_features = data_arr[:,0:-neurons]
-        data_labels = data_arr[:,-neurons]
-        data_labels= data_labels.reshape(-1,1)
+        data_labels = data_arr[:,-neurons:]
+        if neurons == 1 :
+            data_labels= data_labels.reshape(-1,1)
+            
         ##print(f"Dimensions: {data_labels.shape}")
         
         ##Check for strings
