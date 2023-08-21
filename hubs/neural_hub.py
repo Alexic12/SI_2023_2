@@ -5,15 +5,15 @@ class Neural:
     def __init__(self):
         pass
     
-    def run_model(self,model,file_name, iter, alpha,split):
+    def run_model(self,model,file_name, iter, alpha,test_split,norm,stop_condition,neurons):
         Data = data()
-        train_features, test_features, train_labels, test_labels = Data.data_process(file_name,split)
+        train_features, test_features, train_labels, test_labels = Data.data_process(file_name,test_split,norm,neurons)
         
         if model == 'perceptron':
             print('Running perceptron model')
             ##Code for the perceptron model 
             P = Perceptron()
-            P.run(train_features, test_features, train_labels, test_labels, iter, alpha)
+            P.run(train_features, test_features, train_labels, test_labels, iter, alpha,stop_condition)
             
             
         elif model == 'FFM':

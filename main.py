@@ -8,4 +8,4 @@ from hubs.neural_hub import Neural
 
 N = Neural()
 
-N.run_model(model = 'perceptron', file_name = 'OR.xlsx', iter = 1000, alpha = 0.000001, split = 0)
+N.run_model(model = 'perceptron', file_name = 'OR.xlsx', iter = 100, alpha = 0.02, test_split = 0, norm = False, stop_condition = 0, neurons = 1)
