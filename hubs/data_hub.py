@@ -17,7 +17,7 @@ class Data:
     def __init__(self):
         pass
 
-    def data_process(self, file, test_split, norm):
+    def data_process(self, file, test_split, norm, neurons):
         ##lets define the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data')) # __file__ es un atributo
                                                                                     #que me permite obtener el
@@ -60,19 +60,6 @@ class Data:
         ##lets convert the raw data to an array
         data_arr = np.array(data_raw)
 
-        ##lets split the data into features and labels
-        data_features = data_arr[:, 0:-1] #todas las columnas excepto la ultima
-        data_labels = data_arr[:, -1]
-
-        data_labels = data_labels.reshape(-1, 1) #necesitabamos que fuera de dos dimensiones por lo menos
-                                                # basicamente el -1 en el reshape dice al sistema que no 
-                                                # sabemos de cuanto va a quedar esa dimension, que el sistema
-                                                # debe darse cuenta solo, segun la cantidad de datos del arreglo
-                                                # que estamos reformando, en este caso data_labels.reshape(-1, 1)
-                                                # significa que no sabemos cuantas filas va a haber, pero si que
-                                                # queremos que halla exactamente una columna, ya que pusimos 1 en
-                                                # la parte de la columna
-
         ##lets label encode any text in the data
         ##first create a boolean array with the size of the column
         str_cols = np.empty(data_arr.shape[1], dtype=bool) # creamos un arreglo de tipo booleano no inicializado
@@ -97,6 +84,20 @@ class Data:
                                                                 # los convierte de forma logica en un orden 
                                                                 # determinado desde cero, por esto se le suma 1,
                                                                 # para que no empiece desde cero
+        ##lets split the data into features and labels
+        data_features = data_arr[:, 0:-neurons] #todas las columnas excepto la ultima
+        data_labels = data_arr[:, -neurons:]
+
+        if neurons == 1:
+            data_labels = data_labels.reshape(-1, 1) #necesitabamos que fuera de dos dimensiones por lo menos
+                                                # basicamente el -1 en el reshape dice al sistema que no 
+                                                # sabemos de cuanto va a quedar esa dimension, que el sistema
+                                                # debe darse cuenta solo, segun la cantidad de datos del arreglo
+                                                # que estamos reformando, en este caso data_labels.reshape(-1, 1)
+                                                # significa que no sabemos cuantas filas va a haber, pero si que
+                                                # queremos que halla exactamente una columna, ya que pusimos 1 en
+                                                # la parte de la columna
+
 ###############################################################################################
 # por que el data_features se actualizo al actualizar data_arr, es decir, por que cuando le hice el fit_transform
 # a data_arr esto tambien modifico a data_features y porque no queremos que empiece desde cero con el labelencoder
