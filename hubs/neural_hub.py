@@ -1,5 +1,6 @@
 from hubs.data_hub import data
 from hubs.models.perceptron  import Perceptron
+#from hubs.models.perceptronprofe  import Perceptron
 
 class Neural:
     def __init__(self):
