@@ -5,14 +5,21 @@ class Perceptron:
     def __init__(self):
         pass
 
-    def run(self, train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition):
+    def run(self, train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition, capas):
         print('Training perceptron network...')
         
-        xi = np.zeros((train_features.shape[1] + 1, 1)) # input vector
+        xi = np.zeros((train_features.shape[1], 1)) # input vector
 
-        wij = np.zeros((train_labels.shape[1], train_features.shape[1] + 1)) # matriz de pesos
+        hj = np.zeros((train_labels.shape[1] + 1, 1))
+        print(f'tamaño del hj: {hj.shape}')
+
+        wij = np.zeros((train_labels.shape[1], train_features.shape[1])) # matriz de pesos
+
+        cjk = np.zeros((train_labels.shape[1], train_labels.shape[1] + 1)) # matriz de pesos
 
         aj = np.zeros((train_labels.shape[1], 1)) # vector de agregacion
+
+        bk = np.zeros((train_labels.shape[1], 1))
 
         yk = np.zeros((train_labels.shape[1], 1)) # neural output vector
 
@@ -29,15 +36,20 @@ class Perceptron:
             for j in range(0, wij.shape[1]):
                 wij[i][j] = np.random.uniform(-1, 1) # incluye decimales, es mejor asi para evitar cambios muy grandes de tipo de dato despues
 
-        print(f'W: {wij}')
+        for i in range(0, cjk.shape[0]):
+            for j in range(0, cjk.shape[1]):
+                cjk[i][j] = np.random.uniform(-1, 1) # incluye decimales, es mejor asi para evitar cambios muy grandes de tipo de dato despues
+
+        print(f'Wij: {wij}')
+        print(f'cjk: {cjk}')
 
         for it in range(0, iter):
             for d in range(0, train_features.shape[0]):
                 ## pass the data inputs to the input vector xi
-                xi[0][0] = 1 #bias
+                hj[0][0] = 1 #bias
 
                 for i in range(0, train_features.shape[1]):
-                    xi[i+1][0] = train_features[d][i]
+                    xi[i][0] = train_features[d][i]
 
                 # lets calculate the agregation for each neuron
                 for n in range(0, aj.shape[0]):
@@ -45,11 +57,16 @@ class Perceptron:
                         aj[n][0] = aj[n][0] + xi[input]*wij[n][input]
 
                 # lets calculate the output for each neuron
+                for n in range(0, hj.shape[0] - 1):
+                    hj[n+1][0] = 1/(1 + np.exp(-aj[n][0]))
+
+                for n in range(0, bk.shape[0]):
+                    for input in range(0, hj.shape[0]):
+                        bk[n][0] = bk[n][0] + hj[input]*cjk[n][input]
+
+                # lets calculate the output for each neuron
                 for n in range(0, yk.shape[0]):
-                    if aj[n][0] < 0:
-                        yk[n][0] = 0
-                    else:
-                        yk[n][0] = 1
+                    yk[n][0] = 1/(1 + np.exp(-bk[n][0]))
 
                 # lets calculate the error for each neuron
 
@@ -64,8 +81,15 @@ class Perceptron:
 
                 # weight training 
                 for n in range(0, yk.shape[0]):
+                    for w in range(0, cjk.shape[1]):
+                        cjk[n][w] = cjk[n][w] + alfa*ek[n][0]*hj[w][0]*yk[n][0]*(1 - yk[n][0])
+
+                for n in range(0, yk.shape[0]):
                     for w in range(0, wij.shape[1]):
-                        wij[n][w] = wij[n][w] + alfa*ek[n][0]*xi[w][0]
+                        k = w
+                        if w >= cjk.shape[1]:
+                            k = cjk.shape[1] - 1
+                        wij[n][w] = wij[n][w] + alfa*ek[n][0]*yk[n][0]*(1 - yk[n][0])*cjk[n][k]*hj[k][0]*(1 - hj[k][0])*xi[w]
 
             print(f'Iter: {it}')
 
@@ -86,7 +110,8 @@ class Perceptron:
                 it = iter - 1
                 break
 
-        print(f'W: {wij}')
+        print(f'Wij: {wij}')
+        print(f'cjk: {cjk}')
         for n in range(0, yk.shape[0]):
             plt.figure()
             plt.plot(ecmT[n][:], 'r', label = f'ecm neurona {n}')
