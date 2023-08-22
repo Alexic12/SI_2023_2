@@ -4,24 +4,24 @@ class Perceptron:
     def __init__(self):
         pass
     
-    def run(self, train_features, test_features, train_labels, test_labels, iter, alfa):
+    def run(self, train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition):
         print("Entrenar Perceptron")
         #Organizar Datos
         Xi = np.zeros((train_features.shape[1]+1, 1)) #Vector Entradas
 
-        Wij = np.zeros((train_labels.shape[1], train_features.shape[1]+1))#Matriz pesos
+        Wij = np.zeros((train_labels.shape[0], train_features.shape[1]+1))#Matriz pesos
 
-        Aj = np.zeros((train_labels.shape[1], 1))#Vector agregacion
+        Aj = np.zeros((train_labels.shape[0], 1))#Vector agregacion
 
-        Yk = np.zeros((train_labels.shape[1], 1))#Vector salidas
+        Yk = np.zeros((train_labels.shape[0], 1))#Vector salidas
 
-        Yd = np.zeros((train_labels.shape[1], 1))#Vector Labels
+        Yd = np.zeros((train_labels.shape[0], 1))#Vector Labels
 
-        Ek = np.zeros((train_labels.shape[1], 1))#Vector Error
+        Ek = np.zeros((train_labels.shape[0], 1))#Vector Error
 
-        ecm = np.zeros((train_labels.shape[1], 1))#Error cuadratico medio
+        ecm = np.zeros((train_labels.shape[0], 1))#Error cuadratico medio
 
-        ecmT = np.zeros((train_labels.shape[1], iter))#ECM total por iteracion
+        ecmT = np.zeros((train_labels.shape[0], iter))#ECM total por iteracion
 
         for i in range(Wij.shape[0]):#Llenar con pesos aleatorios entre -1 y 1
             for j in range(Wij.shape[1]):
@@ -64,6 +64,15 @@ class Perceptron:
             for n in range(Yk.shape[0]):
                 ecmT[n][it] = ecm[n][0]
                 ecm[n][0] = 0
+
+            #Revisar flag de terminado
+            for n in range(0, Yk.shape[0]):
+                if ecmT[n][it] != stop_condition:
+                    flag_training = True
+                
+            if flag_training == False:
+                it = iter - 1
+                break
             
         for n in range(Yk.shape[0]):
             plt.figure()

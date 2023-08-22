@@ -2,4 +2,4 @@ from hubs.neural_hub import Neural # esto se hace en la industria
 
 
 N=Neural()
-N.run_model("perceptron","OR_TruthTable.xlsx", 100, 0.2, 0.1)
+N.run_model(model = 'perceptron', file_name = 'AND_NOR.xlsx', iter = 100, alfa=0.2, test_split = 0, norm = False, stop_condition = 0, neurons = 2)

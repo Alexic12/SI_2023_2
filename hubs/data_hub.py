@@ -19,7 +19,7 @@ class Data: # docstring cuales son los input output y que hace la clase
     def _init_(self):
         pass
 
-    def data_process(sef,file, test_split):
+    def data_process(sef,file, test_split, norm, neurons):
         #lets difine the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.join(__file__),'..','..','data')) # entra al folder y tomas el datos dentro del folder 
         #print(data_dir)
@@ -42,10 +42,11 @@ class Data: # docstring cuales son los input output y que hace la clase
                 le= LabelEncoder()
                 data_arr[:,i]= le.fit_transform(data_arr[:,i])+1 # ahora tenemos todos los datos en en tipo texto 
         #lets split the data into features ans labels 
-        data_features= data_arr[:,0:-1] #todas las columnas menos la ultima. [filas,columnas]
-        data_labels= data_arr[:,-1]    # sola la ultima columna
+        data_features= data_arr[:,0:-neurons] #todas las columnas menos la ultima. [filas,columnas]
+        data_labels= data_arr[:,-neurons]    # sola la ultima columna
         
-        data_labels = data_labels.reshape(-1,1)
+        if neurons == 1:
+            data_labels = data_labels.reshape(-1,1)
 
         #Lets label encode any text in the data( debe ser matematico operation) vamos a revisar los datos y vamos a revisar que es un string y int  cuales tiene text , revirara y poner true or false
 
@@ -53,10 +54,13 @@ class Data: # docstring cuales son los input output y que hace la clase
 
         # vamos a noramalizar los datos con esta libreria 
         #lets normalize the data 
-        scaler = StandardScaler()##Create an object solo es para esta liberia # create an object if this library in particular 
-
-        data_features_norm = scaler.fit_transform(data_features)
-        data_labels_norm = scaler.fit_transform(data_labels)
+        if norm == True:
+            scaler = StandardScaler()##Create an object solo es para esta liberia # create an object if this library in particular 
+            data_features_norm = scaler.fit_transform(data_features)
+            data_labels_norm = scaler.fit_transform(data_labels)
+        else:
+            data_features_norm = data_features
+            data_labels_norm = data_labels
 
         # Ahora tenemos el data normalizado el cacula solo y busca el mejor intervalo 
 
