@@ -20,7 +20,7 @@ class Data:
     def _init_(self):
         pass
 
-    def data_process(self, file, test_split, norm, neurons):
+    def data_process(self, file, test_split, norm, n_ocultas, n_salidas):
         ##Lets define the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data'))
 
@@ -49,11 +49,11 @@ class Data:
                 data_arr[:, i] = le.fit_transform(data_arr[:, i]) + 1
 
         ##Lets split the data into features and labels
-        data_features = data_arr[:,0:-neurons] #[filas, columnas] y en este caso todas las columnas-1
-        data_labels = data_arr[:,-neurons:]
+        data_features = data_arr[:,0:-n_ocultas] #[filas, columnas] y en este caso todas las columnas-1
+        data_labels = data_arr[:,n_salidas:]
 
-        if neurons == 1:
-            data_labels = data_labels.reshape(-1,1)
+        ##if n_salidas == 1:
+        ##    data_labels = data_labels.reshape(-1,1)
 
         print(f'Data Features: {data_features}')
         print(f'Data Labels: {data_labels}')
