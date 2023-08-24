@@ -29,7 +29,7 @@ class Data:
         excel_path = os.path.join(data_dir, file)
 
         ##Loads the raw excel file 
-        data_raw =  pd.read_excel(excel_path, sheet_name = 2)
+        data_raw =  pd.read_excel(excel_path, sheet_name = 3)
 
         ##Let's convert the raw data to an array
         data_arr = np.array(data_raw)
@@ -50,8 +50,8 @@ class Data:
                 data_arr[:,i] = le.fit_transform(data_arr[:,i]) + 1
 
         ##Let's split the data into features (inputs) and labels(outputs)
-        data_features = data_arr[:,0:-neurons] ## all columns but the last
-        data_labels = data_arr[:,-neurons:] ## The last column  
+        data_features = data_arr[:,0:-neurons] ## all columns but the last n
+        data_labels = data_arr[:,-neurons:] ## The last n columns  
 
         if neurons == 1:
             data_labels = data_labels.reshape(-1,1)      

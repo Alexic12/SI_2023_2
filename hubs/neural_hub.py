@@ -1,11 +1,12 @@
 from hubs.data_hub import Data
 from hubs.models.perceptron import Perceptron
+from hubs.models.perceptronMC import PerceptronMC
 
 class Neural:
     def __init__(self):
         pass
 
-    def run_model(self, model, file_name,iter,alfa,test_split,norm,stop_condition,neurons):
+    def run_model(self, model, file_name,iter,alfa,test_split,norm,stop_condition,nfl,neurons):
         data = Data()
         train_features, test_features, train_labels,test_labels = data.data_process(file_name,test_split,norm,neurons)
         if model == 'perceptron':
@@ -17,6 +18,12 @@ class Neural:
         elif model == 'ffm':
             print('Running FFM Model')
             ##Code for the ffm model
+
+        elif model == 'PMC':
+            print('Running Multi Layer Perceptron Model')
+            ##Code for the Multi Layer perceptron model
+            PMC = PerceptronMC()
+            PMC.run(train_features, test_features, train_labels,test_labels,iter,alfa,stop_condition,nfl)
             
 
 
