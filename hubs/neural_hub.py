@@ -1,12 +1,13 @@
 from hubs.data_hub import Data
 from hubs.models.perceptron import Perceptron
+from hubs.models.perceptron_mult import Perceptron_mult
 
 class Neural:
     def __init__(self) :
         pass
 
 
-    def run_model (self, model, file_name,iter , alfa, test_split, norm, stop_condition, neurons):
+    def run_model (self, model, file_name,iter , alfa, test_split, norm, stop_condition,nfl,neurons):
 
         data = Data()
 
@@ -24,3 +25,11 @@ class Neural:
             print ('Running FFM Model')
 
             ##Code for the ffm model
+
+
+
+        elif model == 'perceptron_mult':
+            print("Running Perceptron multicapa")
+            #Code for the perceptron multicap model
+            Pm = Perceptron_mult()
+            Pm.run(train_features, test_features, train_labels, test_labels,iter, alfa, stop_condition, nfl)

@@ -73,7 +73,7 @@ class Perceptron :
                 for i in range (0, train_labels.shape[1]):
                     Yd[i][0] = train_labels[d][i]
                 
-
+                ##Lets add the ecm for this data point
                 for n in range (0, Ek.shape[0]):
                     Ek[n][0] = Yd[n][0]- Yk[n][0]
                     ##Lets add the ECM for this data point
