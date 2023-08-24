@@ -9,7 +9,7 @@ class Perceptron:
 
         #lets organize the data 
         Xi = np.zeros((Train_features.shape[1]+1,1)) # las cantidad de columnas # Input vector  ademas se le puos el bios
-        print(Train_features.shape[1])
+        #print(Train_features.shape[1])
         Wij =np.zeros((train_label.shape[1],Train_features.shape[1]+1))# las cantidad de neuronas que tengo, es decir cantidad de salidas  matriz de pesos 
         
         Aj = np.zeros((train_label.shape[1],1))
