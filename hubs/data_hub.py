@@ -29,7 +29,7 @@ class Data:
         excel_path = os.path.join(data_dir, file)
 
         ##Loads the raw excel file 
-        data_raw =  pd.read_excel(excel_path, sheet_name = 3)
+        data_raw =  pd.read_excel(excel_path, sheet_name = 0)
 
         ##Let's convert the raw data to an array
         data_arr = np.array(data_raw)

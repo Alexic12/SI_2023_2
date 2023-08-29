@@ -67,7 +67,10 @@ class Perceptron:
                 for n in range (0,Yk.shape[0]):
                     for w in range(0,Wij.shape[1]):
                         Wij[n][w] = Wij[n][w] + alfa*Ek[n][0]*Xi[w][0]
-                
+            
+            ##Let's reset agregation vector
+            Aj[:][0] = 0
+            
             print(f'Iter: {it}')
             for n in range (0,Yk.shape[0]):
                 print(f'ECM {n}: {ecm[n][0]}')
