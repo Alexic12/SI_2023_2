@@ -66,7 +66,7 @@ class Perceptronmulti:
                         Ak[n][0] = Ak[n][0] + Hj[n_input][0]*Cjk[n][n_input]
                         
                 for n in range(0, train_labels.shape[1]):
-                    Yk[n][0] = (1/(1+np.exp(-Aj[n][0])))
+                    Yk[n][0] = (1/(1+np.exp(-Ak[n][0])))
                     
                 for i in range(0, train_labels.shape[1]):
                     Yd[i][0] = train_labels[d][i]
@@ -81,15 +81,39 @@ class Perceptronmulti:
                         Cjk[n][h] = Cjk[n][h] + alpha*Ek[n][0]*Yk[n][0]*(1-Yk[n][0])*Hj[h][0]
                         
                 for h in range(0, Hj.shape[0]-1):
+                    #print(f'Hidden Neuron: {h}')
                     for i in range(0, Xi.shape[0]):
                         for o in range(0, Yk.shape[0]):
                             Wij[h][i] = Wij[h][n] + alpha*Ek[o][0]*Yk[o][0]*(1-Yk[o][0])*Cjk[o][h+1]*Hj[h+1]*(1-Hj[h+1])*Xi[i][0]
                             
-                            
+                Aj[:][0] = 0
+                Ak[:][0] = 0
+                               
             print(f'Iter: {it}')
             for n in range(0, Yk.shape[0]):
                 print(f'ECM {n}: {ecm[n][0]}')
-                            
+                
+                
+            for n in range(0, Yk.shape[0]):
+                ecmT[n][it] = ecm[n][0]
+                ecm[n][0] = 0
+            """   
+            ##lets check the stop_condition 
+            flag_training = False
+            for n in range(0, Yk.shape[0]):
+                if ecmT[n][it] == stop_condition:
+                    flag_training = True
+                    
+            if flag_training == False:
+                it = iter - 1
+                break
+            """
+            #print(f'W: {Wij}')
+        for n in range(0, Yk.shape[0]): 
+            plt.figure()
+            plt.plot(ecmT[n][:], 'r', label = f'ECM neuron {n}')
+            plt.show()        
+                        
                             
                             
                         

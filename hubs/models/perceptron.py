@@ -71,6 +71,9 @@ class Perceptron:
                     for w in range(0,Wij.shape[1]):
                         Wij[n][w] = Wij[n][w] + alpha*Ek[n][0]*Xi[w][0]
                         
+                        
+                Aj[:][0] = 0
+                        
             print(f'Iter: {it}')
             for n in range(0, Yk.shape[0]):
                 print(f'ECM {n}: {ecm[n][0]}')
