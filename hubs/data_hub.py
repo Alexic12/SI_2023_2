@@ -30,7 +30,7 @@ class Data:
         excel_path = os.path.join(data_dir, file)
 
         ##LEts load the raw excel file 
-        data_raw = pd.read_excel(excel_path, sheet_name=1)
+        data_raw = pd.read_excel(excel_path, sheet_name=0)
 
         ##Lets confert the raw data to an array
         data_arr = np.array(data_raw)
