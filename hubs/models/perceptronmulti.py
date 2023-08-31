@@ -8,7 +8,8 @@ class Perceptronmulti:
     def run(self,train_features, test_features, train_labels, test_labels, iter,alpha, stop_condition):
         print('Train perceptron network....')
         
-        hidden_neurons = train_features.shape[1] + 1
+        #hidden_neurons = train_features.shape[1] + 1
+        hidden_neurons = train_features.shape[1]
         
         Xi = np.zeros((train_features.shape[1], 1)) #input vector 
         
