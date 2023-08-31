@@ -102,5 +102,37 @@ class Perceptron:
                             for o in range(0, Yk.shape[0]):
                                 Wij[h][i]= Wij[h][i] + alfa*Ek[o][0]*Yk[o][0]*(1-Yk[o][0])*Cjk[o][h+1]*Hj[h+1]*(1-Hj[h+1])*Xi[i][0]
 
+                    
+                    ##Lets reset the Agregation for each neuron
+                    Aj[:][0]= 0
+                    Ak[:][0]= 0
+
+            ## lets show the iteration we're in and print the ecm for that iteration
+            print(f'Iter: {it}')
+            for n in range(0,Yk.shape[0]):
+                print(f'ECM{n}: {ecm[n][0]}')
+
+            ## Lets store the total ecm for that specific output for this iteration
+            for n in range(0, Yk.shape[0]):
+                ecmT[n][it] = ecm[n][0]
+                ecm[n][0] = 0  #
+
+
+                    # ##lets check the stop_condition
+                    # flag_training = False
+                    # for n in range(0, Yk.shape[0]):
+                    #     if ecmT[n][it] <  stop_condition:
+                    #         flag_training = True
+
+                    # if flag_training == False :
+                    #     it = iter -1 
+                    #     break
+
+
+
+        for n in range(0, Yk.shape[0]):
+            plt.figure()
+            plt.plot(ecmT[n][:],'r',label = f'ECM Neurona{n}')
+            plt.show() 
 
 

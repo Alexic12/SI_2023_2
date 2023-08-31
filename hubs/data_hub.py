@@ -25,7 +25,7 @@ class Data:
 
         pass
 
-    def data_process (self,file, test_split, norm, neurons):
+    def data_process (self,file, test_split, norm, neurons,avoid_col):
 
         ##Lets define the absolute pat for this folder
         data_dir= os.path.abspath(os.path.join(os.path.dirname(__file__),"..","data"))
@@ -36,7 +36,7 @@ class Data:
 
     
         ##lets load the raw excel file
-        data_raw= pd.read_excel(excel_path, sheet_name = 2)
+        data_raw= pd.read_excel(excel_path, sheet_name = 0)
 
     
         ##Lets convert the raw data to an array
@@ -58,7 +58,7 @@ class Data:
 
 
         ##Lets split the data into features and labels
-        data_features = data_arr[:,0:-neurons]##la ultima columna es lo que queremos que aprenda ent se toman todas lascolumnas menos la ultima
+        data_features = data_arr[:,avoid_col:-neurons]##la ultima columna es lo que queremos que aprenda ent se toman todas lascolumnas menos la ultima
         data_labels = data_arr[:,-neurons:]
 
         if neurons ==1:
