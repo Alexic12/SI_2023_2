@@ -58,7 +58,7 @@ class Perceptron :
                 for n in range (0, Aj.shape[0]):
                     for n_input in range (0, Xi.shape[0]):
                         Aj[n][0] = Aj[n][0] + Xi[n_input]*Wij[n][n_input]
-                
+                    
                 ##Lets calculate the output for each neuron 
                 for n in range (0, Yk.shape[0]):
                    if Aj[n][0]  < 0 :

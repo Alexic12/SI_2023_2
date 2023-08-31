@@ -133,7 +133,7 @@ class PerceptronMulti:
             
 
             ##lets check the stop_condition
-            flag_training = False
+            # flag_training = False
             '''
             for n in range(0, Yk.shape[0]):
                 if ecmT[n][it] < stop_condition:
