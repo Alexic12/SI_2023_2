@@ -7,9 +7,9 @@ class Neural:
     def __init__(self):
         pass
 
-    def run_model(self, model, file_name, iter, alfa, test_split, norm, stop_condition, neurons):
+    def run_model(self, model, file_name, iter, alfa, test_split, norm, stop_condition, neurons, avoid_col):
         data = Data()
-        train_features, test_features, train_labels, test_labels = data.data_process(file_name, test_split,norm, neurons)
+        train_features, test_features, train_labels, test_labels = data.data_process(file_name, test_split,norm, neurons, avoid_col)
         if model == 'perceptron':
             print('Running Perceptron Model')
             ##Code for the perceptron model
@@ -22,7 +22,7 @@ class Neural:
             ##Code for the perceptron model
 
         elif model == 'perceptron_multi':
-            print('Running perceptron Multi model')
+            print('Running perceptron Multi Model')
 
             P = PerceptronMulti()
             P.run(train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition)
