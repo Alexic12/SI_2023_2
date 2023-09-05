@@ -9,7 +9,7 @@ class Perceptronmulti:
         print('Train perceptron network....')
         
         #hidden_neurons = train_features.shape[1] + 1
-        hidden_neurons = train_features.shape[1]
+        hidden_neurons = train_features.shape[1] + 1 
         
         Xi = np.zeros((train_features.shape[1], 1)) #input vector 
         
@@ -87,8 +87,8 @@ class Perceptronmulti:
                         for o in range(0, Yk.shape[0]):
                             Wij[h][i] = Wij[h][n] + alpha*Ek[o][0]*Yk[o][0]*(1-Yk[o][0])*Cjk[o][h+1]*Hj[h+1]*(1-Hj[h+1])*Xi[i][0]
                             
-                Aj[:][0] = 0
-                Ak[:][0] = 0
+                Aj[:][:] = 0
+                Ak[:][:] = 0
                                
             print(f'Iter: {it}')
             for n in range(0, Yk.shape[0]):
