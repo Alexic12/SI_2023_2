@@ -12,7 +12,7 @@ class Perceptron_Multicapa:
         ##Lets organize the data 
 
         ##arbitrary value, not absolute
-        hidden_neurons = train_features.shape[1] + 3
+        hidden_neurons = train_features.shape[1] + 1
 
         Xi = np.zeros((train_features.shape[1], 1)) # Input vector
 

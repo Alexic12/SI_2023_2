@@ -17,7 +17,7 @@ class Data:
     def __init__(self):
         pass
     
-    def data_process(self,file, test_split,norm,neurons,avoid_col):
+    def data_process(self,file, test_split,norm,outputs,avoid_col):
         ##Absolute path:
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),"..","data"))
         
@@ -30,9 +30,9 @@ class Data:
         data_arr = np.array(data_raw)
         
         #Split in features(inputs) and labels(outputs)
-        data_features = data_arr[:,avoid_col:-neurons]
-        data_labels = data_arr[:,-neurons:]
-        if neurons == 1 :
+        data_features = data_arr[:,avoid_col:-outputs]
+        data_labels = data_arr[:,-outputs:]
+        if outputs == 1 :
             data_labels= data_labels.reshape(-1,1)
             
         ##print(f"Dimensions: {data_labels.shape}")
