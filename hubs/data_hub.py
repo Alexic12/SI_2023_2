@@ -21,7 +21,7 @@ class Data:
     def __init__(self):
         pass
 
-    def data_process(self,file,test_split,norm,neurons):
+    def data_process(self,file,test_split,norm,neurons,avoid_col):
         ##Let's define the absolute path for this folder 
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data'))
 
@@ -50,7 +50,7 @@ class Data:
                 data_arr[:,i] = le.fit_transform(data_arr[:,i]) + 1
 
         ##Let's split the data into features (inputs) and labels(outputs)
-        data_features = data_arr[:,0:-neurons] ## all columns but the last n
+        data_features = data_arr[:,avoid_col:-neurons] ## all columns but the last n
         data_labels = data_arr[:,-neurons:] ## The last n columns  
 
         if neurons == 1:
@@ -65,6 +65,7 @@ class Data:
 
             data_features_norm = scaler.fit_transform(data_features)
             data_labels_norm = scaler.fit_transform(data_labels)
+            
         else:
             data_features_norm = data_features
             data_labels_norm = data_labels
