@@ -1,6 +1,7 @@
 from hubs.data_hub import Data
 from hubs.models.perceptron import Perceptron
 from hubs.models.perceptron_multi import PerceptronMulti
+from hubs.models.ffm_tf import ffm_tf
 
 
 class Neural:
@@ -17,9 +18,11 @@ class Neural:
             P.run(train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition)
 
 
-        elif model == 'ffm':
+        elif model == 'ffm_tf':
             print('Running FFM Model')
             ##Code for the perceptron model
+            P = ffm_tf()
+            P.run(train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition)
 
         elif model == 'perceptron_multi':
             print('Running perceptron Multi Model')
