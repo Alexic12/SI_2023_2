@@ -2,6 +2,7 @@ from hubs.data_hub import data
 from hubs.models.perceptron  import Perceptron
 from hubs.models.perceptronmulti import Perceptronmulti
 #from hubs.models.perceptronprofe  import Perceptron
+from hubs.models.ffm_tf import ffm_tf
 
 class Neural:
     def __init__(self):
@@ -18,9 +19,11 @@ class Neural:
             P.run(train_features, test_features, train_labels, test_labels, iter, alpha,stop_condition)
             
             
-        elif model == 'FFM':
+        elif model == 'ffm_tf':
             print('Running FFM model')
             ##Code for the perceptron model
+            P = ffm_tf()
+            P.run(train_features, test_features, train_labels, test_labels,iter, alpha,stop_condition)
             
         elif model == 'perceptron_multi':
             print('Running perceptron_multi model')
