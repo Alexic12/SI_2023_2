@@ -2,7 +2,7 @@ from hubs.neural_hub import Neural
 
 N = Neural()
 
-N.run_model(model='perceptron_multi', file_name= 'AND_NOR.xlsx', iter = 20, alfa = 0.1, test_split = 0, norm = False, stop_condition = 0, neurons = 2)
+N.run_model(model='ffm_tf', file_name= 'ETHEREUM_PRICE.xlsx', iter = 500, alfa = 0.02, test_split = 0.1, norm = False, stop_condition = 50, neurons = 1, avoid_cols = 0)
 
 
 

@@ -21,7 +21,7 @@ class Data:
     def __init__(self):
         pass
 
-    def data_process(self, file, test_split, norm, neurons):
+    def data_process(self, file, test_split, norm, neurons, avoid_cols):
         ##Lets define the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data'))
 
@@ -50,7 +50,7 @@ class Data:
 
 
         ##Lets split the data into features and labels
-        data_features = data_arr[:,0:-neurons]
+        data_features = data_arr[:,avoid_cols:-neurons]
         data_labels = data_arr[:, -neurons:]
 
         print(f'DATA_FEATURES: {data_features}')
