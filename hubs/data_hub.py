@@ -44,7 +44,7 @@ class Data:
 
     ##before split lets label encode any text in the data
 
-        ##Lets create a boolean array with the size of the color
+        ##Lets create a boolean array with the size of the colums
         str_cols = np.empty(data_arr.shape[1], dtype=bool)
 
         #lets read colums data type
@@ -86,7 +86,7 @@ class Data:
         #test size coge el 10% de la dataS
 
         if test_split !=0:
-            train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm,test_size = 0.1)
+            train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm,test_size = test_split)
         else: 
             test_features=0
             test_labels=0

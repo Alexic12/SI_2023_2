@@ -5,11 +5,11 @@ class Perceptron:
     def __init__(self):
         pass
 
-    def run (self, train_features,test_features,train_labels,tests_labels,iter,alfa, stop_condition):
+    def run (self, train_features,test_features,train_labels,test_labels,iter,alfa, stop_condition):
         print('Training perceptron network....')
 
         #un valor arbitrario, no es absoluto
-        hidden_neurons= train_features.shape[1]+1
+        hidden_neurons= train_features.shape[1] + 1
         
         Xi= np.zeros((train_features.shape[1],1)) #Input vector, recordar que features=in
 
@@ -104,8 +104,8 @@ class Perceptron:
 
                     
                     ##Lets reset the Agregation for each neuron
-                    Aj[:][0]= 0
-                    Ak[:][0]= 0
+                    Aj[:][:]= 0
+                    Ak[:][:]= 0
 
             ## lets show the iteration we're in and print the ecm for that iteration
             print(f'Iter: {it}')
