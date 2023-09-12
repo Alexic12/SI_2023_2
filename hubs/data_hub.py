@@ -22,7 +22,7 @@ class Data:
     def __init__(self):
         pass
 
-    def data_process(self, file, test_split, norm, neurons):
+    def data_process(self, file, test_split, norm, neurons, avoid_column):
         # Obtiene la ruta del directorio data
         data_dir = os.path.abspath(
             os.path.join(os.path.dirname(__file__), "..", "data")
@@ -53,10 +53,10 @@ class Data:
                 data_arr[:, i] = le.fit_transform(data_arr[:, i]) + 1
 
         # Separa los datos en Features (Input) y Labels (Output)
-        data_features = data_arr[:, 0:-neurons]  # Todas las filas, todas las columnas menos las últimas columnas
+        data_features = data_arr[:, avoid_column:-neurons]  # Desde la columna descrita, menos las últimas columnas
         data_labels = data_arr[:, -neurons:]  # Todas las filas, solo las últimas columnas (neuronas)
 
-        print(f'data labels: {data_labels} \n data features: {data_features}')
+        #print(f'data labels: {data_labels} \n data features: {data_features}')
 
         if neurons == 1:
             data_labels = data_labels.reshape(-1, 1)  # Cambia la forma de la matriz de (n,) a (n, 1)

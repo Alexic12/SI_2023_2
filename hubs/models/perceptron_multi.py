@@ -123,7 +123,36 @@ class Perceptron_Multi:
                                 * Yk[o]
                                 * (1 - Yk[o])
                                 * Cjk[o, h + 1]
-                                * Hj[h]
-                                * (1 - Hj[h])
+                                * Hj[h + 1]
+                                * (1 - Hj[h + 1])
                                 * Xi[i]
                             )
+
+            # Reiniciar los vectores de agregación
+            Aj[:] = 0
+            Ak[:] = 0
+
+            # Imprimir el error cuadrático medio de esta iteración
+            print(f"Iter: {it}")
+            for n in range(0, Yk.shape[0]):
+                print(f"ECM {n}: {ecm[n]}")
+
+            # Guardar el error cuadrático medio de esta iteración
+            for n in range(0, Yk.shape[0]):
+                ecmT[n, it] = ecm[n]
+                ecm[n] = 0
+
+            # Condición de parada
+            flag_training = False
+            for n in range(0, Yk.shape[0]):
+                if ecmT[n, it] > stop_condition:
+                    flag_training = True
+            if not flag_training:
+                it = iter - 1
+                break
+
+        for n in range(0, Yk.shape[0]):
+            plt.figure()
+            print(f"ECM total {n}: {ecmT[n, it]}")
+            plt.plot(ecmT[n, :], 'r', label='ECM Neurona ' + str(n))
+            plt.show()
