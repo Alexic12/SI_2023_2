@@ -23,12 +23,31 @@ class ffm_tf:
         model = self.build_model(train_features.shape[1] + 1, train_labels.shape[1], alfa)
 
         ##lets make an stop function
-        early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=stop_condition)
+        early_stop = keras.callbacks.EarlyStopping(monitor='mse', patience=stop_condition)
 
         ##lets train the model
         history = model.fit(train_features, train_labels, epochs=iter, verbose = 1, callbacks = [early_stop], validation_split=0)
 
-        print(history)
+    
+
+        training_data = pd.DataFrame(history.history)
+        #print(training_data)
+
+        plt.figure()
+        plt.plot(training_data['mse'], 'r', label='mse')
+        plt.show()
+
+
+        ##lets validate the trained model
+
+        pred_out = model.predict(test_features)
+
+        plt.figure()
+        plt.plot(pred_out, 'r', label='Prediction Output')
+        plt.plot(test_labels, 'b', label='Real Output')
+        plt.show()
+
+
 
 
 
