@@ -9,7 +9,8 @@ class PerceptronMulti:
         print('Training perceptron network...')
         ##Here is where all the neural network code is gonna be
 
-        hidden_neurons = train_features.shape[1] + 1 #De la fórmula no=ne+1
+        hidden_neurons = train_features.shape[1] + 1  #De la fórmula no=ne+1
+        print(f'Neuronas ocultas: {hidden_neurons}')
 
         ##Lets organize the data
         Xi = np.zeros((train_features.shape[1], 1)) #Input vector
@@ -56,7 +57,7 @@ class PerceptronMulti:
                 #Lets calculate the agregation function for each output neuron
                 for n in range(0, train_labels.shape[1]):
                     for n_input in range(0, Hj.shape[0]):
-                        Ak[n][0] = Ak[n][0] + Hj[n_input][0]*Cjk[n][n_input]
+                        Ak[n][0] = Ak[n][0] + Hj[n_input]*Cjk[n][n_input]
 
                 #Lets calculate the activation function of the output layer
                 for n in range(0, train_labels.shape[1]):
@@ -66,6 +67,7 @@ class PerceptronMulti:
                 for i in range(0, train_labels.shape[1]):
                     Yd[i][0] = train_labels[d][i]
 
+                #Lets calculate the error for this data point
                 for n in range(0, Ek.shape[0]):
                     Ek[n][0] = Yd[n][0]-Yk[n][0]
                     ##Lets add the ECM for this data point
@@ -85,8 +87,8 @@ class PerceptronMulti:
                             Wij[h][i] = Wij[h][i]+(alfa*Ek[o][0]*Yk[o][0]*(1-Yk[o][0])*Cjk[o][h+1]*Hj[h+1]*(1-Hj[h+1])*Xi[i][0])
 
                 ##Lets reset the Agregation for each neuron
-                Aj[:][0] = 0
-                Ak[:][0] = 0
+                Aj[:][:] = 0 #Cambio
+                Ak[:][:] = 0
 
             ##Lets show the iteration we are in and print the ecm for that iteration
             print(f'Iter: {it}')
@@ -100,6 +102,7 @@ class PerceptronMulti:
 
             ##Lets check the stop condition
             flag_training = False
+            '''
             for n in range(0, Yk.shape[0]):
                 if ecmT[n][it] != stop_condition:
                     flag_training = True
@@ -107,6 +110,12 @@ class PerceptronMulti:
             if flag_training == False:
                 it = iter-1
                 break
+            '''
+
+        #Salidas y deseados para cada salida
+        #for n in range(0, train_labels.shape[1]):
+            #print(f'Yd: {Yd[n][0]}')
+            #print(f'Yk: {Yk[n][0]}')
 
         for n in range(0, Yk.shape[0]):
             plt.figure()
