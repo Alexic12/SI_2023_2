@@ -3,6 +3,7 @@ from hubs.models.perceptron  import Perceptron
 from hubs.models.perceptronmulti import Perceptronmulti
 #from hubs.models.perceptronprofe  import Perceptron
 from hubs.models.ffm_tf import ffm_tf
+from hubs.models.xgboost import xgb
 
 class Neural:
     def __init__(self):
@@ -18,7 +19,6 @@ class Neural:
             P = Perceptron()
             P.run(train_features, test_features, train_labels, test_labels, iter, alpha,stop_condition)
             
-            
         elif model == 'ffm_tf':
             print('Running FFM model')
             ##Code for the perceptron model
@@ -28,6 +28,11 @@ class Neural:
         elif model == 'perceptron_multi':
             print('Running perceptron_multi model')
             P = Perceptronmulti()
+            P.run(train_features, test_features, train_labels, test_labels, iter, alpha,stop_condition)
+            
+        elif model == 'xgb':
+            print('Running XGBoost model')
+            P = xgb(depth = 10)
             P.run(train_features, test_features, train_labels, test_labels, iter, alpha,stop_condition)
             
 
