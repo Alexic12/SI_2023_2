@@ -3,7 +3,7 @@ from hubs.neural_hub import Neural
 N = Neural()
 
 N.run_model(
-    model = 'ffm_tf', 
+    model = 'xgb', 
     file_name= 'ETHEREUM_PRICE.xlsx', 
     iter = 500, 
     alfa = 0.002, 
