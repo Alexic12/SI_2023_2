@@ -14,6 +14,9 @@ import sys
 ##import tools for data visualization
 import matplotlib.pyplot as plt
 
+##import the metrics libraries
+from sklearn.metrics import accuracy_score as acs
+
 
 class ffm_tf:
     def __init__(self):
@@ -46,6 +49,12 @@ class ffm_tf:
         plt.plot(pred_out, 'r', label='Prediction Output')
         plt.plot(test_labels, 'b', label='Real Output')
         plt.show()
+
+        ##SKLEARN for accuracy metrics
+        accuracy = acs(test_labels.astype(int), pred_out.astype(int)) * 100
+        print(f'Accuracy: {accuracy:.2f}%')
+
+
 
 
 

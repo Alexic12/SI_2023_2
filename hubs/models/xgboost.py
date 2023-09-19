@@ -8,12 +8,15 @@ import matplotlib.pyplot as plt
 ##lets import the neural model libraries
 import xgboost as xg
 
+##import the metrics libraries
+from sklearn.metrics import accuracy_score as acs
+
 class xgb:
     def __init__(self, depth):
         self.depth = depth ##depth of decision tree
 
 
-    def run(self, train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition):
+    def run(self, train_features, test_features, train_labels, test_labels, original_features, iter, alfa, stop_condition, chk_name, train):
         ##lets build the model
         ##number of inputs  (for example 13 inputs, i have a depth of 10 n_estimators will be (inputs+1)*depth)
         model = self.build_model((train_features.shape[1]+1)*self.depth, alfa, 1)
@@ -21,22 +24,84 @@ class xgb:
         ##lets create an evaluation set
         eval_set = [(train_features, train_labels),(test_features, test_labels)]
 
-        ##lets train the model
-        model.fit(train_features, train_labels, eval_metric='mae', eval_set=eval_set, verbose=True)
+        if train:
+            ##lets train the model
+            model.fit(train_features, train_labels, eval_metric='mae', eval_set=eval_set, verbose=True)
 
-        ##lets plot results
-        history = model.evals_result()
+            ##lets plot results
+            history = model.evals_result()
 
-        ##print(history)
-        train_hist = history['validation_0']['mae']
+            ##print(history)
+            train_hist = history['validation_0']['mae']
 
-        plt.figure()
-        plt.plot(train_hist, 'r', label='Training Loss Function')
-        plt.xlabel('Epoch')
-        plt.ylabel('mae')
-        plt.title('Training History')
-        plt.legend()
-        plt.show()
+            plt.figure()
+            plt.plot(train_hist, 'r', label='Training Loss Function')
+            plt.xlabel('Epoch')
+            plt.ylabel('mae')
+            plt.title('Training History')
+            plt.legend()
+            plt.show()
+
+            ##validation step
+            pred_out = model.predict(test_features)
+
+            plt.figure()
+            plt.plot(pred_out, 'r', label='Model output')
+            plt.plot(test_labels, 'b', label='Real output')
+            plt.xlabel('data points')
+            plt.ylabel('Normalized value')
+            plt.title('Validation')
+            plt.legend()
+            plt.show()
+
+            ##lets show the accuracy value for this training batch
+            accuracy = acs(test_labels.astype(int), pred_out.astype(int)) * 100
+            print(f'Accuracy: {accuracy:.2f}%')
+
+            ##lets ask if the user wants to store the model
+            r = input('Savel model? (Y-N)')
+            if r == 'Y':
+                model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'checkpoints', 'xgboost'))
+                checkpoint_file = os.path.join(model_dir, f'{chk_name}.json')
+                print(f'Checkpoint path: {checkpoint_file}')
+                model.save_model(checkpoint_file)
+                print('Model Saved!')
+
+            elif r == 'N':
+                print('Model NOT saved')
+
+            else:
+                print('Command not recognized')
+        else:
+            ##we are not training a model here, just using an already existing model
+            model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'checkpoints', 'xgboost'))
+            checkpoint_file = os.path.join(model_dir, f'{chk_name}.json')
+            ##lets load the model
+            model.load_model(checkpoint_file)
+
+            ##prediction output
+            pred_out = model.predict(train_features)
+            
+            data = pd.DataFrame(train_features)
+
+            print(f'Dataframe: {data}')
+
+            plt.figure()
+            plt.plot(pred_out, 'r', label='Model output')
+            plt.plot(train_labels, 'b', label='Real output')
+            plt.xlabel('data points')
+            plt.ylabel('Normalized value')
+            plt.title(f'Prediction Output of model {chk_name}')
+            plt.legend()
+            plt.show()
+
+            ##lets show the accuracy value for this training batch
+            accuracy = acs(train_labels.astype(int), pred_out.astype(int)) * 100
+            print(f'Prediction accuracy: {accuracy:.2f}%')
+
+            
+
+
 
 
 
