@@ -11,12 +11,16 @@ import xgboost as xg
 ##import the metrics libraries
 from sklearn.metrics import accuracy_score as acs
 
+##for denormalizing the data
+from sklearn.preprocessing import StandardScaler
+
+
 class xgb:
     def __init__(self, depth):
         self.depth = depth ##depth of decision tree
 
 
-    def run(self, train_features, test_features, train_labels, test_labels, original_features, iter, alfa, stop_condition, chk_name, train):
+    def run(self, train_features, test_features, train_labels, test_labels, original_features, original_labels, iter, alfa, stop_condition, chk_name, train, neurons):
         ##lets build the model
         ##number of inputs  (for example 13 inputs, i have a depth of 10 n_estimators will be (inputs+1)*depth)
         model = self.build_model((train_features.shape[1]+1)*self.depth, alfa, 1)
@@ -73,6 +77,7 @@ class xgb:
             else:
                 print('Command not recognized')
         else:
+            ##
             ##we are not training a model here, just using an already existing model
             model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'checkpoints', 'xgboost'))
             checkpoint_file = os.path.join(model_dir, f'{chk_name}.json')
@@ -81,10 +86,35 @@ class xgb:
 
             ##prediction output
             pred_out = model.predict(train_features)
-            
-            data = pd.DataFrame(train_features)
 
-            print(f'Dataframe: {data}')
+            ##lets denormalize the data
+            SC = StandardScaler()
+
+            original_labels_norm = SC.fit_transform(original_labels)
+            
+            if neurons == 1:
+                pred_out = pred_out.reshape(-1,1)
+            
+            pred_out_denorm = SC.inverse_transform(pred_out)
+
+            pred_df = pd.DataFrame(pred_out_denorm)
+
+            result_data = pd.concat([original_features, pred_df], axis=1)
+
+            print(f'Dataframe: {result_data}')
+
+
+            results_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data', 'results'))
+
+            #print(results_dir)
+
+            results_file = os.path.join(results_dir, f'{chk_name}_RESULTS_XGB.xlsx')
+
+            ##original_features.to_excel('output.xlsx', index=False, engine='openpyxl')
+
+            ##lets store the dataframe as excel file
+            result_data.to_excel(results_file, index=False, engine='openpyxl')
+
 
             plt.figure()
             plt.plot(pred_out, 'r', label='Model output')
@@ -98,12 +128,6 @@ class xgb:
             ##lets show the accuracy value for this training batch
             accuracy = acs(train_labels.astype(int), pred_out.astype(int)) * 100
             print(f'Prediction accuracy: {accuracy:.2f}%')
-
-            
-
-
-
-
 
 
     def build_model(self, n_estimators, learning_rate, verbosity):
