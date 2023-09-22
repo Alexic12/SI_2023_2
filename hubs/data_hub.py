@@ -31,6 +31,12 @@ class data:
         ##lets load the raw excel file 
         data_raw = pd.read_excel(excel_path,sheet_name=0)
         
+        ##lets store the original feature
+        
+        columns = data_raw.shape[1]
+        original_feature = data_raw[data_raw.columns[:columns-neurons]]
+        
+        
         ##lets confert the raw data to an array 
         data_arr = np.array(data_raw)
         
@@ -92,4 +98,4 @@ class data:
         
         
         
-        return train_features, test_features, train_labels, test_labels
+        return train_features, test_features, train_labels, test_labels, original_feature

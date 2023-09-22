@@ -9,9 +9,9 @@ class Neural:
     def __init__(self):
         pass
     
-    def run_model(self,model,file_name, iter, alpha,test_split,norm,stop_condition,neurons,avoid_col):
+    def run_model(self,model,file_name, iter, alpha,test_split,norm,stop_condition,neurons,avoid_col,chk_name,train):
         Data = data()
-        train_features, test_features, train_labels, test_labels = Data.data_process(file_name,test_split,norm,neurons,avoid_col)
+        train_features, test_features, train_labels, test_labels, original_feature = Data.data_process(file_name,test_split,norm,neurons,avoid_col)
         
         if model == 'perceptron':
             print('Running perceptron model')
@@ -33,7 +33,7 @@ class Neural:
         elif model == 'xgb':
             print('Running XGBoost model')
             P = xgb(depth = 10)
-            P.run(train_features, test_features, train_labels, test_labels, iter, alpha,stop_condition)
+            P.run(train_features, test_features, train_labels, test_labels, original_feature, iter, alpha,stop_condition,chk_name,train)
             
 
         

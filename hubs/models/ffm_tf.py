@@ -10,6 +10,8 @@ import sys
 ##import tools for data visualization 
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
+##import the metric libraries 
+from sklearn.metrics import accuracy_score as acs
 
 
 class ffm_tf:
@@ -17,6 +19,7 @@ class ffm_tf:
         pass
     
     def run(self,train_features, test_features, train_labels, test_labels, iter, alpha, stop_condition):
+        
         model = self.build_model(train_features.shape[1] + 1, train_labels.shape[1], alpha)
         
         ##lets maje an stop function 
@@ -45,6 +48,11 @@ class ffm_tf:
         plt.plot(data_labels_norm, 'r', label='Prediction output')
         plt.plot(test_labels, 'b', label='Real output')
         plt.show()
+        
+        #accuracy metric 
+        accurancy = acs(test_labels.astype(int),data_labels_norm.astype(int))*100
+        
+        print(f'Accurancy: {accurancy:.2f}%')
         
         
         
