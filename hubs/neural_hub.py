@@ -2,6 +2,7 @@
 from hubs.data_hub import Data
 from hubs.models.perceptron import Perceptron
 from hubs.models.perceptron_multicapa import Perceptron_Multicapa
+from hubs.models.ffm_tf import ffm_tf
 
 
 
@@ -10,9 +11,9 @@ class Neural:
     def __init__(self):
         pass
     
-    def run_model(self, model, file_name,iter,alfa,test_split,norm,stop_condition,outputs,avoid_col):
+    def run_model(self, model, file_name,iter,alfa,test_split,norm,stop_condition,outputs,avoid_col,chk_name,train):
         data = Data()
-        train_features,test_features,train_labels,test_labels= data.data_process(file_name,test_split,norm,outputs,avoid_col)
+        train_features,test_features,train_labels,test_labels, original_features= data.data_process(file_name,test_split,norm,outputs,avoid_col)
         
         if model == "perceptron":
             print("Running Perceptron Model")
@@ -20,11 +21,18 @@ class Neural:
             P = Perceptron()
             P.run(train_features,test_features,train_labels,test_labels,iter,alfa,stop_condition)
             
-        elif model == "ffm":
+        elif model == "ffm_tf":
             print("Running FFM Model")
-            ##Code for FFM model
+            P = ffm_tf()
+            P.run(train_features,test_features,train_labels,test_labels,iter,alfa,stop_condition)
+
             
         elif model == "perceptron_multicapa":
             print("Running Perceptron Multicapa Model")
             P = Perceptron_Multicapa()
             P.run(train_features,test_features,train_labels,test_labels,iter,alfa,stop_condition)
+
+        elif model == "xgb":
+            print("Running XDGBoost Model")
+            P = xgb(depth = 10)
+            P.run(train_features,test_features,train_labels,test_labels, original_features,iter,alfa,stop_condition,chk_name,train)

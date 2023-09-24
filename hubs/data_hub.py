@@ -26,12 +26,18 @@ class Data:
         
         ##load the excel file
         data_raw = pd.read_excel(excel_path,sheet_name = 0)
-        
+
+        ##Storing the original features
+        columns = data.raw.shape[1]
+        original_features = data_raw[data_raw.columns[:]]
+
         data_arr = np.array(data_raw)
         
+
         #Split in features(inputs) and labels(outputs)
         data_features = data_arr[:,avoid_col:-outputs]
         data_labels = data_arr[:,-outputs:]
+
         if outputs == 1 :
             data_labels= data_labels.reshape(-1,1)
             
@@ -70,7 +76,7 @@ class Data:
             print(f"Features: {train_features}")
             print(f"Labels: {train_labels}")
         
-        return train_features,test_features,train_labels,test_labels
+        return train_features,test_features,train_labels,test_labels,original_features
 
         
         
