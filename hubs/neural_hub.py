@@ -24,7 +24,7 @@ class Neural:
         elif model == "ffm_tf":
             print("Running FFM Model")
             P = ffm_tf()
-            P.run(train_features,test_features,train_labels,test_labels,iter,alfa,stop_condition)
+            P.run(train_features,test_features,train_labels,test_labels,iter,alfa,stop_condition,chk_name)
 
             
         elif model == "perceptron_multicapa":

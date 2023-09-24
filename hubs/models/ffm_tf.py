@@ -22,7 +22,7 @@ class ffm_tf:
     def _init_(self):
         pass
 
-    def run(self, train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition):
+    def run(self, train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition,chk_name):
         model = self.build_model(train_features.shape[1] + 1, train_labels.shape[1], alfa)
 
         ##lets make an stop function
@@ -54,16 +54,17 @@ class ffm_tf:
         accuracy = acs(test_labels.astype(int), pred_out.astype(int)) * 100
         print(f'Accuracy: {accuracy:.2f}%')
 
+        r = input("Save Model? : ")
+        if r == "Y":
+                model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'checkpoints', 'ffm_tf'))
+                checkpoint_file = os.path.join(model_dir, f"{chk_name}.h5")
+                model.save_model(checkpoint_file)
+        elif r == "N":
+                print("Model NOT Saved")
 
-
-
-
-
-
-
-
-
-
+        else:
+                print("Command not recognized")
+            
     def build_model(self, hidden_neurons, output, alfa):
         model = keras.Sequential([
             Dense(hidden_neurons, activation=tf.nn.sigmoid, input_shape=[hidden_neurons-1]),

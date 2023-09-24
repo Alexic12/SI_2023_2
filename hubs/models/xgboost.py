@@ -15,7 +15,7 @@ class xgb:
         self.depth = depth       
         
     def run(self, train_features, test_features, train_labels, test_labels, original_features, iter, alfa, stop_condition,chk_name,train):
-        model = self.build_model((train_features.shape[1]+1)*selef.depth, self.depth, alfa, 1)
+        model = self.build_model((train_features.shape[1]+1)*self.depth, self.depth, alfa, 1)
         ##Evaluation set
         eval_set = [(train_features, train_labels),(test_features, test_labels)]
 
