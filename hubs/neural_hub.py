@@ -3,6 +3,8 @@ from hubs.data_hub import Data
 from hubs.models.perceptron import Perceptron
 from hubs.models.perceptron_multicapa import Perceptron_Multicapa
 from hubs.models.ffm_tf import ffm_tf
+from hubs.models.xgboost import xgb
+
 
 
 

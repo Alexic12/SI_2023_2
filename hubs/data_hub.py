@@ -28,7 +28,7 @@ class Data:
         data_raw = pd.read_excel(excel_path,sheet_name = 0)
 
         ##Storing the original features
-        columns = data.raw.shape[1]
+        columns = data_raw.shape[1]
         original_features = data_raw[data_raw.columns[:columns-outputs]]
         original_labels = data_raw[data_raw.columns[columns-outputs:columns]]
 

@@ -18,7 +18,7 @@ class xgb:
         self.depth = depth       
         
     def run(self, train_features, test_features, train_labels, test_labels, original_features,original_labels, iter, alfa, stop_condition,chk_name,train,outputs):
-        model = self.build_model((train_features.shape[1]+1)*self.depth, self.depth, alfa, 1)
+        model = self.build_model((train_features.shape[1]+1)*self.depth, alfa, 1)
         ##Evaluation set
         eval_set = [(train_features, train_labels),(test_features, test_labels)]
 
@@ -69,7 +69,7 @@ class xgb:
                 print("Command not recognized")
         else:
             ##NOT TRAINING , USING AN ALREADY EXISTING MODEL, MUST BE EQUAL DIMENSION
-            model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'checkpoints', 'xgboost'))
+            #model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'checkpoints', 'xgboost'))
             checkpoint_file = os.path.join(model_dir, f"{chk_name}.json")
             model.load_model(checkpoint_file)
 
@@ -87,6 +87,8 @@ class xgb:
             pred_df = pd.DataFrame(pred_out_denorm)
             result_data=pd.concat([original_features, pred_df], axis = 1)
 
+            results_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data', 'results'))
+            
             plt.figure()
             plt.plot(pred_out, "r", label="Model Output")
             plt.plot(train_labels, "b", label="Real Output")
