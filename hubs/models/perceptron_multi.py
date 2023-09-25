@@ -8,7 +8,7 @@ class Perceptron_multi:
     def run(self, train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition):
         print('Training perceptron network...')
 
-        hidden_neurons = train_features.shape[1] + 2  # numero recomendado
+        hidden_neurons = train_features.shape[1] + 4  # numero recomendado
 
         xi = np.zeros((train_features.shape[1], 1)) # input vector
 
@@ -87,8 +87,8 @@ class Perceptron_multi:
                         for o in range(0, yk.shape[0]):
                             wij[h][i] = wij[h][i] + alfa*ek[o][0]*yk[o][0]*(1 - yk[o][0])*cjk[o][h+1]*hj[h+1][0]*(1 - hj[h+1])*xi[i][0]
 
-                aj[:][0] = 0
-                bk[:][0] = 0
+                aj[:][:] = 0
+                bk[:][:] = 0
 
             print(f'Iter {it}')
             for n in range(0, yk.shape[0]):

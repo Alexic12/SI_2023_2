@@ -15,9 +15,9 @@ class Data:
     
     """
     def __init__(self):
-        pass
+        self.scaler = StandardScaler()##Create an object of this library in particular
 
-    def data_process(self, file, test_split, norm, neurons):
+    def data_process(self, file, test_split, norm, neurons, avoid_col):
         ##lets define the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data')) # __file__ es un atributo
                                                                                     #que me permite obtener el
@@ -57,6 +57,13 @@ class Data:
                                                             # columnas, empieza a numerar desde la primera fila 
                                                             # que tenga numeros
 
+        ##lets store the original features
+        columns = data_raw.shape[1]
+        original_features = data_raw[data_raw.columns[:columns-neurons]]
+        original_labels = data_raw[data_raw.columns[columns-neurons:columns]]
+        print(f'Original_features {original_features}')
+        print(f'Original_labels {original_labels}')
+
         ##lets convert the raw data to an array
         data_arr = np.array(data_raw)
 
@@ -85,7 +92,7 @@ class Data:
                                                                 # determinado desde cero, por esto se le suma 1,
                                                                 # para que no empiece desde cero
         ##lets split the data into features and labels
-        data_features = data_arr[:, 0:-neurons] #todas las columnas excepto la ultima
+        data_features = data_arr[:,avoid_col:-neurons] # la ultima columna no en este caso
         data_labels = data_arr[:, -neurons:]
 
         if neurons == 1:
@@ -104,10 +111,8 @@ class Data:
 ###################################################################################################
         ##lets normalize the data
         if norm == True:
-            scaler = StandardScaler()#crea un objeto de esta libreria en particular
-
-            data_features_norm = scaler.fit_transform(data_features)
-            data_labels_norm = scaler.fit_transform(data_labels)
+            data_features_norm = self.scaler.fit_transform(data_features)
+            data_labels_norm = self.scaler.fit_transform(data_labels)  
 
         else:
             data_features_norm = data_features
@@ -132,4 +137,5 @@ class Data:
             train_labels = data_labels_norm
             print(f'Features: {train_features}')
             print(f'Labels: {train_labels}')
-        return train_features, test_features, train_labels, test_labels
+
+        return train_features, test_features, train_labels, test_labels, original_features, original_labels

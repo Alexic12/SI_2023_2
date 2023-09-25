@@ -1,4 +1,6 @@
-numpy 
+numpy
 pandas
 scikit-learn
 openpyxl
+tensorflow
+xgboost
