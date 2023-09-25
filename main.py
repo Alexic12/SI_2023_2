@@ -2,15 +2,18 @@ from hubs.neural_hub import Neural
 
 N = Neural()
 
-# N.run_model(model = 'perceptron_multi', file_name = 'ETHEREUM_PRICE.xlsx', iter = 100, alfa= 0.2, test_split = 0, norm=True, stop_condition=0.5, nfl = 2, neurons = 1)
-N.run_model(model = 'xgb', file_name = 'HEART_DISEASE_DB.xlsx', iter = 500, alfa=0.1, test_split = 0.1, norm = True, stop_condition = 50, neurons = 1, avoid_col = 0)
+model = 'ffm_tf'
+file_name = 'ETHEREUM_PRICE.xlsx'
+iter = 500
+alfa=0.7
+test_split = 0.1
+norm = True
+stop_condition = 50
+output = 1
+avoid_col = 0
+chk_name = 'ETH_1ffm_tf'
+train = True
 
-##avoid column cuantas columnas quiero evitar al principio
 
-
-
-
-
-
-
-
+N.run_model(model = model, file_name = file_name, iter = iter, alfa=alfa, test_split = test_split, norm = norm, stop_condition = stop_condition, neurons = output, avoid_col = avoid_col, chk_name = chk_name, train = train)
+## Avoid columns para quitar la ultima columna
