@@ -10,11 +10,14 @@ import xgboost as xg
 ##Accuracy
 from sklearn.metrics import accuracy_score as acs
 
+##Denormalize data
+from sklearn.preprocessing import StandardScaler
+
 class xgb:
     def __init__(self,depth):
         self.depth = depth       
         
-    def run(self, train_features, test_features, train_labels, test_labels, original_features, iter, alfa, stop_condition,chk_name,train):
+    def run(self, train_features, test_features, train_labels, test_labels, original_features,original_labels, iter, alfa, stop_condition,chk_name,train,outputs):
         model = self.build_model((train_features.shape[1]+1)*self.depth, self.depth, alfa, 1)
         ##Evaluation set
         eval_set = [(train_features, train_labels),(test_features, test_labels)]
@@ -71,6 +74,18 @@ class xgb:
             model.load_model(checkpoint_file)
 
             pred_out = model.predict(train_features)
+
+            sc = StandardScaler()
+            ##Denormalizing data
+            original_labels_norm= sc.fit_transform(original_labels)
+
+            if outputs == 1:
+                pred_out = pred_out.reshape(-1,1)
+
+            pred_out_denorm = sc.inverse_transform(pred_out)
+            
+            pred_df = pd.DataFrame(pred_out_denorm)
+            result_data=pd.concat([original_features, pred_df], axis = 1)
 
             plt.figure()
             plt.plot(pred_out, "r", label="Model Output")

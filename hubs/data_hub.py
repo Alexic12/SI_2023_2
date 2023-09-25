@@ -15,7 +15,7 @@ class Data:
     Methods:
     """
     def __init__(self):
-        pass
+        self.scaler = StandardScaler()
     
     def data_process(self,file, test_split,norm,outputs,avoid_col):
         ##Absolute path:
@@ -29,7 +29,9 @@ class Data:
 
         ##Storing the original features
         columns = data.raw.shape[1]
-        original_features = data_raw[data_raw.columns[:]]
+        original_features = data_raw[data_raw.columns[:columns-outputs]]
+        original_labels = data_raw[data_raw.columns[columns-outputs:columns]]
+
 
         data_arr = np.array(data_raw)
         
@@ -58,9 +60,8 @@ class Data:
             
         #Normalize data
         if norm ==True:
-            scaler = StandardScaler()
-            data_features_norm = scaler.fit_transform(data_features)
-            data_labels_norm = scaler.fit_transform(data_labels)
+            data_features_norm = self.scaler.fit_transform(data_features)
+            data_labels_norm = self.scaler.fit_transform(data_labels)
         else:
             data_features_norm = data_features
             data_labels_norm = data_labels
@@ -76,8 +77,6 @@ class Data:
             print(f"Features: {train_features}")
             print(f"Labels: {train_labels}")
         
-        return train_features,test_features,train_labels,test_labels,original_features
-
-        
+        return train_features,test_features,train_labels,test_labels,original_features,original_labels
         
         

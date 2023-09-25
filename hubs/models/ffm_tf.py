@@ -54,6 +54,7 @@ class ffm_tf:
         accuracy = acs(test_labels.astype(int), pred_out.astype(int)) * 100
         print(f'Accuracy: {accuracy:.2f}%')
 
+        ##Asking if the user wants to store the model
         r = input("Save Model? : ")
         if r == "Y":
                 model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'checkpoints', 'ffm_tf'))
