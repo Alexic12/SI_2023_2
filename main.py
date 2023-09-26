@@ -2,7 +2,7 @@ from hubs.neural_hub import Neural # Con esta linea llamamos a hubs.neural_hub e
 
 N = Neural()
 
-N.run_model(model = 'ffm_tf', file_name = 'ETHEREUM_PRICE.xlsx', iter = 500, alfa=0.02, test_split = 0.1, norm = True, stop_condition = 50, neurons = 1, avoid_cols = 0)
+N.run_model(model = 'xgb', file_name = 'HEART_DISEASE_DB.xlsx', iter = 500, alfa=0.2, test_split = 0.1, norm = True, stop_condition = 50, neurons = 1, avoid_cols = 0)
 
 # model : aqui pones el nombre del modelo que deseamos utilizar por ahora tenemos el perceptron multi y el perceptron solito 
 # file_name: Aqui es donde se pone el archivo.xlsx donde debe estar organzido y con porcesamiento de datos , recordar si el archvio llega como scv cambiarlo a Xls. 
