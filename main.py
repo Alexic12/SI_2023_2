@@ -2,9 +2,9 @@ from hubs.neural_hub import Neural
 
 N = Neural()
 
-model = 'xgb'
+model = 'conv_tf'
 file_name = 'ETHEREUM_PRICE.xlsx'
-iter = 500
+iter = 2
 alfa=0.7
 test_split = 0
 norm = True

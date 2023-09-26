@@ -10,6 +10,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split as tts
 
+import tensorflow
+from tensorflow import keras
+
 class Data:
     """
     Attributes:
@@ -105,5 +108,17 @@ class Data:
         return data_denorm
 
 
+    def download_database(self, database):
+        if database == 'MNIST':
+            (train_images, train_labels),(test_images, test_labels) = keras.datasets.mnist.load_data()
+
+        elif database == 'CIFAR10':
+            pass
+        elif database == 'CIFAR100':
+            pass
+
+        return train_images, test_images, train_labels, test_labels 
+
+    
 
 
