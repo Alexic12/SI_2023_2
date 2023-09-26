@@ -4,6 +4,8 @@ from hubs.models.perceptron import Perceptron
 from hubs.models.perceptron_multicapa import Perceptron_Multicapa
 from hubs.models.ffm_tf import ffm_tf
 from hubs.models.xgboost import xgb
+from hubs.models.conv_tf import conv_tf
+
 
 
 
@@ -26,7 +28,7 @@ class Neural:
         elif model == "ffm_tf":
             print("Running FFM Model")
             P = ffm_tf()
-            P.run(train_features,test_features,train_labels,test_labels,iter,alfa,stop_condition,chk_name)
+            P.run(train_features,test_features,train_labels,test_labels,iter,alfa,stop_condition,chk_name,train,outputs)
 
             
         elif model == "perceptron_multicapa":
@@ -38,3 +40,9 @@ class Neural:
             print("Running XDGBoost Model")
             P = xgb(depth = 10)
             P.run(train_features,test_features,train_labels,test_labels, original_features,original_labels,iter,alfa,stop_condition,chk_name,train,outputs)
+        
+        elif model == "conv_tf":
+            print("Running Convolutional TF Model")
+            P= conv_tf()
+            P.run(train_images, test_images, train_labels, test_labels, iter)
+        

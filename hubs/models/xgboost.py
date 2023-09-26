@@ -69,7 +69,7 @@ class xgb:
                 print("Command not recognized")
         else:
             ##NOT TRAINING , USING AN ALREADY EXISTING MODEL, MUST BE EQUAL DIMENSION
-            #model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'checkpoints', 'xgboost'))
+            model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'checkpoints', 'xgboost'))
             checkpoint_file = os.path.join(model_dir, f"{chk_name}.json")
             model.load_model(checkpoint_file)
 
