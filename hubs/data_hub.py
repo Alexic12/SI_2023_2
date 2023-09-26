@@ -20,7 +20,7 @@ class Data:
     def __init__(self):
         pass
     
-    def data_process(self, file, test_split, norm, neurons):
+    def data_process(self, file, test_split, norm, outputs, avoid_col):
         #Lets define the absolute path for this folder
         dara_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),"..","data"))
         
@@ -49,12 +49,12 @@ class Data:
                  
 
         #Lets split the data into features=inputs and labels=outputs
-        data_features = data_arr[:,0:-neurons] #todas las filas y desde la primera colm hasta la penultima
-        data_labels = data_arr[:,-neurons:]#todas las filas y la ultima colum
+        data_features = data_arr[:,avoid_col:-outputs] #todas las filas y desde la primera colm hasta la penultima
+        data_labels = data_arr[:,-outputs:]#todas las filas y la ultima colum
 
         print(f"data_features: {data_features}")
         print(f"data_labels: {data_labels}")
-        if neurons == 1:
+        if outputs == 1:
             data_labels = data_labels.reshape(-1, 1)
         
         #make sure the dimentions
