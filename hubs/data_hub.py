@@ -1,5 +1,8 @@
 import os
 import sys
+import tensorflow as tf 
+from tensorflow import keras 
+from keras.layers import Dense
 
 import pandas as pd
 import numpy as np
@@ -9,6 +12,7 @@ import sklearn.model_selection
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split as tts
+
 
 class Data:
     """
@@ -103,3 +107,17 @@ class Data:
         data_denorm = self.scaler.inverse_transform(data)
 
         return data_denorm
+    
+
+
+    def download_database(self,database):
+        if database == "MNIST":
+            (train_images, train_labels), (test_images, test_labels)=keras.datasets.mnist.load_data()
+
+        elif database =="CIFAR10":
+            pass
+
+        elif database == "CIFAR100":
+            pass
+
+        return train_images, test_images, train_labels, test_labels

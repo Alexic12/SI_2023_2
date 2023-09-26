@@ -69,7 +69,7 @@ class ffm_tf:
             
         else:
             ##We are not training a model here, just using an already existing model
-            model_dir = os.path.abspath(os.path.join(os.path.dirname(_file_), 'checkpoints', 'ffm_tf'))
+            model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'checkpoints', 'ffm_tf'))
             chekpoint_file = os.path.join(model_dir, f'{chk_name}.h5')
 
             ##Let's load the model
@@ -94,7 +94,7 @@ class ffm_tf:
 
             print(f'Dataframe : {result_data}')
             
-            results_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(_file_))),'data','results'))
+            results_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),'data','results'))
 
             results_file = os.path.join(results_dir, f'{chk_name}_RESULTS_FFM.xlsx')
 
