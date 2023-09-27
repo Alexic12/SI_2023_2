@@ -1,71 +1,90 @@
 import numpy as np
 import matplotlib.pyplot as plt
+
 class Perceptron:
     def __init__(self):
         pass
-    
+
     def run(self, train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition):
-        print("Entrenar Perceptron")
-        #Organizar Datos
-        Xi = np.zeros((train_features.shape[1]+1, 1)) #Vector Entradas
+        print('Training perceptron network.....')
+        ##here is where all the neural network code is gonna be
 
-        Wij = np.zeros((train_labels.shape[0], train_features.shape[1]+1))#Matriz pesos
+        ##Lets organize the data 
+       
+        Xi = np.zeros((train_features.shape[1] + 1, 1)) # Input vector
 
-        Aj = np.zeros((train_labels.shape[0], 1))#Vector agregacion
+        Wij = np.zeros((train_labels.shape[1], train_features.shape[1] + 1)) # Weight Matrix
 
-        Yk = np.zeros((train_labels.shape[0], 1))#Vector salidas
+        Aj = np.zeros((train_labels.shape[1],1)) # Agregation vector
 
-        Yd = np.zeros((train_labels.shape[0], 1))#Vector Labels
+        Yk = np.zeros((train_labels.shape[1],1)) # Neural Output vector
 
-        Ek = np.zeros((train_labels.shape[0], 1))#Vector Error
+        Yd = np.zeros((train_labels.shape[1],1)) #Label Vector
 
-        ecm = np.zeros((train_labels.shape[0], 1))#Error cuadratico medio
+        Ek = np.zeros((train_labels.shape[1],1)) # Error vector
 
-        ecmT = np.zeros((train_labels.shape[0], iter))#ECM total por iteracion
+        ecm = np.zeros((train_labels.shape[1],1)) #ECM vector for each iteration
 
-        for i in range(Wij.shape[0]):#Llenar con pesos aleatorios entre -1 y 1
-            for j in range(Wij.shape[1]):
-                Wij[i][j] = np.random.uniform(-1, 1)
+        ecmT = np.zeros((train_labels.shape[1],iter)) ##ECM results for every iteration
 
-        for it in range(iter):
-            for d in range(train_features.shape[0]):
-                #meter datos a Xi
-                Xi[0][0] = 1 #Bias
-                for i in range(train_features.shape[1]):
+        ##Fill the Wieght Matrix before training
+        for i in range(0,Wij.shape[0]):
+            for j in range(0, Wij.shape[1]):
+                Wij[i][j] = np.random.uniform(-1,1)
+
+        print(f'W: {Wij}')
+        
+
+        for it in range(0, iter):
+            for d in range(0, train_features.shape[0]):
+                ##pass the data inputs to the input vector Xi
+                Xi[0][0] = 1 ##Bias
+                for i in range(0, train_features.shape[1]):
                     Xi[i+1][0] = train_features[d][i]
-                #Calcular agregacion para cada neurona
-                for n in range(Aj.shape[0]):
-                    for n_input in range(Xi.shape[0]):
+                
+                ##Lets calculate the Agregation for each neuron
+                for n in range(0, Aj.shape[0]):
+                    for n_input in range(0,Xi.shape[0]):
                         Aj[n][0] = Aj[n][0] + Xi[n_input]*Wij[n][n_input]
-                #calcular output por cada neurona
-                for n in range(Yk.shape[0]):
+
+                ##lets Calculate the output for each neuron
+                for n in range(0, Yk.shape[0]):
                     if Aj[n][0] < 0:
                         Yk[n][0] = 0
                     else:
                         Yk[n][0] = 1
-                #Calcular error
-                for i in range(train_labels.shape[1]):
+
+                ##lets calculate the error for each neuron
+
+                ##Pass train_labels to Yd vector
+                for i in range(0,train_labels.shape[1]):
                     Yd[i][0] = train_labels[d][i]
 
-                for n in range(Ek.shape[0]):
-                    Ek[n][0] = Yd[n][0] - Yk[n][0]
-                    #ECM para este dato
-                    ecm[n][0] = ecm[n][0] + (Ek[n][0]**2)/2
-                #Entrenar pesos
-                for n in range(Yk.shape[0]):
-                    for w in range(Wij.shape[1]):
-                        Wij[n][w] = Wij[n][w] + alfa*Ek[n][0]*Xi[w][0]
                 
+                for n in range(0, Ek.shape[0]):
+                    Ek[n][0] = Yd[n][0]-Yk[n][0]
+                    ##lets add the ECM for this data point
+                    ecm[n][0] = ecm[n][0] + (((Ek[n][0])**2)/2)
+
+                #Weight Training
+                for n in range(0, Yk.shape[0]):
+                    for w in range(0,Wij.shape[1]):
+                        Wij[n][w] = Wij[n][w] + alfa*Ek[n][0]*Xi[w][0]
+
+                ##Lets reset the Agregation for each neuron
+                Aj[:][0] = 0
+
             print(f'Iter: {it}')
-            for n in range(Yk.shape[0]):
-                print(f'ECM {n} : {ecm[n][0]}')
+            for n in range(0, Yk.shape[0]):
+                print(f'ECM {n}: {ecm[n][0]}')
 
 
-            for n in range(Yk.shape[0]):
+            for n in range(0, Yk.shape[0]):
                 ecmT[n][it] = ecm[n][0]
                 ecm[n][0] = 0
-
-            #Revisar flag de terminado
+            
+            ##lets check the stop_condition
+            flag_training = False
             for n in range(0, Yk.shape[0]):
                 if ecmT[n][it] != stop_condition:
                     flag_training = True
@@ -73,10 +92,45 @@ class Perceptron:
             if flag_training == False:
                 it = iter - 1
                 break
-            
-        for n in range(Yk.shape[0]):
+
+
+        
+        print(f'W: {Wij}')
+        for n in range(0, Yk.shape[0]):
             plt.figure()
             plt.plot(ecmT[n][:], 'r', label = f'ECM Neurona {n}')
             plt.show()
+
+
+            
+
+            
+
+
+                
+
+
+                
+
+                
+
                 
                 
+                
+
+
+
+
+
+
+
+
+
+        ##training and testing is done here
+
+        
+
+
+
+
+        
