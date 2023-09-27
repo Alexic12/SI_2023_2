@@ -19,9 +19,9 @@ class Data:
     
     """
     def __init__(self):
-        pass
+        self.scaler = StandardScaler()##Create an object of this library in particular
 
-    def data_process(self, file, test_split, norm, neurons,avoid_col):
+    def data_process(self, file, test_split, norm, neurons, avoid_col):
         ##Lets define the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data'))
 
@@ -30,6 +30,17 @@ class Data:
 
         ##lets load the raw excel file
         data_raw = pd.read_excel(excel_path, sheet_name = 0)
+
+        #print(f'Data_Raw {data_raw}')
+
+        ##lets store the original features
+        columns = data_raw.shape[1]
+        original_features = data_raw[data_raw.columns[:columns-neurons]]
+        original_labels = data_raw[data_raw.columns[columns-neurons:columns]]
+        print(f'Original_features {original_features}')
+        print(f'Original_labels {original_labels}')
+
+        ##original_features.to_excel('output.xlsx', index=False, engine='openpyxl')
 
         ##Lets convert the raw data to an array
         data_arr = np.array(data_raw)
@@ -64,9 +75,8 @@ class Data:
 
         if norm == True:
             ##Lets normalize the data
-            scaler = StandardScaler()##Create an object of this library in particular
-            data_features_norm = scaler.fit_transform(data_features)
-            data_labels_norm = scaler.fit_transform(data_labels)    
+            data_features_norm = self.scaler.fit_transform(data_features)
+            data_labels_norm = self.scaler.fit_transform(data_labels)    
         else:
             data_features_norm = data_features
             data_labels_norm = data_labels
@@ -85,5 +95,11 @@ class Data:
             print(f'labels: {train_labels}')
 
 
-        return train_features, test_features, train_labels, test_labels
+        return train_features, test_features, train_labels, test_labels, original_features, original_labels
         
+
+    def denormalize(self, data):
+
+        data_denorm = self.scaler.inverse_transform(data)
+
+        return data_denorm

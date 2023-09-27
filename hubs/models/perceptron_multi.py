@@ -79,7 +79,7 @@ class PerceptronMulti:
 
                 ##Lets calculate the activation function of the output layer
                 for n in range(0,train_labels.shape[1]):
-                    Yk[n][0] = 1/(1+np.exp(-Ak[n][0])) ## funcion de activacion sigmoidal
+                    Yk[n][0] = 1/(1+np.exp(-Ak[n][0]))
 
                 ##Lets fill the Yd array with the labels for this data point
                 for i in range(0,train_labels.shape[1]):
@@ -149,17 +149,19 @@ class PerceptronMulti:
             plt.plot(ecmT[n][:], 'r', label = f'ECM Neurona {n}')
             plt.show()
 
+        
+
                 
 
 
+
+                    
+
+
+
+                
+
                 
 
 
-        
 
-
-
-
-
-        
-        
