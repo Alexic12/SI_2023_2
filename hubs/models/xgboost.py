@@ -7,13 +7,14 @@ import xgboost as xg
 from sklearn.preprocessing import StandardScaler
 ##import the metric libraries 
 from sklearn.metrics import accuracy_score as acs
+from hubs.data_hub import data
 
 class xgb:
     def __init__(self,depth):
         self.depth = depth
         
     
-    def run(self,train_features, test_features, train_labels, test_labels, original_feature,iter, alpha, stop_condition, chk_name, train):
+    def run(self,train_features, test_features, train_labels, test_labels, original_feature, original_labels,iter, alpha, stop_condition, chk_name, train, neurons):
         model = self.build_model((train_features.shape[1]+1)*self.depth,alpha,1)
         
         eval_set = [(train_features,train_labels),(test_features,test_labels)]
@@ -83,9 +84,36 @@ class xgb:
             ##Prediction output 
             pred_out = model.predict(train_features)
             
-            data = pd.DataFrame(train_features)
+            ##lets denormalize the data 
             
-            print(f'Dataframe: {data}')
+            sc = StandardScaler()
+            
+            original_labels_norm  = sc.fit_transform(original_labels)
+            
+            if neurons == 1:
+            
+                pred_out = pred_out.reshape(-1,1)
+            
+            pred_out_denorm = sc.inverse_transform(pred_out)
+            
+            pred_df = pd.DataFrame(pred_out_denorm)
+            
+            results_data = pd.concat([original_feature,pred_df], axis=1)
+            
+            print(f'Dataframe: {results_data}')
+            
+            results_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data', 'results'))
+            
+            #print(results_dir)
+            
+            results_file = os.path.join(results_dir, f'{chk_name}_results_xgb.xlsx')
+            
+            ##let sotre dataframe as excel file 
+            
+            results_data.to_excel(results_file, index = False, engine = 'openpyxl')
+            
+            
+            
             ##scaler = StandardScaler()
             ##data_labels_norm = scaler.fit_transform(pred_out)
             

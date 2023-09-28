@@ -7,6 +7,8 @@ import sklearn.model_selection
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split as tts 
+import tensorflow as tf 
+from tensorflow import keras
 
 
 class data:
@@ -19,7 +21,8 @@ class data:
     
     def __init__(self):
         
-        pass
+        self.scaler = StandardScaler()##create an object of this library 
+
     
     def data_process(self,file,test_split,norm,neurons,avoid_col):
         ##lets define the absolute path for this folder
@@ -35,6 +38,9 @@ class data:
         
         columns = data_raw.shape[1]
         original_feature = data_raw[data_raw.columns[:columns-neurons]]
+        original_labels = data_raw[data_raw.columns[columns-neurons:columns]]
+        print(f'Original_features {original_feature}')
+        print(f'Original_labels{original_labels}')
         
         
         ##lets confert the raw data to an array 
@@ -70,10 +76,9 @@ class data:
         
         if norm == True:
             ## lets normalize the data 
-            scaler = StandardScaler()##create an object of this library 
         
-            data_features_norm = scaler.fit_transform(data_features) 
-            data_labels_norm = scaler.fit_transform(data_labels)
+            data_features_norm = self.scaler.fit_transform(data_features) 
+            data_labels_norm = self.scaler.fit_transform(data_labels)
             
         else:
             data_features_norm = data_features
@@ -98,4 +103,28 @@ class data:
         
         
         
-        return train_features, test_features, train_labels, test_labels, original_feature
+        return train_features, test_features, train_labels, test_labels, original_feature, original_labels
+    
+    
+    def denormalize(self, data):
+        
+        data_denorm = self.scaler.inverse_transform(data)
+        
+        return data_denorm
+    
+    
+    def download_database(self, database):
+        if database == 'MNIST':
+            
+            (train_images, train_labels), (test_images, test_labels) = keras.datasets.mnist.load_data()
+            
+            
+        elif database == 'CIFAR10':
+            
+            pass
+            
+        elif database == 'CIFAR100':
+            
+            pass
+        
+        return train_images, test_images, train_labels, test_labels
