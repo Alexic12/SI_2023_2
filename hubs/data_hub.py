@@ -20,6 +20,7 @@ class Data:
     """
     def __init__(self):
         self.scaler = StandardScaler()##Create an object of this library in particular
+        #necesitamos iniciarlo como un objeto global para ingresar las variables necesarias para desnormalizar los datos
 
     def data_process(self, file, test_split, norm, neurons, avoid_col):
         ##Lets define the absolute path for this folder
@@ -34,8 +35,8 @@ class Data:
         #print(f'Data_Raw {data_raw}')
 
         ##lets store the original features
-        columns = data_raw.shape[1]
-        original_features = data_raw[data_raw.columns[:columns-neurons]]
+        columns = data_raw.shape[1] #con esto tomamos la cantidad de columnas del dataframe
+        original_features = data_raw[data_raw.columns[:columns-neurons]] #toma las columnas menos las salidas
         original_labels = data_raw[data_raw.columns[columns-neurons:columns]]
         print(f'Original_features {original_features}')
         print(f'Original_labels {original_labels}')
@@ -75,6 +76,7 @@ class Data:
 
         if norm == True:
             ##Lets normalize the data
+            #fit transform utiliza valores de los extremos para normalizar, el mayor y el menor
             data_features_norm = self.scaler.fit_transform(data_features)
             data_labels_norm = self.scaler.fit_transform(data_labels)    
         else:
@@ -96,8 +98,10 @@ class Data:
 
 
         return train_features, test_features, train_labels, test_labels, original_features, original_labels
-        
+        #Entonces entrega el dataframe original y los datos de entrenamiento
 
+    #Aqui se desnormaliza la data para que el usuario pueda utilizarla
+    # y se ponen los atributos o variables necesarias para esta operacion
     def denormalize(self, data):
 
         data_denorm = self.scaler.inverse_transform(data)
