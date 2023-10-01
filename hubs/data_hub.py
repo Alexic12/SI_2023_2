@@ -132,6 +132,7 @@ class Data:
         return train_images, test_images, train_labels, test_labels 
     
     def timeseries_process(self, window_size, horizon_size, file, test_split, norm):
+
         ##Lets define the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data'))
 
@@ -158,8 +159,10 @@ class Data:
         print(f'Data Array Raw Shape: {array_raw.shape}')
         print(f'Time_Series_Arr Shape: {time_series_arr.shape}')
 
+        #Necesitamos recorrer cada uno de los datos
         ##we have to look trough all the raw data, and take the correct data points and store them as window and horizon
-        for i in range(data_length - window_size - horizon_size):
+        for i in range(data_length - window_size - horizon_size): 
+            #organiza los datos 
             time_series_arr[i] = array_raw[1, i:i+window_size+horizon_size]
 
         ##lets print this time_series_arr
@@ -208,8 +211,8 @@ class Data:
 
 
 ##Lets run this method of time_series just for testing
-T = Data()
-T.timeseries_process(3,1,'DATA_SENO_DIRECTO.xlsx')
+#T = Data()
+#T.timeseries_process(3,1,'DATA_SENO_DIRECTO.xlsx')
 
 
 
