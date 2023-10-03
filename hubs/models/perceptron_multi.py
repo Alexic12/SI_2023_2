@@ -7,7 +7,7 @@ class PerceptronMulti:
 
     def run(self, train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition):
         print('Training perceptron network.....')
-         ##here is where all the neural network code is gonna be
+        ##here is where all the neural network code is gonna be
 
         ##Lets organize the data 
 
