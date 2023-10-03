@@ -143,7 +143,7 @@ class Data:
         ##lets create the data base array for storing the data the proper way
         ##Rows = (#Sample times - window-horizon)+1
         ##Columns = (window+horizon)
-        time_series_arr = np.zeros((data_lenght-window_size-horizon_size+ 1, window_size+horizon_size))
+        time_series_arr = np.zeros((data_lenght-window_size-horizon_size+ 1, window_size*2+horizon_size+1))
 
         print(f'Time_Series_arra rows: {time_series_arr.shape[0]}')
         print(f'Data array raw Shape: {array_raw.shape}')
@@ -152,7 +152,8 @@ class Data:
 
         ##we have to look through all the raw data , and take the correct data points and store them as windows and horizon
         for i in range (data_lenght-window_size-horizon_size):
-            time_series_arr[i] = array_raw[1, i:i+window_size+horizon_size]
+            vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[1, i:i+window_size+horizon_size]))
+            time_series_arr[i] = vector
 
         ##lets print this time_series_arr
         print(f'TimeSeries')
@@ -171,7 +172,7 @@ class Data:
 
         ##lets normalize the data 
         
-
+        
 
         ##lets split the data into training and testing
         if norm == True:
@@ -202,7 +203,7 @@ class Data:
 
 
 ##Lets run this method of time_series just for testing
-T = Data()
-T.time_series_process(3,1,'DATA_SENO_DIRECTO.xlsx')
+# T = Data()
+# T.time_series_process(3,1,'DATA_SENO_DIRECTO.xlsx')
             
 

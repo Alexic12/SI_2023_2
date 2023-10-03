@@ -64,7 +64,7 @@ class conv_tf:
         ##lets show the acurracy of the model
         test_loss, test_acc = model.evaluate(test_images,test_labels)
         print(f'Model accuracy = {test_acc}')
-
+##MPP
     def build_model(self):
         model = keras.Sequential()
 
