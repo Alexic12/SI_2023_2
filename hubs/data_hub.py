@@ -155,13 +155,14 @@ class data:
         ##Rows = (#sample times - windows -horizon)
         ##columns = (windows + horizon) 
         
-        time_series_arr = np.zeros([data_length-windows_size-horizon_size+1, windows_size+horizon_size])
+        time_series_arr = np.zeros([data_length-windows_size-horizon_size + 1, windows_size*2 + horizon_size + 1])
         
         ##we have to look trough all the raw data, and take the correct data points and store them as window and horizon
         
         for i in range(data_length - windows_size - horizon_size):
             
-            time_series_arr[i] = array_raw[1, i:i+windows_size+horizon_size]
+            vector = np.concatenate((array_raw[0, i:i+windows_size+horizon_size], array_raw[1, i:i+windows_size+horizon_size]))
+            time_series_arr[i] = vector
             
             
         ##lets print this time_series_arr
@@ -192,6 +193,12 @@ class data:
             if horizon_size == 1:
          
                 data_labels = data_labels.reshape(-1,1)
+                
+            sc = StandardScaler()
+            
+            data_features_norm = self.scaler.fit_transform(data_features)
+            
+            data_labels_norm = self.scaler.fit_transform(data_labels)
             
         else:
             data_features_norm = data_features
@@ -223,8 +230,8 @@ class data:
         
         
 ##lets run this methos of time_series just for testing 
-T = data()
-T.time_series_process(3,1,'Data_send_directo.xlsx')
+##T = data()
+##T.time_series_process(3,1,'Data_send_directo.xlsx')
 
             
         
