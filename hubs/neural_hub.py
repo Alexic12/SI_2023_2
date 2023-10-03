@@ -16,12 +16,16 @@ class Neural:
         if model == 'conv_tf':
             train_images, test_images, train_labels, test_labels = data.download_database('MNIST')
         else:
-            if data_type == 'time_series':
+            if data_type == 'time_series_direct':
                 window_size = 3
                 horizon_size = 1
-                train_features, test_features, train_labels, test_labels, original_features, original_labels = data.data_process(window_size,horizon_size,file_name, test_split,norm)
+                train_features, test_features, train_labels, test_labels, original_features, original_labels = data.timeseries_process_direct(window_size,horizon_size,file_name, test_split,norm)
             elif data_type == 'data':
                 train_features, test_features, train_labels, test_labels, original_features, original_labels = data.data_process(file_name, test_split,norm, neurons, avoid_col)
+            elif data_type == 'time_series_inverse':
+                window_size = 3
+                horizon_size = 1
+                train_features, test_features, train_labels, test_labels, original_features, original_labels = data.timeseries_process_inverse(window_size,horizon_size,file_name, test_split,norm)
         
         
         if model == 'perceptron':
