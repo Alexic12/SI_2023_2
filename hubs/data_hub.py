@@ -130,7 +130,7 @@ class data:
         return train_images, test_images, train_labels, test_labels
 
 
-    def time_series_process(self, windows_size, horizon_size, file, test_split, norm):
+    def time_series_process(self, windows_size, horizon_size, file, test_split, norm, iden):
         
         ##lets define the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data'))
@@ -161,8 +161,18 @@ class data:
         
         for i in range(data_length - windows_size - horizon_size):
             
-            vector = np.concatenate((array_raw[0, i:i+windows_size+horizon_size], array_raw[1, i:i+windows_size+horizon_size]))
-            time_series_arr[i] = vector
+            if iden == 'Directo':
+            
+                vector = np.concatenate((array_raw[0, i:i+windows_size+horizon_size], array_raw[1, i:i+windows_size+horizon_size]))
+            ##vector = np.concatenate((array_raw[1, i:i+windows_size+horizon_size], array_raw[0, i:i+windows_size+horizon_size]))
+                time_series_arr[i] = vector
+                
+            elif iden == 'Indirecto':
+                
+                vector = np.concatenate((array_raw[1, i:i+windows_size+horizon_size], array_raw[0, i:i+windows_size+horizon_size]))
+                
+                time_series_arr[i] = vector
+                
             
             
         ##lets print this time_series_arr

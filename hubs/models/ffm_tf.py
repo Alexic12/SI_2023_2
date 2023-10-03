@@ -66,7 +66,7 @@ class ffm_tf:
                 model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'checkpoints', 'ffm_tf'))
                 checkpoint_file = os.path.join(model_dir, f'{chk_name}.h5')
                 print(f'checkpoint path: {checkpoint_file}')
-                model.save_model(checkpoint_file)
+                model.save_weights(checkpoint_file)
                 print('Model saved!')
                 
             elif r == 'N':
@@ -82,7 +82,7 @@ class ffm_tf:
             #we are not training a model her, just using a already existing model 
             model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'checkpoints', 'ffm_tf'))
             checkpoint_file = os.path.join(model_dir, f'{chk_name}.h5')
-            model.load_model(checkpoint_file)
+            model.load_weights(checkpoint_file)
             
             ##Prediction output 
             pred_out = model.predict(train_features)
