@@ -10,14 +10,25 @@ class Neural:
     def __init__(self):
         pass
     
-    def run_model(self,model,file_name, iter, alpha,test_split,norm,stop_condition,neurons,avoid_col,chk_name,train):
+    def run_model(self,model,file_name, iter, alpha,test_split,norm,stop_condition,neurons,avoid_col,chk_name,train,data_type):
         Data = data()
         
         if model == 'conv_tf':
             train_images, test_images, train_labels, test_labels = Data.download_database('MNIST')
         
         else:
-            train_features, test_features, train_labels, test_labels, original_feature, original_labels = Data.data_process(file_name,test_split,norm,neurons,avoid_col)
+            
+            if data_type == 'time_series':
+                
+                windows_size = 3
+                
+                horizon_size = 1
+                
+                train_features, test_features, train_labels, test_labels, original_feature, original_labels= Data.time_series_process(windows_size, horizon_size, file_name, test_split,norm)
+                
+            elif data_type == 'data':
+            
+                train_features, test_features, train_labels, test_labels, original_feature, original_labels = Data.data_process(file_name,test_split,norm,neurons,avoid_col)
         
         if model == 'perceptron':
             print('Running perceptron model')
