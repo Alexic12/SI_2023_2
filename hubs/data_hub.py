@@ -122,7 +122,7 @@ class Data:
 
         return train_images, test_images, train_labels, test_labels
     
-    def time_series_process(self,window_size, horizon_size,file , test_split, norm):
+    def time_series_process(self,window_size, horizon_size,file , test_split, norm, direct):
         ##Lets define the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data'))
 
@@ -151,15 +151,22 @@ class Data:
 
 
         ##we have to look through all the raw data , and take the correct data points and store them as windows and horizon
-        for i in range (data_lenght-window_size-horizon_size):
-            vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[1, i:i+window_size+horizon_size]))
-            time_series_arr[i] = vector
+        ## Prueba de control directo
+        if direct == True:
+            for i in range (data_lenght-window_size-horizon_size):
+                vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[1, i:i+window_size+horizon_size]))
+                time_series_arr[i] = vector
+
+        elif direct == False :
+            for i in range (data_lenght-window_size-horizon_size):
+                vector = np.concatenate((array_raw[1, i:i+window_size+horizon_size], array_raw[0, i:i+window_size+horizon_size]))
+                time_series_arr[i] = vector
 
         ##lets print this time_series_arr
         print(f'TimeSeries')
         print(time_series_arr)
 
-                ##lets store the original features
+        ##lets store the original features
         columns = time_series_arr.shape[1]
         original_features = data_raw[data_raw.columns[0:-horizon_size]]
         original_labels = data_raw[data_raw.columns[-horizon_size:]]
@@ -171,8 +178,7 @@ class Data:
         data_labels = time_series_arr[:,-horizon_size:]
 
         ##lets normalize the data 
-        
-        
+
 
         ##lets split the data into training and testing
         if norm == True:
@@ -188,6 +194,10 @@ class Data:
             data_labels_norm = data_labels 
         ##lets split the data into training and testing
         ##input (train, test) output (train, test)
+
+
+        ## Prueba de control directo 
+
 
         if test_split != 0:
             train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm, test_size=test_split)
