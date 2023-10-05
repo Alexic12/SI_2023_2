@@ -3,17 +3,17 @@ from hubs.neural_hub import Neural
 
 N = Neural()
 
-model = 'conv_tf'
-file_name = 'ETHEREUM_PRICE.xlsx'
+model = 'xgb'
+file_name = 'DATA_SENO_DIRECTO.xlsx'
 iter = 2
 alfa=0.7
-test_split = 0
+test_split = 0.1
 norm = True
 stop_condition = 50
 output = 1
 avoid_col = 0
-chk_name = 'ETH_1'
-train = False
+chk_name = 'SENO_1'
+train = True
 data_type = 'time_series'
 
 
