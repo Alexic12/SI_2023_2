@@ -10,7 +10,7 @@ class Neural:
     def __init__(self):
         pass
     
-    def run_model(self,model,file_name, iter, alpha,test_split,norm,stop_condition,neurons,avoid_col,chk_name,train,data_type,iden):
+    def run_model(self,model, file_name, iter, alpha, test_split, norm, stop_condition, neurons, avoid_col, chk_name, train, data_type, iden, windows_size, horizon_size):
         Data = data()
         
         if model == 'conv_tf':
@@ -20,9 +20,9 @@ class Neural:
             
             if data_type == 'time_series':
                 
-                windows_size = 3
+                ##windows_size = 3
                 
-                horizon_size = 1
+                ##horizon_size = 1
                 
                 train_features, test_features, train_labels, test_labels, original_feature, original_labels = Data.time_series_process(windows_size, horizon_size, file_name, test_split, norm, iden)
                 
