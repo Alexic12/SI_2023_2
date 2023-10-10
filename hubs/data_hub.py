@@ -195,7 +195,7 @@ class Data:
         print(f'sample time: {data_length}')
 
         #Create base array
-        time_series_arr = np.zeros((data_length - window_size - horizon_size + 1, window_size + horizon_size))
+        time_series_arr = np.zeros((data_length - window_size - horizon_size + 1, 2*(window_size + horizon_size)))
 
         for i in range(data_length - window_size - horizon_size):
             vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size],array_raw[1, i:i+window_size+horizon_size]))
