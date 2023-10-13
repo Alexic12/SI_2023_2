@@ -10,6 +10,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split as tts
 
+import tensorflow
+from tensorflow import keras
+
 class Data:
     """
     
@@ -139,3 +142,73 @@ class Data:
             print(f'Labels: {train_labels}')
 
         return train_features, test_features, train_labels, test_labels, original_features, original_labels
+
+    def download_database(self, database):
+        if database == 'MNIST':
+            (train_images, train_labels),(test_images, test_labels) = keras.datasets.mnist.load_data()
+
+        elif database == 'CIFAR10':
+            pass
+        elif database == 'CIFAR100':
+            pass
+
+        return train_images, test_images, train_labels, test_labels 
+
+    def timeseries_process(self, window_size, horizon_size, file, test_split, norm):
+        data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
+        excel_path = os.path.join(data_dir, file)
+        data_raw = pd.read_excel(excel_path, sheet_name = 0)
+
+        array_raw = np.array(data_raw)
+
+        data_length = array_raw.shape[1]
+
+        print(f'Sample times for time series: {data_length}')
+
+        #lets create the data base array for storing the data in a proper way
+        print(type(window_size*2 + horizon_size + 1))
+        time_series_arr = np.zeros((data_length - window_size - horizon_size + 1, window_size*2 + horizon_size + 1))
+
+        for i in range(data_length - window_size - horizon_size):
+            vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[1, i:i+window_size+horizon_size]))
+            time_series_arr[i] = vector
+
+        print('time series')
+        print(time_series_arr)
+
+        ##lets store the original features
+        columns = time_series_arr.shape[1]
+        original_features = data_raw[data_raw.columns[0:-horizon_size]]
+        original_labels = data_raw[data_raw.columns[-horizon_size:]]
+        print(f'Original_features {original_features}')
+        print(f'Original_labels {original_labels}')
+
+        data_features = time_series_arr[:, 0:-horizon_size]
+        data_labels = time_series_arr[:, -horizon_size:]
+
+        if norm:
+            if horizon_size == 1:
+                data_labels = data_labels.reshape(-1, 1)
+            sc = StandardScaler()
+            data_features_norm = sc.fit_transform(data_features)
+            data_labels_norm = sc.fit_transform(data_labels)
+        else:
+            data_features_norm = data_features
+            data_labels_norm = data_labels
+
+
+        if test_split != 0:
+            train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm, test_size=test_split) 
+
+        else: 
+            test_features = 0
+            test_labels = 0
+            train_features = data_features_norm
+            train_labels = data_labels_norm
+            print(f'Features: {train_features}')
+            print(f'Labels: {train_labels}')
+        
+        return train_features, test_features, train_labels, test_labels, original_features, original_labels
+
+#T = Data()
+#T.timeseries_process(3, 1, 'DATA_SENO_DIRECTO.xlsx')
