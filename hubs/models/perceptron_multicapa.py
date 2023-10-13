@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-class Perceptron_Multicapa:
+class PerceptronMulti:
     def __init__(self):
         pass
 
@@ -12,7 +12,7 @@ class Perceptron_Multicapa:
         ##Lets organize the data 
 
         ##arbitrary value, not absolute
-        hidden_neurons = train_features.shape[1] + 1
+        hidden_neurons = train_features.shape[1] + 5
 
         Xi = np.zeros((train_features.shape[1], 1)) # Input vector
 
@@ -116,8 +116,8 @@ class Perceptron_Multicapa:
                 
                             
                 ##Lets reset the Agregation for each neuron
-                Aj[:][0] = 0
-                Ak[:][0] = 0
+                Aj[:][:] = 0
+                Ak[:][:] = 0
 
             ##lets print Wij for every iteration 
             #print(f'W: {Wij}')
@@ -133,7 +133,7 @@ class Perceptron_Multicapa:
             
 
             ##lets check the stop_condition
-            flag_training = False
+            # flag_training = False
             '''
             for n in range(0, Yk.shape[0]):
                 if ecmT[n][it] < stop_condition:
@@ -148,3 +148,7 @@ class Perceptron_Multicapa:
             plt.figure()
             plt.plot(ecmT[n][:], 'r', label = f'ECM Neurona {n}')
             plt.show()
+
+        
+
+                
