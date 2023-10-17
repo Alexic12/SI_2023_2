@@ -8,7 +8,7 @@ class MassDamper:
 
     def __init__(self):
 
-        self.m = 10  # Masa del objeto 
+        self.m = 2  # Masa del objeto 
         
         self.k = 0.2  # Constante del resorte
         
@@ -28,13 +28,23 @@ class MassDamper:
         
         self.U = 0  # System input
 
-    def update_force(self, t):
+        self.error_integral = 0 #error acumulativo para el PID parte integral
 
-        if t - self.last_update_time >= self.step_interval:
-            
-            self.U = random.uniform(-1, 1)
-            
-            self.last_update_time = t
+        self.error_previous = 0 #error previo 
+
+    def update_force(self, t, tipo, force):
+
+        if tipo == 'random':
+
+            if t - self.last_update_time >= self.step_interval:
+                
+                self.U = random.uniform(-1, 1)
+                
+                self.last_update_time = t
+
+            elif tipo == 'external':
+
+                self.U = force
 
     def system_equations(self, t, y):
         
@@ -91,7 +101,10 @@ class MassDamper:
         # Simular el sistema durante el tiempo de simulación
         for i in range(1, len(t)):
             # Actualizar la fuerza si queremos identificar el sistema
-            self.update_force(t[i - 1])
+            ##self.update_force(t[i - 1])
+            
+            self.pid_control(x[i-1], 2)
+
 
             # Almacenar la entrada del sistema
             U_data[i - 1] = self.U
@@ -122,7 +135,36 @@ class MassDamper:
             # Pausar el gráfico brevemente
             plt.pause(self.n/self.s_t)
 
-    plt.show()
+
+        plt.show()
+
+
+    def pid_control(self, x, sp):
+
+        ##dynamic sustem output
+        ## x system position
+
+        Kp = 15
+
+        Ki = 0.05
+
+        Kd = 0.1
+
+        sp = 1
+
+        error = sp - x
+
+        self.error_integral += error
+
+        error_derivativo = error - self.error_previous
+
+        self.U = Kp*error + Ki*self.error_integral + Kd*error_derivativo
+
+        ##We store the previous value of the error
+
+        self.error_previous = error
+
+
 
 s = MassDamper()
 

@@ -8,18 +8,18 @@ from hubs.neural_hub import Neural
 
 N = Neural()
 
-model = 'xgb'
-file_name = 'DATA_SENO_DIRECTO.xlsx'
-iter = 10000
-alpha = 0.1
+model = 'ffm_tf'
+file_name = 'Cardiaco.xlsx'
+iter = 1000
+alpha = 0.05
 test_split = 0.1
-norm = False
+norm = True
 stop_condition = 50
 neurons = 1
 avoid_col = 0
-chk_name = 'Seno_1'
+chk_name = 'Cardiaco_1'
 train = True
-data_type = 'time_series'
+data_type = 'data'
 iden = 'Indirecto'
 windows_size = 3
 horizon_size = 1
