@@ -33,9 +33,9 @@ class conv_tf:
 
         ##lets graph some images as example
         plt.figure(figsize=(10,2))
-
+        
         for i in range(5):
-
+            
             plt.subplot(1,5,i+1)
             plt.xticks([])
             plt.yticks([])
@@ -63,7 +63,7 @@ class conv_tf:
         test_loss, test_acc = model.evaluate(test_images, test_labels)
         print(f'Model accuracy = {test_acc}')
 
-
+    
     def build_model(self):
         model = keras.Sequential()
 
@@ -97,3 +97,11 @@ class conv_tf:
         model.compile(optimizer=tf.keras.optimizers.Adam(), loss='mse', metrics=['mse'])
 
         return model
+
+
+
+
+
+
+
+        
