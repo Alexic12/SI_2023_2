@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
-import pandas
+import pandas as pd
 import random
 
 class MassDamper:
@@ -26,11 +26,20 @@ class MassDamper:
         self.last_update_time = -self.step_interval
         ##system input
         self.U = 0
+        #inicializacion del error
+        self.error_sum = 0 #para que en el acumulador no sea nulo
+        #error derivativo anterior para que cambie el error entre las iteraciones
+        self.error_previous = 0
 
-    def update_force(self,t):
-        if t-self.last_update_time >= self.step_interval:
-            self.U = random.uniform(-1,1) ##Fuerza aplicada
-            self.last_update_time = t
+    def update_force(self,t,type,force): 
+        ## type es el tipo de entrada
+        if type == 'random':
+            if t-self.last_update_time >= self.step_interval:
+                self.U = random.uniform(-1,1) ##Fuerza aplicada
+                self.last_update_time = t
+        
+        elif type == 'external':
+            self.U = force
 
     def system_equation(self,t,y):
         x ,v = y ##actual position and velocity of system
@@ -73,11 +82,15 @@ class MassDamper:
         y = np.zeros(len(t))
         U = np.zeros(len(t))
 
+        l=[]
+
         ##Lets simulate the system for the simulation time
         for i in range(1,len(t)):
             ##if we want to identify the system last update the force
-            self.update_force(t[i-1])
+            #self.update_force(t[i-1]) 
 
+            #Vamos a realizar el control PID para que la fuerza se actualice basandose en el control pid
+            self.pid_control(x[i-1],2)
 
             #Store the system input
             U[i-1] = self.U
@@ -101,9 +114,51 @@ class MassDamper:
             plt.xlim(0, t[i])
             plt.ylim(min(min(x),min(v),min(U)) - 0.5,max(max(x),max(v),max(U)) + 0.5)
 
+            
+            l.append([self.U,x,v])
             ##Lets pause the graph
             plt.pause(self.N/self.s_t)
         plt.show()
 
+        df=pd.DataFrame(l,columns=['U','V','X'])
+        df.to_excel('intento1.xlsx',index=False)
+
+
+    ##controlador PID
+    def pid_control(self,x,sp): 
+        #salida del sistema dinamico
+        #x: posicion del sistema
+        setpoint = 1
+
+        #constantes del PID
+        Kp = 1
+        Ki= 0.1
+        Kd= 0.5
+
+        setpoint = sp #parametro para inicializar el setpoint deseado
+        error = setpoint - x
+
+        #acumulativa del error para la parte integral del PID
+        self.error_sum += error 
+
+        #derivativa del error para la parte derivativa del PID
+        error_derivative = error - self.error_previous
+
+        self.U = Kp*error + Ki*self.error_sum + Kd*error_derivative #self.U es la entrada directa del sistema
+
+        #we store the previous error
+        self.error_previous = error 
+
+    def save_excel():
+        l = []
+        data={
+            Entrada:self.U
+        }
+        df = pd.DataFrame(data) 
+
 S=MassDamper()
 S.run_simulation()
+    
+    
+
+

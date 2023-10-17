@@ -26,7 +26,7 @@ class Data:
         self.scaler = StandardScaler()##Create an object of this library in particular
         #necesitamos iniciarlo como un objeto global para ingresar las variables necesarias para desnormalizar los datos
 
-    def data_process(self, file, test_split, norm, neurons, avoid_col):
+    def data_process(self, file, test_split, norm, neurons, avoid_col,identif):
         ##Lets define the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data'))
 
@@ -66,11 +66,23 @@ class Data:
 
 
         ##Lets split the data into features and labels
-        data_features = data_arr[:,avoid_col:-neurons]
-        data_labels = data_arr[:, -neurons:]
+        #data_features = data_arr[:,avoid_col:-neurons]
+        #data_labels = data_arr[:, -neurons:]
 
-        print(f'DATA_FEATURES: {data_features}')
-        print(f'DATA_LABELS: {data_labels}')
+        ##DIVIDIMOS LOS DATOS PARA TOMARLO COMO DIRECTO O INVERSO
+        if identif == 'directo':
+            data_features = data_arr[:,avoid_col:-neurons]
+            data_labels = data_arr[:, -neurons:]
+
+            print(f'DATA_FEATURES: {data_features}')
+            print(f'DATA_LABELS: {data_labels}')
+        else:
+            data_labels = data_arr[:,avoid_col:-neurons]
+            data_features = data_arr[:, -neurons:]
+            print(f'DATA_FEATURES: {data_features}')
+            print(f'DATA_LABELS: {data_labels}')
+
+        
         
         if neurons == 1:
             data_labels = data_labels.reshape(-1,1)
