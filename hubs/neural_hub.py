@@ -1,4 +1,3 @@
-
 from hubs.data_hub import Data
 from hubs.models.perceptron import Perceptron
 from hubs.models.perceptron_multi import PerceptronMulti

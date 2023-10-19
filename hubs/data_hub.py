@@ -197,8 +197,8 @@ class Data:
 
 
 ##Lets run this method of time_series just for testing
-##T = Data()
-##T.timeseries_process(3,1,'DATA_SENO_DIRECTO.xlsx')
+T = Data()
+T.timeseries_process(3,1,'datos.xlsx',0.1,True)
             
 
     
