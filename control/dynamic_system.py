@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 import pandas
 import random
+#from hubs.neural_hub import Neural as N
 
 class MassDamper:
     def __init__(self):
@@ -26,12 +27,29 @@ class MassDamper:
         self.last_update_time = -self.step_interval
         ##System input
         self.U = 0
+        ##error acummulative for PID integral part
+        self.error_sum = 0
+        ##Previous error for calculation of change in the error between iterations
+        self.error_previous = 0
 
-    def update_force(self, t):
+    def update_force(self, t, type, force):
 
-        if t-self.last_update_time >= self.step_interval:
-            self.U = random.uniform(-1,1)
-            self.last_update_time = t
+        if type == 'random':
+            if t-self.last_update_time >= self.step_interval:
+                self.U = random.uniform(-1,1)
+                self.last_update_time = t   
+        elif type == 'external':
+            self.U = force
+
+    def fill_sp(self, size, min, max):
+
+        arr = np.zeros(len(size))
+        for i in range(0, size):
+            arr[i] = random.uniform(min,max)
+
+        return arr
+
+
 
     def system_equations(self, t, y):
         x, v = y ##actual position and velocity of system
@@ -49,6 +67,16 @@ class MassDamper:
 
         ##Create time points for simulation
         t = np.linspace(0, self.N, num=self.s_t)
+
+        ##index array
+        index = np.zeros(len(t))
+
+        ##set SP array
+        sp_arr = np.zeros(len(t))
+
+        ##fill the 
+        sp_arr = self.fill_sp(len(sp), -1, 1)
+
 
         ##get the position and velocity data for the time points
         x, v = sol.sol(t)
@@ -76,7 +104,11 @@ class MassDamper:
         ##lets simulate the system fpr the simulation time
         for i in range(1, len(t)):
             ##if we want to identify the system lets update the force
-            self.update_force(t[i-1])
+            ##self.update_force(t[i-1])
+            self.pid_control(x[i-1], 2)
+
+            ##fill index
+            index[i-1] = i
 
 
             ##Store the system input
@@ -102,9 +134,38 @@ class MassDamper:
             plt.ylim(min(min(x), min(v), min(U)) - 0.5, max(max(x), max(v), max(U)) + 0.5)
 
             ##lets pause the graph 
-            plt.pause(self.N/self.s_t)
+            #plt.pause(self.N/self.s_t)
 
+        print(type(U))
+        data = np.vstack((index, x, U, sp))
         plt.show()
+
+    def pid_control(self, x, sp):
+        ## dynamic system 
+        ## x system position
+        Kp = 1
+        Ki = 0.1
+        Kd = 0.5
+
+        setpoint = sp
+
+        ##error for proportional part of PID
+        error = setpoint - x
+
+        ##error acumulative for integral part of PID
+        self.error_sum += error
+
+        ##error derivative for derivative part of PID
+        error_derivative = error - self.error_previous
+
+        self.U = Kp*error + Ki*self.error_sum + Kd*error_derivative
+
+        ##we store the previous value of the error
+        self.error_previous = error
+
+
+
+
 
 
 S = MassDamper()
