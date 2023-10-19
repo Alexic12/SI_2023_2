@@ -26,7 +26,7 @@ class Data:
         self.scaler = StandardScaler()##Create an object of this library in particular
         #necesitamos iniciarlo como un objeto global para ingresar las variables necesarias para desnormalizar los datos
 
-    def data_process(self, file, test_split, norm, neurons, avoid_col,identif):
+    def data_process(self, file, test_split, norm, neurons, avoid_col):
         ##Lets define the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data'))
 
@@ -39,8 +39,8 @@ class Data:
         #print(f'Data_Raw {data_raw}')
 
         ##lets store the original features
-        columns = data_raw.shape[1] #con esto tomamos la cantidad de columnas del dataframe
-        original_features = data_raw[data_raw.columns[:columns-neurons]] #toma las columnas menos las salidas
+        columns = data_raw.shape[1]
+        original_features = data_raw[data_raw.columns[:columns-neurons]]
         original_labels = data_raw[data_raw.columns[columns-neurons:columns]]
         print(f'Original_features {original_features}')
         print(f'Original_labels {original_labels}')
@@ -66,23 +66,11 @@ class Data:
 
 
         ##Lets split the data into features and labels
-        #data_features = data_arr[:,avoid_col:-neurons]
-        #data_labels = data_arr[:, -neurons:]
+        data_features = data_arr[:,avoid_col:-neurons]
+        data_labels = data_arr[:, -neurons:]
 
-        ##DIVIDIMOS LOS DATOS PARA TOMARLO COMO DIRECTO O INVERSO
-        if identif == 'directo':
-            data_features = data_arr[:,avoid_col:-neurons]
-            data_labels = data_arr[:, -neurons:]
-
-            print(f'DATA_FEATURES: {data_features}')
-            print(f'DATA_LABELS: {data_labels}')
-        else:
-            data_labels = data_arr[:,avoid_col:-neurons]
-            data_features = data_arr[:, -neurons:]
-            print(f'DATA_FEATURES: {data_features}')
-            print(f'DATA_LABELS: {data_labels}')
-
-        
+        print(f'DATA_FEATURES: {data_features}')
+        print(f'DATA_LABELS: {data_labels}')
         
         if neurons == 1:
             data_labels = data_labels.reshape(-1,1)
@@ -92,7 +80,6 @@ class Data:
 
         if norm == True:
             ##Lets normalize the data
-            #fit transform utiliza valores de los extremos para normalizar, el mayor y el menor
             data_features_norm = self.scaler.fit_transform(data_features)
             data_labels_norm = self.scaler.fit_transform(data_labels)    
         else:
@@ -114,26 +101,17 @@ class Data:
 
 
         return train_features, test_features, train_labels, test_labels, original_features, original_labels
-        #Entonces entrega el dataframe original y los datos de entrenamiento
+        
 
-    #Aqui se desnormaliza la data para que el usuario pueda utilizarla
-    # y se ponen los atributos o variables necesarias para esta operacion
     def denormalize(self, data):
 
         data_denorm = self.scaler.inverse_transform(data)
 
         return data_denorm
-    
-    #Funcion para las bases de datos tomadas de repositorio de keras para imagenes 
 
-    
+
     def download_database(self, database):
-        #agregar repositorio de bases de datos (MNISt, CIFAR10,CIFAR100)
         if database == 'MNIST':
-            #keras cargar la data
-            #train images: imagenes de entrenamiento
-            #train labels: Salidas
-            #60000 imagenes de entrenamiento y 10000 de prueba
             (train_images, train_labels),(test_images, test_labels) = keras.datasets.mnist.load_data()
 
         elif database == 'CIFAR10':
@@ -143,7 +121,6 @@ class Data:
 
         return train_images, test_images, train_labels, test_labels 
     
-    ## TIME SERIES PROCESS
     def timeseries_process_direct(self,window_size,horizon_size,file,test_split,norm):
         ##Lets define the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data'))
@@ -267,5 +244,5 @@ class Data:
         return train_features, test_features, train_labels, test_labels, original_features, original_labels
 
 
-        
 
+    
