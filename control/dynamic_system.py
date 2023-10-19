@@ -147,7 +147,7 @@ class MassDamper:
             #plt.pause(self.N/self.s_t)
 
         
-        data = np.vstack((index, x, U, sp_arr))
+        data = np.vstack((x, U, sp_arr))
         print(data)
         # Create a DataFrame from the data
         df = pd.DataFrame(data)
