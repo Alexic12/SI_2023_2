@@ -31,6 +31,8 @@ class MassDamper:
         self.error_sum = 0
         ##Previous error for calculation of change in the error between iterations
         self.error_previous = 0
+        ##las value for filling sp arr
+        self.last_value = 0
 
     def update_force(self, t, type, force):
 
@@ -41,13 +43,19 @@ class MassDamper:
         elif type == 'external':
             self.U = force
 
-    def fill_sp(self, size, min, max):
+    def fill_sp(self, size, min_val, max_val, interval):
+        arr = np.zeros(size)
+        last_update_time = 0
 
-        arr = np.zeros(len(size))
-        for i in range(0, size):
-            arr[i] = random.uniform(min,max)
+        for i in range(size):
+            if i - last_update_time >= interval:
+                self.last_value = random.uniform(min_val, max_val)
+                last_update_time = i
+
+            arr[i] = self.last_value
 
         return arr
+
 
 
 
@@ -75,7 +83,7 @@ class MassDamper:
         sp_arr = np.zeros(len(t))
 
         ##fill the 
-        sp_arr = self.fill_sp(len(sp), -1, 1)
+        sp_arr = self.fill_sp(len(sp_arr), -1, 1, 100)
 
 
         ##get the position and velocity data for the time points
@@ -92,6 +100,7 @@ class MassDamper:
         position_line, = plt.plot([],[],label='Position (X)')
         velocity_line, = plt.plot([],[],label='Velocity (V)')
         input_line, = plt.plot([],[],label='System Input (U)')
+        sp_line, = plt.plot([],[],label='System SetPoint (SP)')
 
         ##lets show graph legend
         plt.legend()
@@ -105,7 +114,7 @@ class MassDamper:
         for i in range(1, len(t)):
             ##if we want to identify the system lets update the force
             ##self.update_force(t[i-1])
-            self.pid_control(x[i-1], 2)
+            self.pid_control(x[i-1], sp_arr[i-1])
 
             ##fill index
             index[i-1] = i
@@ -128,6 +137,7 @@ class MassDamper:
             position_line.set_data(t[:i+1], x[:i+1])
             velocity_line.set_data(t[:i+1], v[:i+1])
             input_line.set_data(t[:i+1], U[:i+1])
+            sp_line.set_data(t[:i+1], sp_arr[:i+1])
 
             ##lets show te data up until the actual sample time
             plt.xlim(0, t[i])
@@ -137,7 +147,7 @@ class MassDamper:
             #plt.pause(self.N/self.s_t)
 
         print(type(U))
-        data = np.vstack((index, x, U, sp))
+        data = np.vstack((index, x, U, sp_arr))
         plt.show()
 
     def pid_control(self, x, sp):
@@ -170,6 +180,10 @@ class MassDamper:
 
 S = MassDamper()
 S.run_simulation()
+
+
+
+
 
 
 
