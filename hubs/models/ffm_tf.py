@@ -30,7 +30,7 @@ class ffm_tf:
         model = self.build_model(train_features.shape[1] + 1, train_labels.shape[1], alfa)
 
         ##lets make an stop function
-        early_stop = keras.callbacks.EarlyStopping(monitor='mse', patience=stop_condition)
+        early_stop = keras.callbacks.EarlyStopping(monitor='mse', patience=stop_condition) # El entrenamiento se va a detener cuando mse comience a crecer, pero solo cuando pasen stop_condition epochs
 
         if train:
             ##lets train the model

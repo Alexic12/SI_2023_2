@@ -157,20 +157,26 @@ class Data:
     def timeseries_process(self, window_size, horizon_size, file, test_split, norm):
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
         excel_path = os.path.join(data_dir, file)
-        data_raw = pd.read_excel(excel_path, sheet_name = 0)
+        data_raw = pd.read_excel(excel_path, sheet_name = 0) # No olvidar que ignora la primera fila, 
+                                                        #entonces solo va a tomar la segunda y tercera 
+                                                        # como parte del vector, pero usa la primera fila 
+                                                        # como etiquetas o titulos para cada columna
+        #print(f'Data raw shape: : {data_raw}')
 
         array_raw = np.array(data_raw)
+        #print(f'Array raw shape: : {array_raw}')
 
         data_length = array_raw.shape[1]
 
         print(f'Sample times for time series: {data_length}')
 
         #lets create the data base array for storing the data in a proper way
-        print(type(window_size*2 + horizon_size + 1))
-        time_series_arr = np.zeros((data_length - window_size - horizon_size + 1, window_size*2 + horizon_size + 1))
+        #print(type(window_size*2 + horizon_size + 1))
+        time_series_arr = np.zeros((data_length - window_size - horizon_size + 1, window_size*array_raw.shape[0] + horizon_size*array_raw.shape[0]))
+        print(f'Tiem series shape: : {time_series_arr.shape}')
 
         for i in range(data_length - window_size - horizon_size):
-            vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[1, i:i+window_size+horizon_size]))
+            vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[1, i:i+window_size+horizon_size], array_raw[2, i:i+window_size+horizon_size])) #entrena con el primero y la salida del entrenamiento seria el segundo
             time_series_arr[i] = vector
 
         print('time series')

@@ -17,8 +17,8 @@ class Neural:
             train_images, test_images, train_labels, test_labels = data.download_database('MNIST')
         else:
             if data_type == 'time_series':
-                window_size = 3
-                horizon_size = 1
+                window_size = 3 # Entradas de cada data point, cada data point en este caso tiene 3 entradas, luego se corre uno a la derecha y vuelve a tener 3 entradas y asi
+                horizon_size = 1 # Salidas en cada data point
                 train_features, test_features, train_labels, test_labels, original_features, original_labels = data.timeseries_process(window_size, horizon_size, file_name, test_split, norm)
             elif data_type == 'data':
                 train_features, test_features, train_labels, test_labels, original_features, original_labels = data.data_process(file_name, test_split,norm, neurons, avoid_col)
