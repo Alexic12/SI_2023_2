@@ -147,5 +147,3 @@ class xgb:
         )
 
         return model
-
-

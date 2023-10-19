@@ -1,6 +1,6 @@
 ##lets import libraries
 import tensorflow as tf 
-from tensorflow import keras 
+from tensorflow import keras ##keras para la base de datos soloamente
 from keras.layers import Dense
 
 #common modules
