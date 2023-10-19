@@ -1,4 +1,3 @@
-
 from hubs.data_hub import Data
 from hubs.models.perceptron import Perceptron
 from hubs.models.perceptron_multi import PerceptronMulti
@@ -26,8 +25,7 @@ class Neural:
                 window_size = 3
                 horizon_size = 1
                 train_features, test_features, train_labels, test_labels, original_features, original_labels = data.timeseries_process_inverse(window_size,horizon_size,file_name, test_split,norm)
-        
-        
+
         if model == 'perceptron':
             print('Running Perceptron Model')
             P = Perceptron()
@@ -36,7 +34,7 @@ class Neural:
         elif model == 'ffm_tf':
             print('Running FFM Model')
             P = ffm_tf()
-            P.run(train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition)
+            P.run(train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition,chk_name, train)
 
         elif model == 'perceptron_multi':
             print('Running perceptron Multi Model')
@@ -52,8 +50,4 @@ class Neural:
             print("Running Convolutional TF Model")
             P = conv_tf()
             P.run(train_images, test_images, train_labels, test_labels, iter)
-
-
-
-
 
