@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
-import pandas
+import pandas as pd
 import random
 #from hubs.neural_hub import Neural as N
 
@@ -146,8 +146,17 @@ class MassDamper:
             ##lets pause the graph 
             #plt.pause(self.N/self.s_t)
 
-        print(type(U))
+        
         data = np.vstack((index, x, U, sp_arr))
+        print(data)
+        # Create a DataFrame from the data
+        df = pd.DataFrame(data)
+
+        # Save the DataFrame to an Excel file
+        excel_filename = 'your_data.xlsx'
+        df.to_excel(excel_filename, index=False)
+
+        print(f'Data saved to {excel_filename}')
         plt.show()
 
     def pid_control(self, x, sp):
