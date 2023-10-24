@@ -32,6 +32,9 @@ class xgb:
             ##lets train the model
             model.fit(train_features, train_labels, eval_metric='mae', eval_set=eval_set, verbose=True)
 
+            ##Lets 
+
+
             ##lets plot results
             history = model.evals_result()
 
@@ -147,3 +150,12 @@ class xgb:
         )
 
         return model
+    
+    def load_model(self, name, inputs, alfa):
+        
+        model = self.build_model((inputs+1)*self.depth, alfa, 1)
+        model.load_model(f'{name}.json')
+
+        return model
+
+

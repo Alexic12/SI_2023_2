@@ -23,6 +23,8 @@ class Data:
     """
     def __init__(self):
         self.scaler = StandardScaler()##Create an object of this library in particular
+        self.max_value = 0
+        self.array_size=0
 
     def data_process(self, file, test_split, norm, neurons, avoid_col):
         ##Lets define the absolute path for this folder
@@ -75,6 +77,12 @@ class Data:
 
         ##lets check the dimensions of the arrays
         #print(f'Dimensions: {data_labels.shape}')
+
+        #Lets take max value of the data
+        self.max_value = max(data_labels)
+
+        #Lets take the number  of features
+        self.array_size = data_features.shape[1]
 
         if norm == True:
             ##Lets normalize the data
@@ -193,9 +201,17 @@ class Data:
             #print(f'Features: {train_features}')
             #print(f'labels: {train_labels}')
 
+        data=np.hstack((train_features,train_labels))
+        df =pd.DataFrame(data)
+        excel_filaname = 'DATA_PID_ORGANZADA.xlsx'
+        df.to_excel(excel_filaname, index=False)
         return train_features, test_features, train_labels, test_labels, original_features, original_labels
 
+    def get_max_value (self):
+        return self.max_value
 
+    def get_array_size (self):
+        return self.array_size
 ##Lets run this method of time_series just for testing
 ##T = Data()
 ##T.timeseries_process(3,1,'DATA_SENO_DIRECTO.xlsx')
