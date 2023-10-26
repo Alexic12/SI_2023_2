@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 import pandas as pd
 import random
+from hubs.models.xgboost import xgb
 #from hubs.neural_hub import Neural as N
 
 class MassDamper:
@@ -33,6 +34,8 @@ class MassDamper:
         self.error_previous = 0
         ##las value for filling sp arr
         self.last_value = 0
+        ##lets load the neural model
+        self.model = xgb.load_mode('PIDE_IDENT_1',7,0.02)
 
     def update_force(self, t, type, force):
 
@@ -110,11 +113,31 @@ class MassDamper:
         v = np.zeros(len(t))
         U = np.zeros(len(t))
 
+        ##create a vectror for neural controller
+        control_vector=np.zeros(7)
+
         ##lets simulate the system fpr the simulation time
         for i in range(1, len(t)):
             ##if we want to identify the system lets update the force
             ##self.update_force(t[i-1])
-            self.pid_control(x[i-1], sp_arr[i-1])
+            #self.pid_control(x[i-1], sp_arr[i-1])
+            control_vector[0] = 2 ##setpoint
+
+            control_vector[1] = control_vector[2]
+            control_vector[2] = control_vector[3]
+            control_vector[3] = x[i-1]
+
+            ##for storing thge control input
+            control_vector[4] = control_vector[5]
+            control_vector[5] = control_vector[6]
+            control_vector[6] = U[i-1]
+
+            ##lets perfomr the control action
+            self.U = self.inverse_neuronal_control(control_vector)
+
+
+
+
 
             ##fill index
             index[i-1] = i
@@ -146,7 +169,7 @@ class MassDamper:
             ##lets pause the graph 
             #plt.pause(self.N/self.s_t)
 
-        
+        '''
         data = np.vstack((x, U, sp_arr))
         print(data)
         # Create a DataFrame from the data
@@ -157,6 +180,7 @@ class MassDamper:
         df.to_excel(excel_filename, index=False)
 
         print(f'Data saved to {excel_filename}')
+        '''
         plt.show()
 
     def pid_control(self, x, sp):
