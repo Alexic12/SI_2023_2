@@ -1,51 +1,3 @@
-"""
-import tensorflow as tf
-from tensorflow import keras
-from keras.layers import Dense
-
-import pandas as pd
-import numpy as dp
-import os
-import sys
-
-import matplotlib.pyplot as plt
-
-
-class ffm_tf:
-    def __init__(self):
-        pass
-
-    def run(self, train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition):
-        model = self.build_model(train_features.shape[1] + 1, train_labels.shape[1],  alfa)
-
-        ##Stop funtion
-        early_stop = keras.callbacks.EarlyStopping(monitor="val_loss", patience=stop_condition)
-
-        ##Traing
-        history = model.fit(train_features, train_labels, epochs=iter, verbose= 1, callbacks = [early_stop], validation_split=0)
-        print(history)
-
-
-    def build_model(self, hidden_neurons, alfa):
-        model = keras.Sequential([
-            Dense(hidden_neurons, activation= tf.nn.sigmoid, input_shape= [hidden_neurons-1]),
-            Dense(hidden_neurons, activation= tf.nn.sigmoid),
-            Dense(hidden_neurons, activation= tf.nn.sigmoid),
-            Dense(hidden_neurons, activation= tf.nn.sigmoid),
-            Dense(hidden_neurons, activation= tf.nn.sigmoid),
-            Dense(hidden_neurons, activation= tf.nn.sigmoid),
-            Dense(hidden_neurons, activation= tf.nn.sigmoid),
-            Dense(hidden_neurons, activation= tf.nn.sigmoid),
-            Dense(hidden_neurons, activation= tf.nn.sigmoid),
-            Dense(output)
-
-
-        ])
-
-        model.compile(optimazer=keras.optimizers.Adam(learning_rate=alfa), loss="mse", metrics = ["mse"])
-
-        return model
-"""
 ##lets import libraries
 import tensorflow as tf
 from tensorflow import keras
@@ -61,6 +13,9 @@ import sys
 
 ##import tools for data visualization
 import matplotlib.pyplot as plt
+
+##import the metrics libraries
+from sklearn.metrics import accuracy_score as acs
 
 
 class ffm_tf:
@@ -95,6 +50,12 @@ class ffm_tf:
         plt.plot(test_labels, 'b', label='Real Output')
         plt.show()
 
+        ##SKLEARN for accuracy metrics
+        accuracy = acs(test_labels.astype(int), pred_out.astype(int)) * 100
+        print(f'Accuracy: {accuracy:.2f}%')
+
+
+
 
 
 
@@ -121,3 +82,11 @@ class ffm_tf:
         model.compile(optimizer=keras.optimizers.Adam(learning_rate=alfa), loss='mse', metrics=['mse'])
 
         return model
+
+
+
+
+
+
+
+

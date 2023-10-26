@@ -1,6 +1,21 @@
 from hubs.neural_hub import Neural
 
+
 N = Neural()
-#N..run_model(model ='perceptron', file_name ='compuesta.xlsx', iter=50, alfa=0.2, test_split = 0, norm=False, stop_condition=0, neurons=2)
-#N.run_model(model ='perceptron_multi', file_name ='BASE_DATOS.xlsx', iter=100, alfa=0.01, test_split = 0, norm=True, stop_condition=0, outputs=4, avoid_col=0)
-N.run_model(model = 'ffm_tf', file_name = 'train_heart.xlsx', iter = 50, alfa=0.002, test_split = 0.1, norm = True, stop_condition = 50, outputs=4, avoid_col = 0)
+
+model = 'xgb'
+file_name = 'Toma_de_datos.xlsx'
+iter = 2
+alfa=0.2
+test_split = 0.1
+norm = True
+stop_condition = 50
+output = 1
+avoid_col = 0
+chk_name = 'PID_IDENT_1'
+train = True
+data_type = 'time_series'
+
+
+N.run_model(model = model, file_name = file_name, iter = iter, alfa=alfa, test_split = test_split, norm = norm, stop_condition = stop_condition, neurons = output, avoid_col = avoid_col, chk_name = chk_name, train = train, data_type = data_type)
+
