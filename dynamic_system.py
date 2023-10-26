@@ -35,7 +35,8 @@ class MassDamper:
         ##las value for filling sp arr
         self.last_value = 0
         ##lets load the neural model
-        self.model = xgb.load_model('PID_IDENT_1', 7, 0.02)
+        xg = xgb(10)
+        self.model = xg.load_model(name = 'PID_IDENT_1',inputs =  7, alfa = 0.02)
 
     def update_force(self, t, type, force):
 
@@ -114,7 +115,7 @@ class MassDamper:
         U = np.zeros(len(t))
 
         ##lets create a vector for neural controller
-        control_vector = np.zeros(7)
+        control_vector = np.zeros(13)
 
         ##lets simulate the system fpr the simulation time
         for i in range(1, len(t)):
@@ -123,21 +124,27 @@ class MassDamper:
             ##self.update_force(t[i-1])
             ##self.pid_control(x[i-1], sp_arr[i-1])
 
-            control_vector[0] = 2 ##setpoint
-
-            ##for storing the position
+            
+            control_vector[0] = control_vector[1]
             control_vector[1] = control_vector[2]
             control_vector[2] = control_vector[3]
-            control_vector[3] = x[i-1]
-
-            ##for storing the control input
+            control_vector[3] = control_vector[4]
             control_vector[4] = control_vector[5]
             control_vector[5] = control_vector[6]
-            control_vector[6] = U[i-1]
+            control_vector[6] = sp_arr[i-1] ##setpoint
+
+            ##for storing the control input
+            control_vector[7] = control_vector[8]
+            control_vector[8] = control_vector[9]
+            control_vector[9] = control_vector[10]
+            control_vector[10] = control_vector[11]
+            control_vector[11] = control_vector[12]
+            control_vector[12] = U[i-1]
+
             
             ##lets perform the control action
-            self.U = self.inverse_neuronal_control(control_vector)
-
+            self.U = self.inverse_neuronal_control(control_vector)*0.3
+            
             ##fill index
             index[i-1] = i
 
@@ -168,18 +175,18 @@ class MassDamper:
             ##lets pause the graph 
             #plt.pause(self.N/self.s_t)
 
-        '''
+        
         data = np.vstack((x, U, sp_arr))
         print(data)
         # Create a DataFrame from the data
         df = pd.DataFrame(data)
 
         # Save the DataFrame to an Excel file
-        excel_filename = 'your_data.xlsx'
+        excel_filename = 'TOMA_DATOS_PID_2.xlsx'
         df.to_excel(excel_filename, index=False)
 
         print(f'Data saved to {excel_filename}')
-        '''
+        
         plt.show()
 
 
@@ -205,6 +212,11 @@ class MassDamper:
 
         ##we store the previous value of the error
         self.error_previous = error
+
+    def inverse_neuronal_control(self, control_vector):
+        control_vector = control_vector.reshape((1,13))
+        U = self.model.predict(control_vector)
+        return U[0]
 
 
 

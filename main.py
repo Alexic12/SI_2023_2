@@ -4,9 +4,9 @@ from hubs.neural_hub import Neural
 N = Neural()
 
 model = 'xgb'
-file_name = 'DATA_PID.xlsx'
+file_name = 'TOMA_DATOS_PID_2.xlsx'
 iter = 2
-alfa=0.7
+alfa=0.2
 test_split = 0.1
 norm = True
 stop_condition = 50
