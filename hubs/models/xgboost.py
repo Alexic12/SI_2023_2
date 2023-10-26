@@ -24,6 +24,10 @@ class xgb:
         
             model.fit(train_features, train_labels, eval_metric = 'mae', eval_set = eval_set, verbose = True)
             
+            ##lets run features importance weight analysis
+
+            self.run_weight_analysis(model)
+            
             history = model.evals_result()
             
             #print(history)
@@ -149,4 +153,25 @@ class xgb:
         )
         
         return model
+    
+
+    def run_weight_analysis(self, model):
+
+        featuture_importance = model.feature_importances_
+        print("Feature importances")
+        print(featuture_importance)
+        plt.figure(figsize=(10,8))
+        xg.plot_importance(model, importance_type='weight')
+        plt.show()
+
+    def load_model(self, name, inputs, alfa):
+
+        model = self.build_model((inputs+1)*self.depth, alfa, 1)
+        model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'checkpoints', 'xgboost'))
+        model_file = os.path.join(model_dir, f'{name}.json')
+        print(f'Path : {model_file}')
+        model.load_model(model_file)
+
+        return model
+
         

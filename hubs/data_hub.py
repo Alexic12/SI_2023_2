@@ -23,6 +23,9 @@ class data:
         
         self.scaler = StandardScaler()##create an object of this library 
 
+        self.max_value = 0
+
+        self.array_size = 0
     
     def data_process(self,file,test_split,norm,neurons,avoid_col):
         ##lets define the absolute path for this folder
@@ -192,6 +195,14 @@ class data:
         data_features = time_series_arr[:, 0:-horizon_size]
         
         data_labels = time_series_arr[:, -horizon_size:]
+
+        ##lets take the max value of the data
+        self.max_value = max(data_labels)
+
+        ##lets take the number of features
+        self.array_size = data_features.shape[1]
+
+
         
         print(f'data_features: {data_features}')
         print(f'data_labels: {data_labels}')
@@ -230,12 +241,29 @@ class data:
             train_labels = data_labels_norm
             print(f'features: {train_features}')
             print(f'labels: {train_labels}')
+
         
-        
+        data = np.hstack((train_features, train_labels))
+        ##create a dataframe from the data
+
+        df = pd.DataFrame(data)
+
+        ##save the dataframe to an excel file
+        excel_filename = 'DATA_PID_ORGANIZADA.xlsx'
+
+        df.to_excel(excel_filename, index = False)
         
         return train_features, test_features, train_labels, test_labels, original_feature, original_labels
     
-        
+
+    def get_max_value(self):
+
+        return self.max_value
+
+    def get_array_size(self):
+
+        return self.array_size  
+
         
         
         
