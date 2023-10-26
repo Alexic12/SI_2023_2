@@ -17,7 +17,7 @@ class Neural:
         
         else:
             if data_type == 'time_series':
-                window_size = 3
+                window_size = 6
                 horizon_size = 1
                 train_features, test_features, train_labels, test_labels ,original_features, original_labels= data.time_series_process(window_size, horizon_size, file_name, test_split, norm, direct )
             
