@@ -34,7 +34,6 @@ class Perceptron:
 
         print(f'W: {Wij}')
         
-
         for it in range(0, iter):
             for d in range(0, train_features.shape[0]):
                 ##pass the data inputs to the input vector Xi
@@ -60,7 +59,6 @@ class Perceptron:
                 for i in range(0,train_labels.shape[1]):
                     Yd[i][0] = train_labels[d][i]
 
-                
                 for n in range(0, Ek.shape[0]):
                     Ek[n][0] = Yd[n][0]-Yk[n][0]
                     ##lets add the ECM for this data point
@@ -70,6 +68,9 @@ class Perceptron:
                 for n in range(0, Yk.shape[0]):
                     for w in range(0,Wij.shape[1]):
                         Wij[n][w] = Wij[n][w] + alfa*Ek[n][0]*Xi[w][0]
+
+                ##Lets reset the Agregation for each neuron
+                Aj[:][0] = 0
 
             print(f'Iter: {it}')
             for n in range(0, Yk.shape[0]):
@@ -89,11 +90,9 @@ class Perceptron:
             if flag_training == False:
                 it = iter - 1
                 break
- 
+
         print(f'W: {Wij}')
         for n in range(0, Yk.shape[0]):
             plt.figure()
             plt.plot(ecmT[n][:], 'r', label = f'ECM Neurona {n}')
             plt.show()
-
-##training and testing is done here

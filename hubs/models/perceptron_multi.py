@@ -12,7 +12,7 @@ class PerceptronMulti:
         ##Lets organize the data 
 
         ##arbitrary value, not absolute
-        hidden_neurons = train_features.shape[1] - 3
+        hidden_neurons = train_features.shape[1] + 1
 
         Xi = np.zeros((train_features.shape[1], 1)) # Input vector
 
@@ -116,8 +116,8 @@ class PerceptronMulti:
                 
                             
                 ##Lets reset the Agregation for each neuron
-                Aj[:][:] = 0
-                Ak[:][:] = 0
+                Aj[:][0] = 0
+                Ak[:][0] = 0
 
             ##lets print Wij for every iteration 
             #print(f'W: {Wij}')
