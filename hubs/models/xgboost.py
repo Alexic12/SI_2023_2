@@ -154,8 +154,13 @@ class xgb:
     def load_model(self, name, inputs, alfa):
         
         model = self.build_model((inputs+1)*self.depth, alfa, 1)
-        model.load_model(f'{name}.json')
+        model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'checkpoints', 'xgboost'))
+        model_file = os.path.join(model_dir, f'{name}.json')
+        print(f'Path : {model_file}')
+        model.load_model(model_file)
 
         return model
+    
+
 
 
