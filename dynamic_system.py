@@ -198,7 +198,7 @@ class MassDamper:
             plt.ylim(min(min(x), min(v), min(U)) - 0.5, max(max(x), max(v), max(U)) + 0.5)
 
             ##lets pause the graph 
-            plt.pause(self.N/self.s_t/1000)
+            plt.pause(self.N/self.s_t/100000)
 
         
         data = np.vstack((x, U, sp_arr, err_arr))
@@ -240,15 +240,14 @@ class MassDamper:
 
     def inverse_neuronal_control(self, control_vector, label):
 
-
         label = label.reshape((1,1))
         control_vector = control_vector.reshape((1,27))
 
         ##lets create an evaluation set
-        eval_set = [(control_vector, label),(control_vector, label)]
+        history = self.model.fit(control_vector, label)
         U = self.model.predict(control_vector)
 
-        history = self.model.fit(control_vector, label, eval_metric='mae', eval_set=eval_set, verbose=False)
+        
         
         return U[0]
 
