@@ -36,7 +36,7 @@ class MassDamper:
         self.last_value = 0
         ##lets load the neural model
         xg = xgb(10)
-        self.model = xg.load_model(name = 'PID_IDENT_1',inputs =  7, alfa = 0.02)
+        self.model = xg.load_model(name = 'TOMA_DATOS_PID_2',inputs =  27, alfa = 0.02)
 
     def update_force(self, t, type, force):
 
@@ -89,6 +89,9 @@ class MassDamper:
         ##fill the 
         sp_arr = self.fill_sp(len(sp_arr), -1, 1, 100)
 
+        #Create error vector
+        err_arr = np.zeros(len(t))
+
 
         ##get the position and velocity data for the time points
         x, v = sol.sol(t)
@@ -105,6 +108,7 @@ class MassDamper:
         velocity_line, = plt.plot([],[],label='Velocity (V)')
         input_line, = plt.plot([],[],label='System Input (U)')
         sp_line, = plt.plot([],[],label='System SetPoint (SP)')
+        err_line, = plt.plot([],[],label='System Error (Err)')
 
         ##lets show graph legend
         plt.legend()
@@ -115,7 +119,7 @@ class MassDamper:
         U = np.zeros(len(t))
 
         ##lets create a vector for neural controller
-        control_vector = np.zeros(13)
+        control_vector = np.zeros(27)
 
         ##lets simulate the system fpr the simulation time
         for i in range(1, len(t)):
@@ -123,6 +127,9 @@ class MassDamper:
 
             ##self.update_force(t[i-1])
             ##self.pid_control(x[i-1], sp_arr[i-1])
+
+            ##lets store the error for that specific time sample
+            err_arr[i-1] = sp_arr[i-1] - x[i-1]
 
             
             control_vector[0] = control_vector[1]
@@ -133,17 +140,35 @@ class MassDamper:
             control_vector[5] = control_vector[6]
             control_vector[6] = sp_arr[i-1] ##setpoint
 
-            ##for storing the control input
+            ##for storing the error
             control_vector[7] = control_vector[8]
             control_vector[8] = control_vector[9]
             control_vector[9] = control_vector[10]
             control_vector[10] = control_vector[11]
             control_vector[11] = control_vector[12]
-            control_vector[12] = U[i-1]
+            control_vector[12] = control_vector[13]
+            control_vector[13] = err_arr[i-1]
+
+            ##for storing the position
+            control_vector[14] = control_vector[15]
+            control_vector[15] = control_vector[16]
+            control_vector[16] = control_vector[17]
+            control_vector[17] = control_vector[18]
+            control_vector[18] = control_vector[19]
+            control_vector[19] = control_vector[20]
+            control_vector[20] = sp_arr[i-1] ##setpoint
+
+            ##for storing the control input
+            control_vector[21] = control_vector[22]
+            control_vector[22] = control_vector[23]
+            control_vector[23] = control_vector[24]
+            control_vector[24] = control_vector[25]
+            control_vector[25] = control_vector[26]
+            control_vector[26] = U[i] ##setpoint
 
             
             ##lets perform the control action
-            self.U = self.inverse_neuronal_control(control_vector)*0.3
+            self.U = self.inverse_neuronal_control(control_vector, U[i-1])*0.3
             
             ##fill index
             index[i-1] = i
@@ -167,6 +192,7 @@ class MassDamper:
             velocity_line.set_data(t[:i+1], v[:i+1])
             input_line.set_data(t[:i+1], U[:i+1])
             sp_line.set_data(t[:i+1], sp_arr[:i+1])
+            err_line.set_data(t[:i+1], err_arr[:i+1])
 
             ##lets show te data up until the actual sample time
             plt.xlim(0, t[i])
@@ -176,7 +202,7 @@ class MassDamper:
             #plt.pause(self.N/self.s_t)
 
         
-        data = np.vstack((x, U, sp_arr))
+        data = np.vstack((x, U, sp_arr, err_arr))
         print(data)
         # Create a DataFrame from the data
         df = pd.DataFrame(data)
@@ -213,9 +239,12 @@ class MassDamper:
         ##we store the previous value of the error
         self.error_previous = error
 
-    def inverse_neuronal_control(self, control_vector):
-        control_vector = control_vector.reshape((1,13))
+    def inverse_neuronal_control(self, control_vector, label):
+        label = label.reshape((1,1))
+        control_vector = control_vector.reshape((1,27))
+        ##eval_set = [(control_vector, label),(control_vector, label)]
         U = self.model.predict(control_vector)
+        ##history = self.model.fit(control_vector, label)
         return U[0]
 
 

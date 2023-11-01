@@ -24,7 +24,7 @@ class Neural:
                 
                 ##horizon_size = 1
                 
-                train_features, test_features, train_labels, test_labels, original_feature, original_labels = Data.time_series_process(windows_size, horizon_size, file_name, test_split, norm, iden)
+                train_features, test_features, train_labels, test_labels, original_feature, original_labels = Data.time_series_process_adaptative(windows_size, horizon_size, file_name, test_split, norm, iden)
                 
             elif data_type == 'data':
             
