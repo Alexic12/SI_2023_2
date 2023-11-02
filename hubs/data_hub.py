@@ -212,6 +212,100 @@ class Data:
 
         return train_features, test_features, train_labels, test_labels, original_features, original_labels
 
+
+    
+    def timeseries_process_adapt(self, window_size, horizon_size, file, test_split, norm):
+        ##Lets define the absolute path for this folder
+        data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data'))
+
+        ##Find the complete excel file route
+        excel_path = os.path.join(data_dir, file)
+
+        ##lets load the raw excel file
+        data_raw = pd.read_excel(excel_path, sheet_name = 0)
+
+        ##lets turn it into an array
+        array_raw = np.array(data_raw)
+
+        ## Lets get the number of sample times for the whole data (# of sample times)
+        data_length = array_raw.shape[1]
+
+        print(f'Sample Times for time series: {data_length}')
+
+        ##Lets create the data base array for storing the data the proper way
+        ##Rows = (#Sample Times - Window - horizon)
+        ##Columns = (window + horizon)
+        time_series_arr = np.zeros((data_length - window_size - horizon_size + 1, window_size*4 + horizon_size + 3))
+
+        print(f'Time_Series_Arr rows: {time_series_arr.shape[0]}')
+        print(f'Data Array Raw Shape: {array_raw.shape}')
+        print(f'Time_Series_Arr Shape: {time_series_arr.shape}')
+
+        ##we have to look trough all the raw data, and take the correct data points and store them as window and horizon
+        for i in range(data_length - window_size - horizon_size):
+            vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[3, i:i+window_size+horizon_size], array_raw[2, i:i+window_size+horizon_size], array_raw[1, i:i+window_size+horizon_size]))
+            time_series_arr[i] = vector
+
+        ##lets print this time_series_arr
+        print('Time Series')
+        print(time_series_arr)
+
+        
+        ##lets store the original features
+        columns = time_series_arr.shape[1]
+        original_features = data_raw[data_raw.columns[0:-horizon_size]]
+        original_labels = data_raw[data_raw.columns[-horizon_size:]]
+        print(f'Original_features {original_features}')
+        print(f'Original_labels {original_labels}')
+
+        ##now that we have the time series as a normal database for neural networks we have to split it on features and labels
+        data_features = time_series_arr[:, 0:-horizon_size]
+        data_labels = time_series_arr[:, -horizon_size:]
+
+        ##lets take the max value of the data
+        self.max_value = max(data_labels)
+
+        ##lets take the number of features
+        self.array_size = data_features.shape[1]
+
+        ##lets normalize the data
+        
+        if norm == True:
+            ##Lets normalize the data
+            if horizon_size == 1:
+                data_labels = data_labels.reshape(-1,1)
+            sc = StandardScaler()
+            data_features_norm = self.scaler.fit_transform(data_features)
+            data_labels_norm = self.scaler.fit_transform(data_labels)    
+        else:
+            data_features_norm = data_features
+            data_labels_norm = data_labels
+
+        ##lets split the data into training and testing
+        ##input (train, test) output (train, test)
+
+        if test_split != 0:
+            train_features, test_features, train_labels, test_labels = tts(data_features_norm, data_labels_norm, test_size=test_split)
+        else:
+            test_features = 0
+            test_labels = 0
+            train_features = data_features_norm
+            train_labels = data_labels_norm
+            #print(f'Features: {train_features}')
+            #print(f'labels: {train_labels}')
+
+        data = np.hstack((train_features, train_labels))
+        #print(data)
+        # Create a DataFrame from the data
+        df = pd.DataFrame(data)
+
+        # Save the DataFrame to an Excel file
+        excel_filename = 'DATA_PID_ORGANIZADA_ADAPT.xlsx'
+        df.to_excel(excel_filename, index=False)
+
+        return train_features, test_features, train_labels, test_labels, original_features, original_labels
+
+
     def get_max_value(self):
         return self.max_value
     
@@ -221,4 +315,3 @@ class Data:
 ##Lets run this method of time_series just for testing
 ##T = Data()
 ##T.timeseries_process(3,1,'DATA_SENO_DIRECTO.xlsx')
-            
