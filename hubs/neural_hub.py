@@ -1,3 +1,4 @@
+
 from hubs.data_hub import Data
 from hubs.models.perceptron import Perceptron
 from hubs.models.perceptron_multi import PerceptronMulti
@@ -10,22 +11,20 @@ class Neural:
     def __init__(self):
         pass
 
-    def run_model(self, model, file_name, iter, alfa, test_split, norm, stop_condition, neurons, avoid_col, chk_name, train,data_type):
+    def run_model(self, model, file_name, iter, alfa, test_split, norm, stop_condition, neurons, avoid_col, chk_name, train, data_type):
         data = Data()
         if model == 'conv_tf':
             train_images, test_images, train_labels, test_labels = data.download_database('MNIST')
         else:
-            if data_type == 'time_series_direct':
-                window_size = 3
+            if data_type == 'time_series':
+                window_size = 1
                 horizon_size = 1
-                train_features, test_features, train_labels, test_labels, original_features, original_labels = data.timeseries_process_direct(window_size,horizon_size,file_name, test_split,norm)
+                train_features, test_features, train_labels, test_labels, original_features, original_labels = data.timeseries_process_adapt(window_size, horizon_size, file_name, test_split, norm)
+
             elif data_type == 'data':
                 train_features, test_features, train_labels, test_labels, original_features, original_labels = data.data_process(file_name, test_split,norm, neurons, avoid_col)
-            elif data_type == 'time_series_inverse':
-                window_size = 3
-                horizon_size = 1
-                train_features, test_features, train_labels, test_labels, original_features, original_labels = data.timeseries_process_inverse(window_size,horizon_size,file_name, test_split,norm)
-
+        
+        
         if model == 'perceptron':
             print('Running Perceptron Model')
             P = Perceptron()
@@ -34,7 +33,7 @@ class Neural:
         elif model == 'ffm_tf':
             print('Running FFM Model')
             P = ffm_tf()
-            P.run(train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition,chk_name, train)
+            P.run(train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition)
 
         elif model == 'perceptron_multi':
             print('Running perceptron Multi Model')
@@ -50,4 +49,8 @@ class Neural:
             print("Running Convolutional TF Model")
             P = conv_tf()
             P.run(train_images, test_images, train_labels, test_labels, iter)
+
+
+
+
 
