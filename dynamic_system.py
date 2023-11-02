@@ -36,7 +36,7 @@ class MassDamper:
         self.last_value = 0
         ##lets load the neural model
         xg = xgb(10)
-        self.model = xg.load_model(name = 'TOMA_DATOS_PID_2',inputs =  27, alfa = 0.02)
+        self.model = xg.load_model(name = 'INDENT_DIR_PID',inputs = 15, alfa = 0.02)
 
     def update_force(self, t, type, force):
 
@@ -87,7 +87,7 @@ class MassDamper:
         sp_arr = np.zeros(len(t))
 
         ##fill the 
-        sp_arr = self.fill_sp(len(sp_arr), -1, 1, 100)
+        sp_arr = self.fill_sp(len(sp_arr), -1, 1, 80)
 
         #Create error vector
         err_arr = np.zeros(len(t))
@@ -119,19 +119,52 @@ class MassDamper:
         U = np.zeros(len(t))
 
         ##lets create a vector for neural controller
-        control_vector = np.zeros(27)
+        control_vector = np.zeros(15)
 
         ##lets simulate the system fpr the simulation time
         for i in range(1, len(t)):
             ##if we want to identify the system lets update the force
 
-            ##self.update_force(t[i-1])
+            ##self.update_force(t[i-1], 'random', 0)
             ##self.pid_control(x[i-1], sp_arr[i-1])
 
             ##lets store the error for that specific time sample
             err_arr[i-1] = sp_arr[i-1] - x[i-1]
 
-            
+
+
+            control_vector[0] = control_vector[1]
+            control_vector[1] = control_vector[2]
+            control_vector[2] = control_vector[3]
+            control_vector[3] = sp_arr[i-1]
+
+            control_vector[4] = control_vector[5]
+            control_vector[5] = control_vector[6]
+            control_vector[6] = control_vector[7]
+            control_vector[7] = err_arr[i-1]
+
+            control_vector[8] = control_vector[9]
+            control_vector[9] = control_vector[10]
+            control_vector[10] = control_vector[11]
+            control_vector[11] = x[i-1]
+
+            control_vector[12] = control_vector[13]
+            control_vector[13] = control_vector[14]
+            control_vector[14] = U[i] ##setpoint
+
+            """
+            control_vector[0] = control_vector[1]
+            control_vector[1] = sp_arr[i-1]
+            control_vector[2] = control_vector[3]
+            control_vector[3] = err_arr[i-1]
+            control_vector[4] = control_vector[5]
+            control_vector[5] = x[i-1]
+            control_vector[6] = U[i] ##setpoint
+
+            """
+
+
+            """
             control_vector[0] = control_vector[1]
             control_vector[1] = control_vector[2]
             control_vector[2] = control_vector[3]
@@ -156,7 +189,7 @@ class MassDamper:
             control_vector[17] = control_vector[18]
             control_vector[18] = control_vector[19]
             control_vector[19] = control_vector[20]
-            control_vector[20] = sp_arr[i-1] ##setpoint
+            control_vector[20] = x[i-1] ##setpoint
 
             ##for storing the control input
             control_vector[21] = control_vector[22]
@@ -165,7 +198,7 @@ class MassDamper:
             control_vector[24] = control_vector[25]
             control_vector[25] = control_vector[26]
             control_vector[26] = U[i] ##setpoint
-
+            """
             
             ##lets perform the control action
             self.U = self.inverse_neuronal_control(control_vector, U[i-1])*0.3
@@ -208,7 +241,7 @@ class MassDamper:
         df = pd.DataFrame(data)
 
         # Save the DataFrame to an Excel file
-        excel_filename = 'TOMA_DATOS_PID_2.xlsx'
+        excel_filename = 'TOMA_DATOs_PID_DIR.xlsx'
         df.to_excel(excel_filename, index=False)
 
         print(f'Data saved to {excel_filename}')
@@ -241,7 +274,7 @@ class MassDamper:
 
     def inverse_neuronal_control(self, control_vector, label):
         label = label.reshape((1,1))
-        control_vector = control_vector.reshape((1,27))
+        control_vector = control_vector.reshape((1,15))
         ##eval_set = [(control_vector, label),(control_vector, label)]
         U = self.model.predict(control_vector)
         ##history = self.model.fit(control_vector, label)

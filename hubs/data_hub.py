@@ -166,13 +166,13 @@ class data:
             
             if iden == 'Directo':
             
-                vector = np.concatenate((array_raw[0, i:i+windows_size+horizon_size], array_raw[1, i:i+windows_size+horizon_size]))
+                vector = np.concatenate((array_raw[1, i:i+windows_size+horizon_size], array_raw[0, i:i+windows_size+horizon_size]))
             ##vector = np.concatenate((array_raw[1, i:i+windows_size+horizon_size], array_raw[0, i:i+windows_size+horizon_size]))
                 time_series_arr[i] = vector
                 
             elif iden == 'Indirecto':
                 
-                vector = np.concatenate((array_raw[1, i:i+windows_size+horizon_size], array_raw[0, i:i+windows_size+horizon_size]))
+                vector = np.concatenate((array_raw[0, i:i+windows_size+horizon_size], array_raw[1, i:i+windows_size+horizon_size]))
                 
                 time_series_arr[i] = vector
                 
@@ -372,7 +372,7 @@ class data:
         df = pd.DataFrame(data)
 
         ##save the dataframe to an excel file
-        excel_filename = 'DATA_PID_ORGANIZADA.xlsx'
+        excel_filename = 'DATA_PID_ORGANIZADA_PID.xlsx'
 
         df.to_excel(excel_filename, index = False)
         
