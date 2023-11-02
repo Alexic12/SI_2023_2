@@ -10,7 +10,7 @@ class Perceptron:
         ##here is where all the neural network code is gonna be
 
         ##Lets organize the data 
-       
+
         Xi = np.zeros((train_features.shape[1] + 1, 1)) # Input vector
 
         Wij = np.zeros((train_labels.shape[1], train_features.shape[1] + 1)) # Weight Matrix
@@ -89,7 +89,7 @@ class Perceptron:
             if flag_training == False:
                 it = iter - 1
                 break
- 
+
         print(f'W: {Wij}')
         for n in range(0, Yk.shape[0]):
             plt.figure()
