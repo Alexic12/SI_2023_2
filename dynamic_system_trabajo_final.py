@@ -8,19 +8,19 @@ from hubs.models.xgboost import xgb
 
 class MassDamper:
     def __init__(self):
-        ##System Mass
-        self.m = 2 ##Kg
-        ##String Constant
-        self.k = 0.5
-        ##Friction coefficient
-        self.c = 2
+        ##Valor Resistencia [ohm]
+        self.R = 10 ##Kg
+        ##Valor inductancia [H]
+        self.L = 0.005
+        ##Valor capacitancia [F]
+        self.C = 2
         ##Number of ms for simulation
-        self.N = 2000
+        self.N = 12000
         ##number of sample times
         self.s_t = 1000
-        ##initial Position
+        ##initial current
         self.x0 = 0
-        ##initial velocity
+        ##initial voltage
         self.v0 = 0
         ##Sample time
         self.step_interval = 100 ## ms
@@ -36,13 +36,13 @@ class MassDamper:
         self.last_value = 0
         ##lets load the neural model
         xg = xgb(10)
-        self.model = xg.load_model(name = 'INDENT_DIR_PID',inputs = 15, alfa = 0.02)
+        ##self.model = xg.load_model(name = 'INDENT_DIR_PID',inputs = 15, alfa = 0.02)
 
     def update_force(self, t, type, force):
 
         if type == 'random':
             if t-self.last_update_time >= self.step_interval:
-                self.U = random.uniform(-1,1)
+                self.U = random.uniform(0,5)
                 self.last_update_time = t   
         elif type == 'external':
             self.U = force
@@ -64,7 +64,7 @@ class MassDamper:
     def system_equations(self, t, y):
         x, v = y ##actual position and velocity of system
         dxdt = v
-        dvdt = -(self.k/self.m) * x - (self.c/self.m) * v + self.U/self.m
+        dvdt = -(self.R/self.L) * x - (1/self.L) * v + self.U/self.L
         return [dxdt, dvdt]
     
     def run_simulation(self):
@@ -85,7 +85,7 @@ class MassDamper:
         sp_arr = np.zeros(len(t))
 
         ##fill the 
-        sp_arr = self.fill_sp(len(sp_arr), -1, 1, 80)
+        sp_arr = self.fill_sp(len(sp_arr), -1, 1, 800)
 
         #Create error vector
         err_arr = np.zeros(len(t))
@@ -102,8 +102,8 @@ class MassDamper:
         plt.grid(True)
 
         ##Itialize lines for position, velocity and U
-        position_line, = plt.plot([],[],label='Position (X)')
-        velocity_line, = plt.plot([],[],label='Velocity (V)')
+        position_line, = plt.plot([],[],label='Corriente (X)')
+        velocity_line, = plt.plot([],[],label='Voltaje (V)')
         input_line, = plt.plot([],[],label='System Input (U)')
         sp_line, = plt.plot([],[],label='System SetPoint (SP)')
         err_line, = plt.plot([],[],label='System Error (Err)')
@@ -239,7 +239,7 @@ class MassDamper:
         df = pd.DataFrame(data)
 
         # Save the DataFrame to an Excel file
-        excel_filename = 'TOMA_DATOs_PID_DIR.xlsx'
+        excel_filename = 'TOMA_DATOS_PROYECTO_FINAL.xlsx'
         df.to_excel(excel_filename, index=False)
 
         print(f'Data saved to {excel_filename}')
