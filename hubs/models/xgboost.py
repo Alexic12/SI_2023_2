@@ -1,4 +1,5 @@
-##lets import the basic libraries
+##lets import the basic libraries#
+# toca correguir este codigo
 import sys
 import os
 import pandas as pd
@@ -11,12 +12,15 @@ import xgboost as xg
 ## import scikit-learn to the metricks
 from sklearn.metrics import accuracy_score as acs
 
+##for denormalizing the data
+from sklearn.preprocessing import StandardScaler
+
 class xgb:
     def __init__(self, depth):
         self.depth = depth ##depth of decision tree
 
 
-    def run(self, train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition,chk_name,train):
+    def run(self, train_features, test_features, train_labels, test_labels, original_features, original_labels, iter, alfa, stop_condition,chk_name,train,neurons):
         ##lets build the model
         ##number of inputs  (for example 13 inputs, i have a depth of 10 n_estimators will be (inputs+1)*depth)
         model = self.build_model((train_features.shape[1]+1)*self.depth, alfa, 1) # SI quiero cargar un mdoelo debe ser el mismo configuracion , als mimsa dimenciones.
@@ -89,7 +93,28 @@ class xgb:
             ##prediction output
             pred_out = model.predict(train_features)# con todos los valores 
             
-            #data = pd.DataFrame(train_features)
+             ##Let's denormalize the data
+            SC = StandardScaler()
+
+            original_labels_norm = SC.fit_transform(original_labels)
+
+            if neurons == 1:
+                pred_out = pred_out.reshape(-1,1)
+
+            pred_out_denorm = SC.inverse_transform(pred_out)
+
+            pred_df = pd.DataFrame(pred_out_denorm)
+
+            result_data = pd.concat([original_features,pred_df],axis=1)
+
+            print(f'Dataframe : {result_data}')
+            
+            results_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(_file_))),'data','results'))
+
+            results_file = os.path.join(results_dir, f'{chk_name}_RESULTS_XGB.xlsx')
+
+            ##Let's store the dataframe as excel file
+            result_data.to_excel(results_file, index = False, engine = 'openpyxl')
 
             
             plt.figure()

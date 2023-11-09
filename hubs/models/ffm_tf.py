@@ -106,9 +106,6 @@ class ffm_tf:
             print(f'Prediction accuracy: {accuracy:.2f}%')
 
 
-
-
-
     def build_model(self, hidden_neurons, output, alfa):
         model = keras.Sequential([
             Dense(hidden_neurons, activation=tf.nn.sigmoid, input_shape=[hidden_neurons-1]),

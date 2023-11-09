@@ -1,6 +1,7 @@
 import os
 import sys
 
+
 import pandas as pd
 import numpy as np
 
@@ -9,6 +10,9 @@ import sklearn.model_selection
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split as tts
+
+import tensorflow as tf
+from tensorflow import keras
 
 class Data: 
     """
@@ -19,7 +23,7 @@ class Data:
     """
     def _init_(self):
         pass
-
+        # vamos  a usar otr funcion para trabajar cn los conv
     def data_process(self, file, test_split, norm, neurons, avoid_cols):
         ##Lets define the absolute path for this folder
         # Aqui tomo las informacion de path para abrir el archvio xls
@@ -94,9 +98,15 @@ class Data:
         return train_features, test_features, train_labels, test_labels
 
 
+    def download_database(self,database):
+        if database == 'MNIST':
+            (train_images,train_labels),(test_images,test_labels)= keras.datasets.mnist.load_data() # esta de 18*18
+        elif database == 'CIFAR10':
+            pass
 
-
-
+        elif database == 'CIFAR100':
+            pass
+        return train_images,test_images,train_labels,test_labels
 
 
 

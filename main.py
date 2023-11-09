@@ -1,17 +1,17 @@
 from hubs.neural_hub import Neural # Con esta linea llamamos a hubs.neural_hub e importamos todos la clase neural donde se encuntra los diferentes modelos
 
 N = Neural()
-model = 'ffm_tf'
+model = 'conv_tf'
 file_name = 'HEART_DISEASE_DB.xlsx'
-iter = 500
+iter = 20
 alfa=0.1
-test_split = 0.2
+test_split = 0
 norm = True
 stop_condition = 50
 output = 1 # neuronas de salidas.
 avoid_col = 0
 chk_name = 'ETH_9'
-train = False # esto es para definir si deseamos o no entrenar el modelo 
+train = True # esto es para definir si deseamos o no entrenar el modelo 
 
 
 N.run_model(model = model, file_name = file_name, iter = iter, alfa=alfa, test_split = test_split, norm = norm, stop_condition = stop_condition, neurons = output, avoid_cols = avoid_col, chk_name = chk_name, train = train)
