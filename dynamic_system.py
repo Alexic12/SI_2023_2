@@ -36,7 +36,7 @@ class MassDamper:
         self.last_value = 0
         ##lets load the neural model
         xg = xgb(10)
-        self.model = xg.load_model(name = 'IDENT_DIR_PID',inputs =  7, alfa = 0.02)
+        self.model = xg.load_model(name = 'PID_IDENT_ADAPT',inputs =  27, alfa = 0.02)
 
     def update_force(self, t, type, force):
 
@@ -60,6 +60,8 @@ class MassDamper:
 
         return arr
 
+
+###Sistema dinamico
     def system_equations(self, t, y):
         x, v = y ##actual position and velocity of system
         dxdt = v
@@ -177,7 +179,9 @@ class MassDamper:
             control_vector[26] = U[i] ##setpoint
             
             ##lets perform the control action
-            self.U = self.inverse_neuronal_control(control_vector, U[i-1])*0.55
+
+            ## !!! PARA CONTROL NEURONAL
+            ##self.U = self.inverse_neuronal_control(control_vector, U[i-1])*0.55
             
             ##fill index
             index[i-1] = i
