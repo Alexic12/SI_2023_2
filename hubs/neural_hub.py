@@ -5,7 +5,6 @@ from hubs.models.ffm_tf import ffm_tf
 from hubs.models.xgboost import xgb
 from hubs.models.conv_tf import conv_tf
 
-
 class Neural:
     def __init__(self):
         pass
@@ -16,13 +15,15 @@ class Neural:
             train_images, test_images, train_labels, test_labels = data.download_database('MNIST')
         else:
             if data_type == 'time_series':
-                window_size = 6
+                window_size = 2
                 horizon_size = 1
                 train_features, test_features, train_labels, test_labels, original_features, original_labels = data.timeseries_process(window_size, horizon_size, file_name, test_split, norm)
-
+            elif data_type == 'time_series_adapt':
+                window_size = 1
+                horizon_size = 1
+                train_features, test_features, train_labels, test_labels, original_features, original_labels = data.timeseries_process_adapt(window_size, horizon_size, file_name, test_split, norm)
             elif data_type == 'data':
                 train_features, test_features, train_labels, test_labels, original_features, original_labels = data.data_process(file_name, test_split,norm, neurons, avoid_col)
-        
         
         if model == 'perceptron':
             print('Running Perceptron Model')
