@@ -9,13 +9,13 @@ from hubs.models.xgboost import xgb
 class MassDamper:
     def __init__(self):
         ##System Mass
-        self.m = 2 ##Kg
-        ##String Constant
-        self.k = 0.5
-        ##Friction coefficient
-        self.c = 2
+        self.m = 1.2 ##Kg
+        ##Longitud del pendulo
+        self.l = 1.5 #m
+        ##Aceleracion de la gravedad
+        self.g = 9.8 # m/s
         ##Number of ms for simulation
-        self.N = 2000
+        self.N = 10000
         ##number of sample times
         self.s_t = 1000
         ##initial Position
@@ -23,7 +23,7 @@ class MassDamper:
         ##initial velocity
         self.v0 = 0
         ##Sample time
-        self.step_interval = 100 ## ms
+        self.step_interval = 1000 ## ms
         ##Last update time for simulation
         self.last_update_time = -self.step_interval
         ##System input
@@ -36,13 +36,13 @@ class MassDamper:
         self.last_value = 0
         ##lets load the neural model
         xg = xgb(10)
-        self.model = xg.load_model(name = 'INDENT_DIR_PID',inputs =  7, alfa = 0.02)
+        self.model = xg.load_model(name = 'INDENT_PID_FINAL',inputs =  7, alfa = 0.02)
 
     def update_force(self, t, type, force):
 
         if type == 'random':
             if t-self.last_update_time >= self.step_interval:
-                self.U = random.uniform(-1,1)
+                self.U = random.uniform(-4,4)
                 self.last_update_time = t   
         elif type == 'external':
             self.U = force
@@ -66,7 +66,7 @@ class MassDamper:
     def system_equations(self, t, y):
         x, v = y ##actual position and velocity of system
         dxdt = v
-        dvdt = -(self.k/self.m) * x - (self.c/self.m) * v + self.U/self.m
+        dvdt = -(self.g/self.l) * x + self.U*(self.m+self.l) #Ecuacion dinamica dada por el profe 
         return [dxdt, dvdt]
     
     def run_simulation(self):
@@ -87,7 +87,7 @@ class MassDamper:
         sp_arr = np.zeros(len(t))
 
         ##fill the 
-        sp_arr = self.fill_sp(len(sp_arr), -1, 1, 100)
+        sp_arr = self.fill_sp(len(sp_arr), -1, 1, 100) # 60 menos instancias para que sea mas dinamico, cada 40 cambia el valor random
 
         #Create error vector
         err_arr = np.zeros(len(t))
@@ -103,8 +103,8 @@ class MassDamper:
         plt.grid(True)
 
         ##Itialize lines for position, velocity and U
-        position_line, = plt.plot([],[],label='Position (X)')
-        velocity_line, = plt.plot([],[],label='Velocity (V)')
+        position_line, = plt.plot([],[],label='Position (Theta)')
+        velocity_line, = plt.plot([],[],label='Velocity (w)')
         input_line, = plt.plot([],[],label='System Input (U)')
         sp_line, = plt.plot([],[],label='System SetPoint (SP)')
         err_line, = plt.plot([],[],label='System Error (ERR)')
@@ -124,12 +124,14 @@ class MassDamper:
         for i in range(1, len(t)):
             ##if we want to identify the system lets update the force
 
-            #self.update_force(t[i-1], 'random', 0)
-            #self.pid_control(x[i-1], sp_arr[i-1])
+            #self.update_force(t[i-1], 'random', 0)  # Genera un setpoint random
+            self.pid_control(x[i-1], sp_arr[i-1])
 
             ##lets store the error for that specific time sample
             err_arr[i-1] = sp_arr[i-1] - x[i-1]
 
+            # Comento abajo solo cuando voy a entrenar 
+            #'''
             control_vector[0] = control_vector[1]
             control_vector[1] = sp_arr[i-1]
             control_vector[2] = control_vector[3]
@@ -137,7 +139,8 @@ class MassDamper:
             control_vector[4] = control_vector[5]
             control_vector[5] = x[i-1]
             control_vector[6] = U[i] ##setpoint
-
+            #'''
+            #Comento abajo solo cuando voy a probar el controlador 
             '''
             #for storing the position setpoint
             control_vector[0] = control_vector[1]
@@ -165,6 +168,7 @@ class MassDamper:
             control_vector[18] = control_vector[19]
             control_vector[19] = control_vector[20]
             control_vector[20] = x[i-1] ##position
+
             #for storing the control input
             control_vector[21] = control_vector[22]
             control_vector[22] = control_vector[23]
@@ -174,8 +178,9 @@ class MassDamper:
             control_vector[26] = U[i] ##setpoint
             '''
 
+
             ##lets perform the control action
-            self.U = self.inverse_neuronal_control(control_vector, U[i-1])
+            self.U = self.inverse_neuronal_control(control_vector, U[i-1])*0.8 # Comentar al hacer identificacion directa
             
             ##fill index
             index[i-1] = i
@@ -192,7 +197,7 @@ class MassDamper:
             sol = solve_ivp(self.system_equations, t_span, y0, dense_output=True)
 
             ##get the position and velocity for the next sample time
-            x[i], v[i] = sol.sol(t[i])
+            x[i-1], v[i] = sol.sol(t[i])
 
             ##lets udate the graph lines for showing system status
             position_line.set_data(t[:i+1], x[:i+1])
@@ -215,7 +220,7 @@ class MassDamper:
         df = pd.DataFrame(data)
 
         # Save the DataFrame to an Excel file
-        excel_filename = 'TOMA_DATOS_PID_DIR.xlsx'
+        excel_filename = 'PID_DATA_FINAL.xlsx'
         df.to_excel(excel_filename, index=False)
 
         print(f'Data saved to {excel_filename}')
