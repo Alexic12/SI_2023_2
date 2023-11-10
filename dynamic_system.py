@@ -8,14 +8,14 @@ from hubs.models.xgboost import xgb
 
 class MassDamper:
     def __init__(self):
-        ##System Mass
-        self.m = 2 ##Kg
-        ##String Constant
-        self.k = 0.5
-        ##Friction coefficient
-        self.c = 2
+        ## Masa pendulo
+        self.m = 1.2 ##Kg
+        ## longitud del pendulo
+        self.l = 1.5 #m
+        ## aceleracion gravedd
+        self.g = 9.8 #m/s2
         ##Number of ms for simulation
-        self.N = 2000
+        self.N = 10000
         ##number of sample times
         self.s_t = 1000
         ##initial Position
@@ -63,7 +63,7 @@ class MassDamper:
     def system_equations(self, t, y):
         x, v = y ##actual position and velocity of system
         dxdt = v
-        dvdt = -(self.k/self.m) * x - (self.c/self.m) * v + self.U/self.m
+        dvdt = -(self.g/self.l) * x + self.U * (self.m + self.l) 
         return [dxdt, dvdt]
     
     def run_simulation(self):
@@ -130,17 +130,17 @@ class MassDamper:
 #----------------------------------------------------------------------------------------
 #----------Estas líneas solo se usan cuando se va a probar el controlador-------
             
-            # control_vector[0] = control_vector[1]
-            # control_vector[1] = sp_arr[i-1] #Este es un vector que representa las entradas del sistema
-            # control_vector[2] = control_vector[3]
-            # control_vector[3] = err_arr[i-1] # Acá se almacena el error
-            # control_vector[4] = control_vector[5]
-            # control_vector[5] = x[i-1] # Salida del sistema (posición)
-            # control_vector[6] = U[i] ##setpoint
+            control_vector[0] = control_vector[1]
+            control_vector[1] = sp_arr[i-1] #Este es un vector que representa las entradas del sistema
+            control_vector[2] = control_vector[3]
+            control_vector[3] = err_arr[i-1] # Acá se almacena el error
+            control_vector[4] = control_vector[5]
+            control_vector[5] = x[i-1] # Salida del sistema (posición)
+            control_vector[6] = U[i] ##setpoint
             
 #-------------------------------------------------------------------------------------
 #--------Estas líneas se usan para entrenar---------------------------
-            
+            '''
             #for storing the position setpoint
             control_vector[0] = control_vector[1]
             control_vector[1] = control_vector[2]
@@ -175,7 +175,7 @@ class MassDamper:
             control_vector[24] = control_vector[25]
             control_vector[25] = control_vector[26]
             control_vector[26] = U[i] ##setpoint
-            
+            '''  
             ##lets perform the control action
             self.U = self.inverse_neuronal_control(control_vector, U[i-1])*0.55
             
@@ -193,7 +193,7 @@ class MassDamper:
             sol = solve_ivp(self.system_equations, t_span, y0, dense_output=True)
 
             ##get the position and velocity for the next sample time
-            x[i], v[i] = sol.sol(t[i])
+            x[i-1], v[i] = sol.sol(t[i])
 
             ##lets udate the graph lines for showing system status
             position_line.set_data(t[:i+1], x[:i+1])
@@ -215,7 +215,7 @@ class MassDamper:
         df = pd.DataFrame(data)
 
         # Save the DataFrame to an Excel file
-        excel_filename = 'TOMA_DATOS_PID_DIR.xlsx'
+        excel_filename = 'DATOS_FINAL.xlsx'
         df.to_excel(excel_filename, index=False)
 
         print(f'Data saved to {excel_filename}')

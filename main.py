@@ -3,7 +3,7 @@ from hubs.neural_hub import Neural
 N = Neural()
 
 model = 'xgb'
-file_name = 'TOMA_DATOS_PID_DIR.xlsx'
+file_name = 'DATOS_FINAL.xlsx'
 iter = 2
 alfa=0.2
 test_split = 0.1
