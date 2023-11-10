@@ -150,7 +150,8 @@ class Data:
 
         ##we have to look trough all the raw data, and take the correct data points and store them as window and horizon
         for i in range(data_length - window_size - horizon_size):
-            vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[1, i:i+window_size+horizon_size]))
+            vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[1, i:i+window_size+horizon_size]))#Inversa
+            #vector = np.concatenate((array_raw[1, i:i+window_size+horizon_size], array_raw[0, i:i+window_size+horizon_size]))#Directa
             time_series_arr[i] = vector
 
         ##lets print this time_series_arr
@@ -243,7 +244,14 @@ class Data:
 
         ##we have to look trough all the raw data, and take the correct data points and store them as window and horizon
         for i in range(data_length - window_size - horizon_size):
-            vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[3, i:i+window_size+horizon_size], array_raw[2, i:i+window_size+horizon_size], array_raw[1, i:i+window_size+horizon_size]))
+            vector = np.concatenate(
+                (
+                 array_raw[0, i:i+window_size+horizon_size], #X
+                 array_raw[3, i:i+window_size+horizon_size], #VError
+                 array_raw[2, i:i+window_size+horizon_size], #VectorSP
+                 array_raw[1, i:i+window_size+horizon_size] #U
+                 )
+            )
             time_series_arr[i] = vector
 
         ##lets print this time_series_arr
@@ -300,7 +308,7 @@ class Data:
         df = pd.DataFrame(data)
 
         # Save the DataFrame to an Excel file
-        excel_filename = 'DATA_PID_ORGANIZADA_ADAPT.xlsx'
+        excel_filename = 'DATA_PRACT_INV.xlsx'
         df.to_excel(excel_filename, index=False)
 
         return train_features, test_features, train_labels, test_labels, original_features, original_labels
