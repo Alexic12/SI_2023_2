@@ -5,113 +5,94 @@ class Perceptron:
     def __init__(self):
         pass
 
-    def run(self, train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition, capas):
-        print('Training perceptron network...')
+    def run(self, train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition):
+        print('Training perceptron network.....')
+        ##here is where all the neural network code is gonna be
 
-        hidden_neurons = train_features.shape[1] + 1  # numero recomendado
+        ##Lets organize the data 
+       
+        Xi = np.zeros((train_features.shape[1] + 1, 1)) # Input vector
 
-        xi = np.zeros((train_features.shape[1], 1)) # input vector
+        Wij = np.zeros((train_labels.shape[1], train_features.shape[1] + 1)) # Weight Matrix
 
-        hj = np.zeros((hidden_neurons + 1, 1))
+        Aj = np.zeros((train_labels.shape[1],1)) # Agregation vector
 
-        wij = np.zeros((hidden_neurons, train_features.shape[1])) # matriz de pesos
+        Yk = np.zeros((train_labels.shape[1],1)) # Neural Output vector
 
-        cjk = np.zeros((train_labels.shape[1], hidden_neurons + 1)) # matriz de pesos
+        Yd = np.zeros((train_labels.shape[1],1)) #Label Vector
 
-        aj = np.zeros((hidden_neurons, 1)) # vector de agregacion
+        Ek = np.zeros((train_labels.shape[1],1)) # Error vector
 
-        bk = np.zeros((train_labels.shape[1], 1))
+        ecm = np.zeros((train_labels.shape[1],1)) #ECM vector for each iteration
 
-        yk = np.zeros((train_labels.shape[1], 1)) # neural output vector
+        ecmT = np.zeros((train_labels.shape[1],iter)) ##ECM results for every iteration
 
-        yd = np.zeros((train_labels.shape[1], 1)) # label vector
+        ##Fill the Wieght Matrix before training
+        for i in range(0,Wij.shape[0]):
+            for j in range(0, Wij.shape[1]):
+                Wij[i][j] = np.random.uniform(-1,1)
 
-        ek = np.zeros((train_labels.shape[1], 1)) # ecm vector for each iteration
-
-        ecm = np.zeros((train_labels.shape[1], 1)) # ecm vector for each iteration
-
-        ecmT = np.zeros((train_labels.shape[1], iter)) # ecm results for every iteration
-
-        # fill the weight matrix before training
-        for i in range(0, wij.shape[0]):
-            for j in range(0, wij.shape[1]):
-                wij[i][j] = np.random.uniform(-1, 1) # incluye decimales, es mejor asi para evitar cambios muy grandes de tipo de dato despues
-
-        for i in range(0, cjk.shape[0]):
-            for j in range(0, cjk.shape[1]):
-                cjk[i][j] = np.random.uniform(-1, 1) # incluye decimales, es mejor asi para evitar cambios muy grandes de tipo de dato despues
-
-        print(f'Wij: {wij}')
-        print(f'cjk: {cjk}')
-
+        print(f'W: {Wij}')
+        
         for it in range(0, iter):
             for d in range(0, train_features.shape[0]):
-                ## pass the data inputs to the input vector xi
-                hj[0][0] = 1 #bias
-
+                ##pass the data inputs to the input vector Xi
+                Xi[0][0] = 1 ##Bias
                 for i in range(0, train_features.shape[1]):
-                    xi[i][0] = train_features[d][i]
+                    Xi[i+1][0] = train_features[d][i]
+                
+                ##Lets calculate the Agregation for each neuron
+                for n in range(0, Aj.shape[0]):
+                    for n_input in range(0,Xi.shape[0]):
+                        Aj[n][0] = Aj[n][0] + Xi[n_input]*Wij[n][n_input]
 
-                # lets calculate the agregation for each neuron
-                for n in range(0, aj.shape[0]):
-                    for input in range(0, xi.shape[0]):
-                        aj[n][0] = aj[n][0] + xi[input]*wij[n][input]
+                ##lets Calculate the output for each neuron
+                for n in range(0, Yk.shape[0]):
+                    if Aj[n][0] < 0:
+                        Yk[n][0] = 0
+                    else:
+                        Yk[n][0] = 1
 
-                # lets calculate the output for each neuron
-                for n in range(0, hidden_neurons):
-                    hj[n+1][0] = 1/(1 + np.exp(-aj[n][0]))
+                ##lets calculate the error for each neuron
 
-                for n in range(0, train_labels.shape[1]):
-                    for input in range(0, hj.shape[0]):
-                        bk[n][0] = bk[n][0] + hj[input]*cjk[n][input]
+                ##Pass train_labels to Yd vector
+                for i in range(0,train_labels.shape[1]):
+                    Yd[i][0] = train_labels[d][i]
 
-                # lets calculate the output for each neuron
-                for n in range(0, yk.shape[0]):
-                    yk[n][0] = 1/(1 + np.exp(-bk[n][0]))
+                for n in range(0, Ek.shape[0]):
+                    Ek[n][0] = Yd[n][0]-Yk[n][0]
+                    ##lets add the ECM for this data point
+                    ecm[n][0] = ecm[n][0] + (((Ek[n][0])**2)/2)
 
-                # lets calculate the error for each neuron
+                #Weight Training
+                for n in range(0, Yk.shape[0]):
+                    for w in range(0,Wij.shape[1]):
+                        Wij[n][w] = Wij[n][w] + alfa*Ek[n][0]*Xi[w][0]
 
-                # pass train_labels to yd vector
-                for i in range(0, train_labels.shape[1]):
-                    yd[i][0] = train_labels[d][i]
-
-                for n in range(0, ek.shape[0]):
-                    ek[n][0] = yd[n][0] - yk[n][0]
-                    # lets add the acm for this data point
-                    ecm[n][0] = ecm[n][0] + ((ek[n][0]**2)/2)
-
-                # weight training 
-                for n in range(0, cjk.shape[0]):
-                    for w in range(0, cjk.shape[1]):
-                        cjk[n][w] = cjk[n][w] + alfa*ek[n][0]*hj[w][0]*yk[n][0]*(1 - yk[n][0])
-
-                for n in range(0, hj.shape[0] - 1):
-                    for w in range(0, xi.shape[0]):
-                        for o in range(0, yk.shape[0]):
-                            wij[n][w] = wij[n][w] + alfa*ek[o][0]*yk[o][0]*(1 - yk[o][0])*cjk[o][n+1]*hj[n+1][0]*(1 - hj[n+1][0])*xi[w]
+                ##Lets reset the Agregation for each neuron
+                Aj[:][0] = 0
 
             print(f'Iter: {it}')
+            for n in range(0, Yk.shape[0]):
+                print(f'ECM {n}: {ecm[n][0]}')
 
-            for n in range(0, yk.shape[0]):
-                print(f'ecm {n}: {ecm[n][0]}')
 
-            for n in range(0, yk.shape[0]):
+            for n in range(0, Yk.shape[0]):
                 ecmT[n][it] = ecm[n][0]
                 ecm[n][0] = 0
-
-            ## lets check the stop_condition
+            
+            ##lets check the stop_condition
             flag_training = False
-            for n in range(0, yk.shape[0]):
+            for n in range(0, Yk.shape[0]):
                 if ecmT[n][it] != stop_condition:
                     flag_training = True
-
+                
             if flag_training == False:
                 it = iter - 1
                 break
 
-        print(f'Wij: {wij}')
-        print(f'cjk: {cjk}')
-        for n in range(0, yk.shape[0]):
+        print(f'W: {Wij}')
+        for n in range(0, Yk.shape[0]):
             plt.figure()
-            plt.plot(ecmT[n][:], 'r', label = f'ecm neurona {n}')
+            plt.plot(ecmT[n][:], 'r', label = f'ECM Neurona {n}')
             plt.show()
