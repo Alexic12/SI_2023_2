@@ -12,7 +12,9 @@ from sklearn.model_selection import train_test_split as tts
 
 import tensorflow
 from tensorflow import keras
-
+'''
+9)	Lo mas importante si se quiere una identificación directa el sistema debe de aprenderse la salida en este caso la posición (X), que en el paso 7 se identifica con el numero 0, es por eso que en este paso la ultima columna que seria la columna de salida debe de tener el numero cero. ESTA PARTE ESTA EN DATA HUB'''
+#0-1 inversa......1-0 directa
 class Data:
     """
     Attributes:
@@ -244,7 +246,7 @@ class Data:
         print(f'Data Array Raw Shape: {array_raw.shape}')
         print(f'Time_Series_Arr Shape: {time_series_arr.shape}')
 
-        ##we have to look trough all the raw data, and take the correct data points and store them as window and horizon
+        ##we have to look trough all the raw data, and take the correct data points and store them as window and horizon#La U siempre en la columna final
         for i in range(data_length - window_size - horizon_size):
             vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[3, i:i+window_size+horizon_size,], array_raw[2, i:i+window_size+horizon_size,], array_raw[1, i:i+window_size+horizon_size,]))
             time_series_arr[i] = vector
@@ -293,6 +295,7 @@ class Data:
 
         data=np.hstack((train_features,train_labels))
         df =pd.DataFrame(data)
-        excel_filaname = 'DATA_PID_ORGANZADA.xlsx'
+        #excel_filaname = 'DATA_PID_ORGANZADA_ADAPT.xlsx'
+        excel_filaname = 'PENDULO.xlsx'
         df.to_excel(excel_filaname, index=False)
         return train_features, test_features, train_labels, test_labels, original_features, original_labels

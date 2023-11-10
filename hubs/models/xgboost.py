@@ -32,7 +32,8 @@ class xgb:
             ##lets train the model
             model.fit(train_features, train_labels, eval_metric='mae', eval_set=eval_set, verbose=True)
 
-            ##Lets 
+            ##Lets run feature importance weight analysis
+            self.run_weight_analysis(model)
 
 
             ##lets plot results
@@ -160,6 +161,15 @@ class xgb:
         model.load_model(model_file)
 
         return model
+
+
+    def run_weight_analysis(self, model):
+        feature_importance = model.feature_importances_
+        print('feature importance: ')
+        print(feature_importance)
+        plt.figure(figsize=(10,8))
+        xg.plot_importance(model,importance_type='weight')
+        plt.show()
     
 
 
