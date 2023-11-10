@@ -372,7 +372,7 @@ class data:
         df = pd.DataFrame(data)
 
         ##save the dataframe to an excel file
-        excel_filename = 'DATA_PID_ORGANIZADA_PID.xlsx'
+        excel_filename = 'DATA_PID_ORGANIZADA_EXAM_FINAL.xlsx'
 
         df.to_excel(excel_filename, index = False)
         

@@ -15,9 +15,9 @@ class MassDamper:
         ##Valor capacitancia [F]
         self.C = 2
         ##Number of ms for simulation
-        self.N = 12000
+        self.N = 200000
         ##number of sample times
-        self.s_t = 1000
+        self.s_t = 5000
         ##initial current
         self.x0 = 0
         ##initial voltage
@@ -85,7 +85,7 @@ class MassDamper:
         sp_arr = np.zeros(len(t))
 
         ##fill the 
-        sp_arr = self.fill_sp(len(sp_arr), -1, 1, 800)
+        ##sp_arr = self.fill_sp(len(sp_arr), 0, 0.5, 800)
 
         #Create error vector
         err_arr = np.zeros(len(t))
@@ -103,10 +103,10 @@ class MassDamper:
 
         ##Itialize lines for position, velocity and U
         position_line, = plt.plot([],[],label='Corriente (X)')
-        velocity_line, = plt.plot([],[],label='Voltaje (V)')
+        #velocity_line, = plt.plot([],[],label='Voltaje (V)')
         input_line, = plt.plot([],[],label='System Input (U)')
-        sp_line, = plt.plot([],[],label='System SetPoint (SP)')
-        err_line, = plt.plot([],[],label='System Error (Err)')
+        ##sp_line, = plt.plot([],[],label='System SetPoint (SP)')
+        ##err_line, = plt.plot([],[],label='System Error (Err)')
 
         ##lets show graph legend
         plt.legend()
@@ -220,10 +220,10 @@ class MassDamper:
 
             ##lets udate the graph lines for showing system status
             position_line.set_data(t[:i+1], x[:i+1])
-            velocity_line.set_data(t[:i+1], v[:i+1])
+            #velocity_line.set_data(t[:i+1], v[:i+1])
             input_line.set_data(t[:i+1], U[:i+1])
-            sp_line.set_data(t[:i+1], sp_arr[:i+1])
-            err_line.set_data(t[:i+1], err_arr[:i+1])
+            ##sp_line.set_data(t[:i+1], sp_arr[:i+1])
+            ##err_line.set_data(t[:i+1], err_arr[:i+1])
 
             ##lets show te data up until the actual sample time
             plt.xlim(0, t[i])

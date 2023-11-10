@@ -37,6 +37,9 @@ class ffm_tf:
             
             plt.figure()
             plt.plot(training_data['mse'], 'r', label='mse')
+            plt.xlabel('tiempo [s]')
+            plt.ylabel('Value')
+            plt.title('Error')
             plt.show()
             
             ##lets validate the trained model
@@ -63,7 +66,7 @@ class ffm_tf:
             r = input('Save model? : (Y-N)')
             if r == 'Y':
                 
-                model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'checkpoints', 'ffm_tf'))
+                model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'checkpoints', 'xgboost'))
                 checkpoint_file = os.path.join(model_dir, f'{chk_name}.h5')
                 print(f'checkpoint path: {checkpoint_file}')
                 model.save_weights(checkpoint_file)
@@ -145,3 +148,4 @@ class ffm_tf:
         model.compile(optimizer=keras.optimizers.Adam(learning_rate=alpha),loss='mse',metrics=['mse'])
         
         return model
+    
