@@ -30,7 +30,7 @@ class xgb:
 
         if train:
             ##lets train the model
-            model.fit(train_features, train_labels, eval_metric='mae', eval_set=eval_set, verbose=True)
+            model.fit(train_features, train_labels, eval_metric='mae', eval_set=eval_set, verbose=True) # mae es el error absoluto medio
 
             ##lets run a feature importance weight analysis
             self.run_weight_analysis(model)
@@ -66,15 +66,15 @@ class xgb:
             print(f'Accuracy: {accuracy:.2f}%')
 
             ##lets ask if the user wants to store the model
-            r = input('Savel model? (Y-N)')
-            if r == 'Y':
+            r = input('Save model? (Y-N)')
+            if r == 'Y' or r == 'y':
                 model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'checkpoints', 'xgboost'))
                 checkpoint_file = os.path.join(model_dir, f'{chk_name}.json')
                 print(f'Checkpoint path: {checkpoint_file}')
                 model.save_model(checkpoint_file)
                 print('Model Saved!')
 
-            elif r == 'N':
+            elif r == 'N' or r == 'n':
                 print('Model NOT saved')
 
             else:
@@ -162,7 +162,10 @@ class xgb:
     def load_model(self, name, inputs, alfa):
         
         model = self.build_model((inputs+1)*self.depth, alfa, 1)
-        model.load_model(f'{name}.json')
+        model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'checkpoints', 'xgboost'))
+        model_file = os.path.join(model_dir, f'{name}.json')
+        print(f'Path : {model_file}')
+        model.load_model(model_file)
 
         return model
 

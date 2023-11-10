@@ -64,7 +64,6 @@ class Data:
                 le = LabelEncoder()
                 data_arr[:, i] = le.fit_transform(data_arr[:,i]) + 1
 
-
         ##Lets split the data into features and labels
         data_features = data_arr[:,avoid_col:-neurons]
         data_labels = data_arr[:, -neurons:]
@@ -99,16 +98,13 @@ class Data:
             print(f'Features: {train_features}')
             print(f'labels: {train_labels}')
 
-
         return train_features, test_features, train_labels, test_labels, original_features, original_labels
         
-
     def denormalize(self, data):
 
         data_denorm = self.scaler.inverse_transform(data)
 
         return data_denorm
-
 
     def download_database(self, database):
         if database == 'MNIST':
@@ -150,14 +146,14 @@ class Data:
 
         ##we have to look trough all the raw data, and take the correct data points and store them as window and horizon
         for i in range(data_length - window_size - horizon_size):
-            vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[1, i:i+window_size+horizon_size]))
+            vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[1, i:i+window_size+horizon_size])) # Inversa
+            #vector = np.concatenate((array_raw[1, i:i+window_size+horizon_size], array_raw[0, i:i+window_size+horizon_size])) # Directa
             time_series_arr[i] = vector
 
         ##lets print this time_series_arr
         print('Time Series')
         print(time_series_arr)
 
-        
         ##lets store the original features
         columns = time_series_arr.shape[1]
         original_features = data_raw[data_raw.columns[0:-horizon_size]]
@@ -212,8 +208,6 @@ class Data:
 
         return train_features, test_features, train_labels, test_labels, original_features, original_labels
 
-
-    
     def timeseries_process_adapt(self, window_size, horizon_size, file, test_split, norm):
         ##Lets define the absolute path for this folder
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','data'))
@@ -243,14 +237,20 @@ class Data:
 
         ##we have to look trough all the raw data, and take the correct data points and store them as window and horizon
         for i in range(data_length - window_size - horizon_size):
-            vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[3, i:i+window_size+horizon_size], array_raw[2, i:i+window_size+horizon_size], array_raw[1, i:i+window_size+horizon_size]))
+            vector = np.concatenate(
+                (
+                    array_raw[0, i:i+window_size+horizon_size], 
+                    array_raw[3, i:i+window_size+horizon_size], 
+                    array_raw[2, i:i+window_size+horizon_size], 
+                    array_raw[1, i:i+window_size+horizon_size] # Según como se definió el archivo excel, este es el U
+                )
+            )
             time_series_arr[i] = vector
 
         ##lets print this time_series_arr
         print('Time Series')
         print(time_series_arr)
 
-        
         ##lets store the original features
         columns = time_series_arr.shape[1]
         original_features = data_raw[data_raw.columns[0:-horizon_size]]
@@ -304,7 +304,6 @@ class Data:
         df.to_excel(excel_filename, index=False)
 
         return train_features, test_features, train_labels, test_labels, original_features, original_labels
-
 
     def get_max_value(self):
         return self.max_value

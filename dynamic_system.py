@@ -36,7 +36,7 @@ class MassDamper:
         self.last_value = 0
         ##lets load the neural model
         xg = xgb(10)
-        self.model = xg.load_model(name = 'INDENT_DIR_PID',inputs =  7, alfa = 0.02)
+        self.model = xg.load_model(name = 'IDENT_DIR_PID',inputs =  7, alfa = 0.02)
 
     def update_force(self, t, type, force):
 
@@ -59,9 +59,6 @@ class MassDamper:
             arr[i] = self.last_value
 
         return arr
-
-
-
 
     def system_equations(self, t, y):
         x, v = y ##actual position and velocity of system
@@ -128,17 +125,22 @@ class MassDamper:
             #self.pid_control(x[i-1], sp_arr[i-1])
 
             ##lets store the error for that specific time sample
-            err_arr[i-1] = sp_arr[i-1] - x[i-1]
+            err_arr[i-1] = sp_arr[i-1] - x[i-1] # sp - posición
 
-            control_vector[0] = control_vector[1]
-            control_vector[1] = sp_arr[i-1]
-            control_vector[2] = control_vector[3]
-            control_vector[3] = err_arr[i-1]
-            control_vector[4] = control_vector[5]
-            control_vector[5] = x[i-1]
-            control_vector[6] = U[i] ##setpoint
-
-            '''
+#----------------------------------------------------------------------------------------
+#----------Estas líneas solo se usan cuando se va a probar el controlador-------
+            
+            # control_vector[0] = control_vector[1]
+            # control_vector[1] = sp_arr[i-1] #Este es un vector que representa las entradas del sistema
+            # control_vector[2] = control_vector[3]
+            # control_vector[3] = err_arr[i-1] # Acá se almacena el error
+            # control_vector[4] = control_vector[5]
+            # control_vector[5] = x[i-1] # Salida del sistema (posición)
+            # control_vector[6] = U[i] ##setpoint
+            
+#-------------------------------------------------------------------------------------
+#--------Estas líneas se usan para entrenar---------------------------
+            
             #for storing the position setpoint
             control_vector[0] = control_vector[1]
             control_vector[1] = control_vector[2]
@@ -165,6 +167,7 @@ class MassDamper:
             control_vector[18] = control_vector[19]
             control_vector[19] = control_vector[20]
             control_vector[20] = x[i-1] ##position
+
             #for storing the control input
             control_vector[21] = control_vector[22]
             control_vector[22] = control_vector[23]
@@ -172,14 +175,12 @@ class MassDamper:
             control_vector[24] = control_vector[25]
             control_vector[25] = control_vector[26]
             control_vector[26] = U[i] ##setpoint
-            '''
-
+            
             ##lets perform the control action
-            self.U = self.inverse_neuronal_control(control_vector, U[i-1])
+            self.U = self.inverse_neuronal_control(control_vector, U[i-1])*0.55
             
             ##fill index
             index[i-1] = i
-
 
             ##Store the system input
             U[i-1] = self.U
@@ -208,8 +209,7 @@ class MassDamper:
             ##lets pause the graph 
             ##plt.pause(self.N/self.s_t/100000)
 
-        
-        data = np.vstack((x, U, sp_arr, err_arr))
+        data = np.vstack((x, U, sp_arr, err_arr)) # Los datos que se van a guardar en el excel
         print(data)
         # Create a DataFrame from the data
         df = pd.DataFrame(data)
@@ -221,7 +221,6 @@ class MassDamper:
         print(f'Data saved to {excel_filename}')
         
         plt.show()
-
 
     def pid_control(self, x, sp):
         ## dynamic system 
@@ -254,15 +253,8 @@ class MassDamper:
         ##lets create an evaluation set
         #history = self.model.fit(control_vector, label)
         U = self.model.predict(control_vector)
-
-        
         
         return U[0]
-
-
-
-
-
 
 S = MassDamper()
 S.run_simulation()

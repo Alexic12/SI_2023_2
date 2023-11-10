@@ -148,17 +148,3 @@ class PerceptronMulti:
             plt.figure()
             plt.plot(ecmT[n][:], 'r', label = f'ECM Neurona {n}')
             plt.show()
-
-        
-
-                
-
-
-
-                    
-
-
-
-                
-
-                

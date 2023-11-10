@@ -53,17 +53,7 @@ class ffm_tf:
         ##SKLEARN for accuracy metrics
         accuracy = acs(test_labels.astype(int), pred_out.astype(int)) * 100
         print(f'Accuracy: {accuracy:.2f}%')
-
-
-
-
-
-
-
-
-
-
-
+        
     def build_model(self, hidden_neurons, output, alfa):
         model = keras.Sequential([
             Dense(hidden_neurons, activation=tf.nn.sigmoid, input_shape=[hidden_neurons-1]),
@@ -76,13 +66,11 @@ class ffm_tf:
             Dense(hidden_neurons, activation=tf.nn.sigmoid),
             Dense(hidden_neurons, activation=tf.nn.sigmoid),
             Dense(output)
-
         ])
 
         model.compile(optimizer=keras.optimizers.Adam(learning_rate=alfa), loss='mse', metrics=['mse'])
 
         return model
-
 
 
 
