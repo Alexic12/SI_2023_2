@@ -36,7 +36,7 @@ class MassDamper:
         self.last_value = 0
         ##lets load the neural model
         xg = xgb(10)
-        self.model = xg.load_model(name = 'CONTROL_NEURONAL_EXAM_FINAL',inputs = 27, alfa = 0.02)
+        self.model = xg.load_model(name = 'CONTROL_NEURONAL_EXAM_FINAL',inputs = 27, alfa = 0.2)
 
     def update_force(self, t, type, force):
 
@@ -130,7 +130,7 @@ class MassDamper:
             err_arr[i-1] = sp_arr[i-1] - x[i-1]
 
 
-
+            """"
             control_vector[0] = control_vector[1]
             control_vector[1] = control_vector[2]
             control_vector[2] = control_vector[3]
@@ -149,7 +149,7 @@ class MassDamper:
             control_vector[12] = control_vector[13]
             control_vector[13] = control_vector[14]
             control_vector[14] = U[i] ##setpoint
-
+            """
             """
             control_vector[0] = control_vector[1]
             control_vector[1] = sp_arr[i-1]
@@ -199,7 +199,7 @@ class MassDamper:
             
             
             ##lets perform the control action
-            self.U = self.inverse_neuronal_control(control_vector, U[i-1])*0.3
+            self.U = self.inverse_neuronal_control(control_vector, U[i-1])
             
             ##fill index
             index[i-1] = i
