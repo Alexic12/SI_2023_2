@@ -130,50 +130,51 @@ class MassDamper:
 #----------------------------------------------------------------------------------------
 #----------Estas líneas solo se usan cuando se va a probar el controlador-------
             
-            control_vector[0] = control_vector[1]
-            control_vector[1] = sp_arr[i-1] #Este es un vector que representa las entradas del sistema
-            control_vector[2] = control_vector[3]
-            control_vector[3] = err_arr[i-1] # Acá se almacena el error
-            control_vector[4] = control_vector[5]
-            control_vector[5] = x[i-1] # Salida del sistema (posición)
-            control_vector[6] = U[i] ##setpoint
+            # control_vector[0] = control_vector[1]
+            # control_vector[1] = sp_arr[i-1] #Este es un vector que representa las entradas del sistema
+            # control_vector[2] = control_vector[3]
+            # control_vector[3] = err_arr[i-1] # Acá se almacena el error
+            # control_vector[4] = control_vector[5]
+            # control_vector[5] = x[i-1] # Salida del sistema (posición)
+            # control_vector[6] = U[i] ##setpoint
             
 #-------------------------------------------------------------------------------------
 #--------Estas líneas se usan para entrenar---------------------------
             
-            # #for storing the position setpoint
-            # control_vector[0] = control_vector[1]
-            # control_vector[1] = control_vector[2]
-            # control_vector[2] = control_vector[3]
-            # control_vector[3] = control_vector[4]
-            # control_vector[4] = control_vector[5]
-            # control_vector[5] = control_vector[6]
-            # control_vector[6] = sp_arr[i-1] ##setpoint
+            #for storing the position setpoint
+            control_vector[0] = control_vector[1]
+            control_vector[1] = control_vector[2]
+            control_vector[2] = control_vector[3]
+            control_vector[3] = control_vector[4]
+            control_vector[4] = control_vector[5]
+            control_vector[5] = control_vector[6]
+            control_vector[6] = sp_arr[i-1] ##setpoint
 
-            # ##for storing the error 
-            # control_vector[7] = control_vector[8]
-            # control_vector[8] = control_vector[9]
-            # control_vector[9] = control_vector[10]
-            # control_vector[10] = control_vector[11]
-            # control_vector[11] = control_vector[12]
-            # control_vector[12] = control_vector[13]
-            # control_vector[13] = err_arr[i-1] #error
+            ##for storing the error 
+            control_vector[7] = control_vector[8]
+            control_vector[8] = control_vector[9]
+            control_vector[9] = control_vector[10]
+            control_vector[10] = control_vector[11]
+            control_vector[11] = control_vector[12]
+            control_vector[12] = control_vector[13]
+            control_vector[13] = err_arr[i-1] #error
 
-            # #for storing the position
-            # control_vector[14] = control_vector[15]
-            # control_vector[15] = control_vector[16]
-            # control_vector[16] = control_vector[17]
-            # control_vector[17] = control_vector[18]
-            # control_vector[18] = control_vector[19]
-            # control_vector[19] = control_vector[20]
-            # control_vector[20] = x[i-1] ##position
-            # #for storing the control input
-            # control_vector[21] = control_vector[22]
-            # control_vector[22] = control_vector[23]
-            # control_vector[23] = control_vector[24]
-            # control_vector[24] = control_vector[25]
-            # control_vector[25] = control_vector[26]
-            # control_vector[26] = U[i] ##setpoint
+            #for storing the position
+            control_vector[14] = control_vector[15]
+            control_vector[15] = control_vector[16]
+            control_vector[16] = control_vector[17]
+            control_vector[17] = control_vector[18]
+            control_vector[18] = control_vector[19]
+            control_vector[19] = control_vector[20]
+            control_vector[20] = x[i-1] ##position
+
+            #for storing the control input
+            control_vector[21] = control_vector[22]
+            control_vector[22] = control_vector[23]
+            control_vector[23] = control_vector[24]
+            control_vector[24] = control_vector[25]
+            control_vector[25] = control_vector[26]
+            control_vector[26] = U[i] ##setpoint
             
             ##lets perform the control action
             self.U = self.inverse_neuronal_control(control_vector, U[i-1])*0.55
