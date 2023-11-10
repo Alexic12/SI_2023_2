@@ -8,12 +8,12 @@ from hubs.models.xgboost import xgb
 
 class MassDamper:
     def __init__(self):
-        ##System Mass
-        self.m = 2 ##Kg
-        ##String Constant
-        self.k = 0.5
-        ##Friction coefficient
-        self.c = 2
+        ##Masa
+        self.m = 1.2 ##Kg
+        ##Longitud
+        self.l = 0.5
+        ##Gravedad
+        self.g = 9.8
         ##Number of ms for simulation
         self.N = 2000
         ##number of sample times
@@ -21,7 +21,7 @@ class MassDamper:
         ##initial Position
         self.x0 = 0
         ##initial velocity
-        self.v0 = 0
+        self.w0 = 0
         ##Sample time
         self.step_interval = 100 ## ms
         ##Last update time for simulation
@@ -36,7 +36,7 @@ class MassDamper:
         self.last_value = 0
         ##lets load the neural model
         xg = xgb(10)
-        self.model = xg.load_model(name = 'IDENT_DIR_PID',inputs =  7, alfa = 0.02)
+        self.model = xg.load_model(name = 'IDENT_DIR_PID_PARCIAL',inputs =  7, alfa = 0.02)
 
     def update_force(self, t, type, force):
 
@@ -61,14 +61,14 @@ class MassDamper:
         return arr
 
     def system_equations(self, t, y):
-        x, v = y ##actual position and velocity of system
-        dxdt = v
-        dvdt = -(self.k/self.m) * x - (self.c/self.m) * v + self.U/self.m
+        x, w = y ##actual position and velocity of system
+        dxdt = w
+        dvdt = -(self.g/self.l) * x + ((self.m + self.l)*self.U)
         return [dxdt, dvdt]
     
     def run_simulation(self):
         ##set initial conditions and simulation time
-        y0 = [self.x0, self.v0]
+        y0 = [self.x0, self.w0]
         t_span = [0, self.N]
 
         ##solve the system equations
@@ -90,28 +90,28 @@ class MassDamper:
         err_arr = np.zeros(len(t))
 
         ##get the position and velocity data for the time points
-        x, v = sol.sol(t)
+        x, w = sol.sol(t)
 
         ##setup the plot for visualizing the system output in real time
         plt.figure(figsize=(12,6))
         plt.xlabel('Time (ms)')
         plt.ylabel('Value')
-        plt.title('Mass Damper Simulation System')
+        plt.title('Sistema Péndulo')
         plt.grid(True)
 
         ##Itialize lines for position, velocity and U
-        position_line, = plt.plot([],[],label='Position (X)')
-        velocity_line, = plt.plot([],[],label='Velocity (V)')
-        input_line, = plt.plot([],[],label='System Input (U)')
-        sp_line, = plt.plot([],[],label='System SetPoint (SP)')
-        err_line, = plt.plot([],[],label='System Error (ERR)')
+        position_line, = plt.plot([],[],label='Theta (°)', color='red')
+        angular_velocity_line, = plt.plot([],[],label='Angular Velocity (w)')
+        input_line, = plt.plot([],[],label='Torque (U)', color='blue')
+        sp_line, = plt.plot([],[],label='SetPoint (SP)')
+        err_line, = plt.plot([],[],label='Error (ERR)')
 
         ##lets show graph legend
         plt.legend()
 
         ##initialize position and velocity vector and U
         x = np.zeros(len(t))
-        v = np.zeros(len(t))
+        w = np.zeros(len(t))
         U = np.zeros(len(t))
 
         ##lets create a vector for neural controller
@@ -125,59 +125,59 @@ class MassDamper:
             #self.pid_control(x[i-1], sp_arr[i-1])
 
             ##lets store the error for that specific time sample
-            err_arr[i-1] = sp_arr[i-1] - x[i-1] # sp - posición
+            err_arr[i-1] = sp_arr[i-1] - x[i-2] # sp - posición
 
 #----------------------------------------------------------------------------------------
 #----------Estas líneas solo se usan cuando se va a probar el controlador-------
             
-            # control_vector[0] = control_vector[1]
-            # control_vector[1] = sp_arr[i-1] #Este es un vector que representa las entradas del sistema
-            # control_vector[2] = control_vector[3]
-            # control_vector[3] = err_arr[i-1] # Acá se almacena el error
-            # control_vector[4] = control_vector[5]
-            # control_vector[5] = x[i-1] # Salida del sistema (posición)
-            # control_vector[6] = U[i] ##setpoint
+            control_vector[0] = control_vector[1]
+            control_vector[1] = sp_arr[i-1] #Este es un vector que representa las entradas del sistema
+            control_vector[2] = control_vector[3]
+            control_vector[3] = err_arr[i-1] # Acá se almacena el error
+            control_vector[4] = control_vector[5]
+            control_vector[5] = x[i-1] # Salida del sistema (posición)
+            control_vector[6] = U[i] ##setpoint
             
 #-------------------------------------------------------------------------------------
 #--------Estas líneas se usan para entrenar---------------------------
             
-            #for storing the position setpoint
-            control_vector[0] = control_vector[1]
-            control_vector[1] = control_vector[2]
-            control_vector[2] = control_vector[3]
-            control_vector[3] = control_vector[4]
-            control_vector[4] = control_vector[5]
-            control_vector[5] = control_vector[6]
-            control_vector[6] = sp_arr[i-1] ##setpoint
+            # #for storing the position setpoint
+            # control_vector[0] = control_vector[1]
+            # control_vector[1] = control_vector[2]
+            # control_vector[2] = control_vector[3]
+            # control_vector[3] = control_vector[4]
+            # control_vector[4] = control_vector[5]
+            # control_vector[5] = control_vector[6]
+            # control_vector[6] = sp_arr[i-1] ##setpoint
 
-            ##for storing the error 
-            control_vector[7] = control_vector[8]
-            control_vector[8] = control_vector[9]
-            control_vector[9] = control_vector[10]
-            control_vector[10] = control_vector[11]
-            control_vector[11] = control_vector[12]
-            control_vector[12] = control_vector[13]
-            control_vector[13] = err_arr[i-1] #error
+            # ##for storing the error 
+            # control_vector[7] = control_vector[8]
+            # control_vector[8] = control_vector[9]
+            # control_vector[9] = control_vector[10]
+            # control_vector[10] = control_vector[11]
+            # control_vector[11] = control_vector[12]
+            # control_vector[12] = control_vector[13]
+            # control_vector[13] = err_arr[i-1] #error
 
-            #for storing the position
-            control_vector[14] = control_vector[15]
-            control_vector[15] = control_vector[16]
-            control_vector[16] = control_vector[17]
-            control_vector[17] = control_vector[18]
-            control_vector[18] = control_vector[19]
-            control_vector[19] = control_vector[20]
-            control_vector[20] = x[i-1] ##position
+            # #for storing the position
+            # control_vector[14] = control_vector[15]
+            # control_vector[15] = control_vector[16]
+            # control_vector[16] = control_vector[17]
+            # control_vector[17] = control_vector[18]
+            # control_vector[18] = control_vector[19]
+            # control_vector[19] = control_vector[20]
+            # control_vector[20] = x[i-1] ##position
 
-            #for storing the control input
-            control_vector[21] = control_vector[22]
-            control_vector[22] = control_vector[23]
-            control_vector[23] = control_vector[24]
-            control_vector[24] = control_vector[25]
-            control_vector[25] = control_vector[26]
-            control_vector[26] = U[i] ##setpoint
+            # #for storing the control input
+            # control_vector[21] = control_vector[22]
+            # control_vector[22] = control_vector[23]
+            # control_vector[23] = control_vector[24]
+            # control_vector[24] = control_vector[25]
+            # control_vector[25] = control_vector[26]
+            # control_vector[26] = U[i] ##setpoint
             
             ##lets perform the control action
-            self.U = self.inverse_neuronal_control(control_vector, U[i-1])*0.55
+            self.U = self.inverse_neuronal_control(control_vector, U[i-1])*0.8
             
             ##fill index
             index[i-1] = i
@@ -186,25 +186,25 @@ class MassDamper:
             U[i-1] = self.U
 
             ##set initial conditions and timespan
-            y0 = [x[i-1], v[i-1]]
+            y0 = [x[i-1], w[i-1]]
             t_span = [t[i-1], t[i]]
 
             ##solve the system equations for this iteration
             sol = solve_ivp(self.system_equations, t_span, y0, dense_output=True)
 
-            ##get the position and velocity for the next sample time
-            x[i], v[i] = sol.sol(t[i])
+            ##get the angular position and angular velocity for the next sample time
+            x[i-1], w[i] = sol.sol(t[i])
 
             ##lets udate the graph lines for showing system status
             position_line.set_data(t[:i+1], x[:i+1])
-            velocity_line.set_data(t[:i+1], v[:i+1])
+            angular_velocity_line.set_data(t[:i+1], w[:i+1])
             input_line.set_data(t[:i+1], U[:i+1])
             sp_line.set_data(t[:i+1], sp_arr[:i+1])
             err_line.set_data(t[:i+1], err_arr[:i+1])
 
             ##lets show te data up until the actual sample time
             plt.xlim(0, t[i])
-            plt.ylim(min(min(x), min(v), min(U)) - 0.5, max(max(x), max(v), max(U)) + 0.5)
+            plt.ylim(min(min(x), min(w), min(U)) - 0.5, max(max(x), max(w), max(U)) + 0.5)
 
             ##lets pause the graph 
             ##plt.pause(self.N/self.s_t/100000)
@@ -215,7 +215,7 @@ class MassDamper:
         df = pd.DataFrame(data)
 
         # Save the DataFrame to an Excel file
-        excel_filename = 'TOMA_DATOS_PID_DIR.xlsx'
+        excel_filename = 'TOMA_DATOS_PID_PARCIAL_DIR.xlsx'
         df.to_excel(excel_filename, index=False)
 
         print(f'Data saved to {excel_filename}')
@@ -225,9 +225,9 @@ class MassDamper:
     def pid_control(self, x, sp):
         ## dynamic system 
         ## x system position
-        Kp = 1
-        Ki = 0.1
-        Kd = 0.5
+        Kp = 4
+        Ki = 1.5
+        Kd = 1.5
 
         setpoint = sp
 

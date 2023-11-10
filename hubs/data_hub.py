@@ -146,7 +146,7 @@ class Data:
 
         ##we have to look trough all the raw data, and take the correct data points and store them as window and horizon
         for i in range(data_length - window_size - horizon_size):
-            vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[1, i:i+window_size+horizon_size])) # Inversa
+            #vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[1, i:i+window_size+horizon_size])) # Inversa
             #vector = np.concatenate((array_raw[1, i:i+window_size+horizon_size], array_raw[0, i:i+window_size+horizon_size])) # Directa
             time_series_arr[i] = vector
 
