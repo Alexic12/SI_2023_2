@@ -1,0 +1,71 @@
+Pasos Final SI
+
+Identificación directa o inversa del sistema
+
+1. Cambiar la ecuación del sistema dinámico
+
+2. Hacer identificación directa del sistema
+   *Si es directa me aprendo la salida (x) si es inversa me aprendo la entrada (U)
+   *Para identificación solo uso time_series no adapt
+   -Comentar en dynamic_system la línea 178 porque no haré control todavía
+   -Habilito una fuerza random (línea 127)
+   -Comento los control vector (especificado en el cod. de donde a donde)
+   -Corro el archivo (dynamic_system)
+   -TOMO FOTO DE LA VENTANA PARA DOCUMENTAR TODO
+
+3. Llevo el archivo TOMA_DATOS_DIRECTA.xlsx que se genera a la carpeta data
+   -El nombre lo cambio según corresponda Ej: TOMA_DATOS_DIRECTA_FINAL esto en la línea 218 de dynamic_system
+
+4. Abro data_hub
+   -Cambio en la línea 153 el tipo de identificación
+     *El sistema se aprende lo que quede en la última columna
+
+      Si es directa me quiero aprender la entrada (x) entonces debe quedar 1 luego 0
+      vector = np.concatenate((array_raw[1, i:i+window_size+horizon_size], array_raw[0, i:i+window_size+horizon_size]))
+
+      Si es inversa me quiero aprender la salida (U) entonces debe quedar 0 luego 1
+      vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[1, i:i+window_size+horizon_size]))
+
+5. Abro el main
+   -Pongo el modelo que quiera (xgb el mejor)
+   -Cambio el nombre del file_name por el que estoy trabajando
+   -Cambio el nombre del check_name cada vez que haga una prueba ajustando parámetros
+   -TOMO FOTOS DE LAS VENTANAS Y EL ACCURACY Y GUARDO EL CHECKPOINT
+
+6. Cambio el tamaño de la ventana
+   -Abro neural_hub y en la línea 20 cambio window_size hasta que vea un feature importance sólo de las principales
+    aumento o disminuyo la ventana hasta que vea que la menos importante es 1/5 de la más importante
+   -Vuelvo al paso 5
+
+Identificación directa del controlador PID
+
+7. Tomar datos del controlador
+   *Esto lo hago con timeseries_process en el neural_hub línea 22
+   -Voy a dynamic_system y comento la línea 127 para ya no meterle un setpoint random
+   -Habilito la línea 128 para un setpoint para control PID
+   -Habilito los control_vector
+   -Cambio el nombre del archivo xlsx que va a generar en la línea 218 de dynamic_system Ej:TOMA_DATOS_PID_DIR
+   -Sólo habilito los dos primeros grupos de control vector, los demás los comento
+   *Hago identificación directa del PID porque me aprendo la salida, no sirve hacer inversa
+
+8. Llevo el archivo TOMA_DATOS_PID_DIR.xlsx que se genera a la carpeta data
+   -Cambio el nombre del checkpoint Ej: IDENT_DIR_PID_PRUEBA
+   -Corro el main y el archivo queda guardado como le digo en data_hub línea 303 Ej:DATA_PID_ORGANIZADA_ADAPT.xlsx
+   -Abro el archivo xlsx que se genera y verifico cuantas entradas quedan, ejemplo: si tengo 8 columnas tengo
+    7 entradas(features) y 1 salida(label) que en este caso es U
+   -Tomo ese dato de entradas (7) y cambio la variable inputs en dynamic_system línea 39, 121 y 252
+
+Probar el control neuronal
+
+9. -Poner el archivo que contiene los pesos del entrenamiento PID en la línea 39 de dynamic_system
+   -Comentar la línea 128 de dynamic_system porque ya no haré control PID
+   -Comento todos los control vector menos el primero
+   -Cuando voy a entrenar pongo: control_vector[5] = x[i-1]
+            			 control_vector[6] = U[i] #Setpoint
+   -Cuando voy a aplicar el control para predecir: control_vector[5] = U[i] #Setpoint
+            			 		   control_vector[6] = x[i-1]
+   -Descomentar Self.U para hacer el control neuronal en la línea 178
+
+10. Correr dynamic_systemy ver que tal sale la predicción
+   -Ajustar la ganacia en la línea 178 de dynamic_system
+ 

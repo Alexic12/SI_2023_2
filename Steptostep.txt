@@ -1,0 +1,53 @@
+Primero se cambia la ecucacion dinamica en dynamic_system
+
+Se debe indetificar directa e inversa (identificar la planta)
+
+PARA DIRECTA. 
+ 
+si es una directa voy a aprender la salida la posicion x debe quedar en el final para usarlo como label 
+si es inversa voy a aprender  la entrada el U debe quedar en el final quede al final para usarlo como label 
+
+se pasa main.py para utilizar el xgb con la 'time_series' y en timeseries_process en neural_hub dejarlo sin el adapt  y al realizar nos aparezcara el feature importance y vemos si cumple con el 1/5 del dato mayor entonces reducimos la ventana. si estamos con solo la identificacion se quita solo 2 por cada ventana.
+
+se ve las tablas de entrenado y validacion, se preguntara si es deseamos guardar eso en modo json. no importa si queda en 100% overfiting pero para el final no importa. 
+
+
+PARA UNA INVESA.
+
+Se cambia en data_hub. la linea que dice utilizar para inversa. es decir quien se toma en la salida para usar en el label 
+recuerda si toca reducir. con el windows size 
+
+
+Se debe indetificar directa e inversa del controlador.
+
+Se realiza el mismo pero cambio esto. 
+
+en dynamic_system ya no es un setpoint aleatorio si no el de self.pid_control se utliza 
+
+Si deseo aprender la salida del controlador es una identificacion directa. 
+No funciona la identificacion inversa de un controlador.
+cuando tenga el archivo de excel ,lo dejo en data y modificio las siguientes cosas para usarlo con xgb me voy para neural_hub
+
+recueda ajustar la ventana este le quita 4 y se le adicina uno 
+
+ademas el imprime en su adapt y aparece afuera del toda la carpeta 
+
+Se abre el excel se para ver como quedan organizada ver excel para comprobar y despues de va a aplicar esos pesos al dynamic pero toca organizarlo.
+
+como aplicar ese control neuronal se vaa self.model se pone el nombre, las entradas y el alfa. aqui se contrulle la red neuronal.
+ Se modificia estos por los inputs 
+ control_vector = np.zeros(7)
+ control_vector = control_vector.reshape((1,7))
+
+ toca comentar todo lo de control vector
+
+y se crea para utlizarlo entrena la posicion 
+cuando va hacer el conrtol se trocan el setpoint y el posicion. cuando controlo
+entreno es x, setpoint.
+
+Esto fue por que tengo un windows size 3 me debe quedar de 4 
+
+
+
+
+
