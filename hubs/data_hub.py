@@ -21,10 +21,12 @@ class Data:
     Methods:
     
     """
+
     def __init__(self):
         self.scaler = StandardScaler()##Create an object of this library in particular
         self.max_value = 0
         self.array_size = 0
+        self.control_vector_size= 0
 
     def data_process(self, file, test_split, norm, neurons, avoid_col):
         ##Lets define the absolute path for this folder
@@ -150,7 +152,8 @@ class Data:
 
         ##we have to look trough all the raw data, and take the correct data points and store them as window and horizon
         for i in range(data_length - window_size - horizon_size):
-            vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[1, i:i+window_size+horizon_size]))
+            vector = np.concatenate((array_raw[1, i:i+window_size+horizon_size], array_raw[0, i:i+window_size+horizon_size])) ## DIRECTA  SE TROCAN PARA PID
+            #vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[1, i:i+window_size+horizon_size])) ## INVERSA
             time_series_arr[i] = vector
 
         ##lets print this time_series_arr
@@ -203,11 +206,12 @@ class Data:
 
         data = np.hstack((train_features, train_labels))
         #print(data)
+        
         # Create a DataFrame from the data
         df = pd.DataFrame(data)
-
+        
         # Save the DataFrame to an Excel file
-        excel_filename = 'DATA_PID_ORGANIZADA.xlsx'
+        excel_filename = 'DATA_PID_ORGANIZADA_ADATP.xlsx'
         df.to_excel(excel_filename, index=False)
 
 
@@ -244,7 +248,7 @@ class Data:
 
         ##we have to look trough all the raw data, and take the correct data points and store them as window and horizon
         for i in range(data_length - window_size - horizon_size):
-            vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[3, i:i+window_size+horizon_size], array_raw[2, i:i+window_size+horizon_size], array_raw[1, i:i+window_size+horizon_size]))
+            vector = np.concatenate((array_raw[0, i:i+window_size+horizon_size], array_raw[3, i:i+window_size+horizon_size], array_raw[2, i:i+window_size+horizon_size], array_raw[1, i:i+window_size+horizon_size])) #DIRECTA para PID
             ## para PID siempre U queda al final
             ## el resto conserve el orden
             time_series_arr[i] = vector
