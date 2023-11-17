@@ -2,5 +2,5 @@ numpy
 pandas
 scikit-learn
 openpyxl
-matplotlib
 tensorflow
+xgboost

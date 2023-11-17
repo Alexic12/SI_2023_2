@@ -1,47 +1,68 @@
+##lets import libraries
 import tensorflow as tf
 from tensorflow import keras
 from keras.layers import Dense
 
-##commom modules
+#from keras.layers.core import Dense
+
+##common modules
 import numpy as np
 import pandas as pd
 import os
 import sys
 
-## import tools for visualization
+##import tools for data visualization
 import matplotlib.pyplot as plt
 
+##import the metrics libraries
+from sklearn.metrics import accuracy_score as acs
+
+
 class ffm_tf:
-    def __init__(self) -> None:
+    def __init__(self):
         pass
 
     def run(self, train_features, test_features, train_labels, test_labels, iter, alfa, stop_condition):
-        model = self.build_model(train_features.shape[1]+1, train_labels.shape[1], alfa)
+        model = self.build_model(train_features.shape[1] + 1, train_labels.shape[1], alfa)
 
         ##lets make an stop function
-        early_stop = keras.callbacks.EarlyStopping(monitor = 'mse', patience=stop_condition)
-        
-        ##lets train the model
-        history = model.fit(train_features, train_labels, epochs = iter, verbose = 1, callbacks=[early_stop], validation_split=0)
+        early_stop = keras.callbacks.EarlyStopping(monitor='mse', patience=stop_condition)
 
-        print(history)
+        ##lets train the model
+        history = model.fit(train_features, train_labels, epochs=iter, verbose = 1, callbacks = [early_stop], validation_split=0)
+
+    
 
         training_data = pd.DataFrame(history.history)
-
-        print(training_data)
+        #print(training_data)
 
         plt.figure()
         plt.plot(training_data['mse'], 'r', label='mse')
         plt.show()
+
 
         ##lets validate the trained model
 
         pred_out = model.predict(test_features)
 
         plt.figure()
-        plt.plot(pred_out, 'r', label="Prediction_Output")
-        plt.plot(test_labels, 'b', label="Real Output")
+        plt.plot(pred_out, 'r', label='Prediction Output')
+        plt.plot(test_labels, 'b', label='Real Output')
         plt.show()
+
+        ##SKLEARN for accuracy metrics
+        accuracy = acs(test_labels.astype(int), pred_out.astype(int)) * 100
+        print(f'Accuracy: {accuracy:.2f}%')
+
+
+
+
+
+
+
+
+
+
 
     def build_model(self, hidden_neurons, output, alfa):
         model = keras.Sequential([
@@ -54,9 +75,18 @@ class ffm_tf:
             Dense(hidden_neurons, activation=tf.nn.sigmoid),
             Dense(hidden_neurons, activation=tf.nn.sigmoid),
             Dense(hidden_neurons, activation=tf.nn.sigmoid),
-            Dense(output, activation=tf.nn.sigmoid)
+            Dense(output)
+
         ])
 
         model.compile(optimizer=keras.optimizers.Adam(learning_rate=alfa), loss='mse', metrics=['mse'])
 
         return model
+
+
+
+
+
+
+
+
